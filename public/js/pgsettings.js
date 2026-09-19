@@ -45,7 +45,8 @@ $('[data-lang-not]').each(function () {
 $('div.checkbox').each(function () {
 	if ($(this).find('.question.icon').length) $(this).popup({
 		inline: true,
-		position: 'top right',
+		// the CIS pill sits at the very top of the page: its tooltip opens downwards
+		position: this.id === 'backupRegion' ? 'bottom right' : 'top right',
 		offset: '1'
 	});
 });

@@ -162,3 +162,29 @@
 		bottom: 0;
 	}
 }
+
+/* Settings header, 520-767px: the pill keeps its full label (it was cut to "Использовать …" when both controls
+   shared the row equally), the language dropdown takes the remaining width; 5px of air above and below. */
+@media screen and (min-width: 520px) and (max-width: 767px) {
+	.settingsright > .ui.vertical.segment {
+		flex: 0 0 auto;
+	}
+	.settingsright #backupRegion label {
+		overflow: visible;
+		text-overflow: clip;
+	}
+}
+@media screen and (max-width: 767px) {
+	.settingsright {
+		padding: 5px 0;
+	}
+}
+
+/* Stacked layout: the wheel column carries an inline fixed height (pgindex.js) plus `padding-top:5%`; past
+   ~700px of width that padding grows and the canvas overflowed the column into the "About the game" card. */
+@media screen and (max-width: 1023px) {
+	#content .ui.equal.width.grid > .column.six.wide {
+		/* same 5% the column adds on top: that is exactly how far the canvas sticks out at the bottom */
+		margin-bottom: 5% !important;
+	}
+}
