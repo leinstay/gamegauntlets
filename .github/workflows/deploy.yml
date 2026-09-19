@@ -73,6 +73,6 @@ jobs:
             echo "/ -> $code"; [ "$code" = "200" ]
           fi
           if [ -f "$APP_DIR/src/api.js" ]; then
-            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3100/api/session)
+            code=$(curl -s -o /dev/null -w '%{http_code}' --retry 15 --retry-delay 2 --retry-connrefused http://127.0.0.1:3100/api/session)
             echo "api /api/session -> $code"; [ "$code" = "200" ]
           fi
