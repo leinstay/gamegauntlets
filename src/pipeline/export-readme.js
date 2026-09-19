@@ -362,7 +362,7 @@ export function renderReadme(stats, { generatedAt = new Date() } = {}) {
   const { totals, coverage, sources, snapshots, links, files } = stats;
   const asOf = generatedAt instanceof Date ? generatedAt.toISOString() : String(generatedAt);
 
-  return `# Video Game Database
+  return `# Steam Game Database
 
 JSON dump of the [Game Gauntlets](https://gamegauntlets.com) game catalog: prices, scores and metadata
 merged from Steam, GOG, SteamSpy, GameFAQs, Metacritic, IGDB, HowLongToBeat, Wikidata and an archived

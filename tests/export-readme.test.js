@@ -72,9 +72,9 @@ function sampleStats() {
   };
 }
 
-test('renderReadme: title is "Video Game Database" (no store names)', () => {
+test('renderReadme: title is "Steam Game Database"', () => {
   const md = renderReadme(sampleStats());
-  assert.match(md, /^# Video Game Database/);
+  assert.match(md, /^# Steam Game Database/);
 });
 
 test('renderReadme: includes the totals table with every metric, no excluded-rows breakdown', () => {
