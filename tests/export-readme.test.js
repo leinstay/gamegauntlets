@@ -1,5 +1,5 @@
-// src/pipeline/export-readme.js (T20 schema v2 — stats + README generator for the public
-// leinstay/steamdb export). Two things covered, matching that file's own split:
+// src/pipeline/export-readme.js (stats + README generator for the public leinstay/steamdb export).
+// Two things covered, matching that file's own split:
 //   - renderReadme(stats, opts): pure, snapshot-style assertions against a small hand-built `stats`
 //     object — totals, a coverage row with a %, a source row with a "remaining" count, stable
 //     ordering (same input -> byte-identical output, and section rows always in FIELD_DEFS/
@@ -8,9 +8,10 @@
 //     handful of aggregate queries by a distinctive substring and returns canned rows — no real
 //     database needed, same style as tests/export.test.js's makeFakeDb.
 //
-// 2026-09-19 README review: one dump (no gogdb.*), totals scoped to the exported set only, OpenCritic
-// removed everywhere, legacy_steamdb/gamerankings moved out of the "Source status" table into one
-// sentence below it — see export-readme.js's own comments for the reasoning behind each change.
+// 2026-09-19 README review: the README was rewritten into a terse, factual dataset README (no
+// explanation of how the site works internally, no CIS/RUB/legacy-schema wording, one-time
+// legacy_steamdb/gamerankings "snapshot" mentions removed entirely) — see export-readme.js's own
+// comments for the reasoning behind each change.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -57,10 +58,6 @@ function sampleStats() {
         remaining: 40,
       },
     ],
-    snapshots: [
-      { source: 'legacy_steamdb', label: 'legacy data', games: 111000 },
-      { source: 'gamerankings', label: 'the GameRankings archive', games: 45000 },
-    ],
     links: [
       { source: 'gamefaqs', games: 40000 },
       { source: 'steam', games: 110000 },
@@ -105,7 +102,7 @@ test('renderReadme: coverage table has a row with a percentage for every key, in
   assert.ok(sidIndex < metaIndex);
 });
 
-test('renderReadme: source status table only lists live sources — no legacy_steamdb/gamerankings row', () => {
+test('renderReadme: source status table only lists live sources', () => {
   const md = renderReadme(sampleStats(), { generatedAt: new Date() });
   const steamLine = md.split('\n').find((l) => l.startsWith('| steam |'));
   assert.ok(steamLine);
@@ -114,12 +111,6 @@ test('renderReadme: source status table only lists live sources — no legacy_st
 
   assert.ok(!md.split('\n').some((l) => l.startsWith('| legacy_steamdb |')));
   assert.ok(!md.split('\n').some((l) => l.startsWith('| gamerankings |')));
-});
-
-test('renderReadme: mentions the frozen snapshots in one sentence below the source table, with game counts', () => {
-  const md = renderReadme(sampleStats(), { generatedAt: new Date() });
-  assert.match(md, /legacy data \(111,000 games\)/);
-  assert.match(md, /the GameRankings archive \(45,000 games\)/);
 });
 
 test('renderReadme: links table lists every site with its linked-game count only (no link-row column)', () => {
@@ -159,9 +150,34 @@ test('renderReadme: links to the live site and mentions the nightly schedule', (
   assert.match(md, /23:48 UTC/);
 });
 
+test('renderReadme: "Updated nightly" line is exactly the schedule, no extra explanation', () => {
+  const md = renderReadme(sampleStats(), { generatedAt: new Date() });
+  const line = md.split('\n').find((l) => l.startsWith('Updated nightly'));
+  assert.equal(line, 'Updated nightly at 23:48 UTC.');
+});
+
 test('renderReadme: defaults generatedAt to now when not given', () => {
   const md = renderReadme(sampleStats());
   assert.match(md, /_Generated \d{4}-\d{2}-\d{2}T/);
+});
+
+test('renderReadme: no chatty filler — explanation of how the export job/regeneration works is gone', () => {
+  const md = renderReadme(sampleStats());
+  assert.doesNotMatch(md, /export job/i);
+  assert.doesNotMatch(md, /regenerated/i);
+  assert.doesNotMatch(md, /sitting next to/i);
+});
+
+test('renderReadme: no legacy/CIS/RUB/schema-v2 wording anywhere in the generated text', () => {
+  const md = renderReadme(sampleStats(), { generatedAt: new Date('2026-09-19T23:48:00Z') });
+  const bannedWords = [
+    'legacy', 'archived', 'archive', 'snapshot', 'frozen', 'rewrite',
+    'original dump', 'schema v2', 'CIS', 'RUB',
+  ];
+  for (const word of bannedWords) {
+    const re = new RegExp(`\\b${word}\\b`, 'i');
+    assert.doesNotMatch(md, re, `README must not contain the word "${word}"`);
+  }
 });
 
 // --- collectStats --------------------------------------------------------------------------------
@@ -198,8 +214,6 @@ function makeFakeStatsDb() {
     if (sql.includes('WHERE game_id IS NOT NULL GROUP BY source')) {
       return [
         { source: 'steam', games: 90 },
-        { source: 'legacy_steamdb', games: 111 },
-        { source: 'gamerankings', games: 45 },
       ];
     }
     if (sql.includes('FROM source_state')) {
@@ -246,6 +260,7 @@ test('collectStats: assembles totals, coverage (with %), sources (with remaining
   assert.equal(gogSource.paused, false);
 
   assert.deepEqual(stats.links, [{ source: 'steam', games: 90 }]);
+  assert.ok(!('snapshots' in stats), 'the one-time-snapshot concept is gone, stats has no snapshots field');
 });
 
 test('collectStats: source rows are in the fixed SOURCE_ORDER (live parsers only), not query-return order', async () => {
@@ -253,33 +268,11 @@ test('collectStats: source rows are in the fixed SOURCE_ORDER (live parsers only
   const stats = await collectStats(db);
   assert.deepEqual(stats.sources.map((s) => s.source), SOURCE_ORDER);
   assert.ok(!SOURCE_ORDER.includes('opencritic'), 'OpenCritic is dropped from config.json, so from SOURCE_ORDER too');
-  assert.ok(!SOURCE_ORDER.includes('legacy_steamdb'), 'one-time snapshots are not in SOURCE_ORDER');
+  assert.ok(!SOURCE_ORDER.includes('legacy_steamdb'), 'one-time snapshot sources are not in SOURCE_ORDER');
+  assert.ok(!SOURCE_ORDER.includes('gamerankings'), 'one-time snapshot sources are not in SOURCE_ORDER');
 });
 
-test('collectStats: snapshots (legacy_steamdb, gamerankings) get a game count each, not a sources table row', async () => {
-  const db = makeFakeStatsDb();
-  const stats = await collectStats(db);
-
-  assert.ok(!stats.sources.some((s) => s.source === 'legacy_steamdb'));
-  assert.ok(!stats.sources.some((s) => s.source === 'gamerankings'));
-
-  const legacySnapshot = stats.snapshots.find((s) => s.source === 'legacy_steamdb');
-  assert.ok(legacySnapshot);
-  assert.equal(legacySnapshot.games, 111);
-  assert.equal(legacySnapshot.label, 'legacy data');
-
-  const gamerankingsSnapshot = stats.snapshots.find((s) => s.source === 'gamerankings');
-  assert.ok(gamerankingsSnapshot);
-  assert.equal(gamerankingsSnapshot.games, 45);
-
-  // No 'remaining' query was ever issued with a snapshot source as its bind param — they're one-time,
-  // never "due" again.
-  assert.ok(
-    !db.calls.some((c) => c.sql.includes('remaining') && ['legacy_steamdb', 'gamerankings'].includes(c.params[0])),
-  );
-});
-
-test('collectStats: coverage rows are in FIELD_DEFS order (every mapRowV2 key, legacy first)', async () => {
+test('collectStats: coverage rows are in FIELD_DEFS order (identity, store data, per-source, derived, updated_at)', async () => {
   const db = makeFakeStatsDb();
   const stats = await collectStats(db);
   assert.deepEqual(stats.coverage.map((c) => c.key), FIELD_DEFS.map((f) => f.key));
@@ -291,4 +284,46 @@ test('collectStats: excludes opencritic from the links query (OpenCritic dropped
   const linkCall = db.calls.find((c) => c.sql.includes('FROM game_links'));
   assert.ok(linkCall);
   assert.match(linkCall.sql, /opencritic/);
+});
+
+test('collectStats: field coverage query no longer joins the frozen legacy_steamdb source_records snapshot', async () => {
+  const db = makeFakeStatsDb();
+  await collectStats(db);
+  const coverageCall = db.calls.find((c) => c.sql.includes('AS `sid`'));
+  assert.ok(coverageCall);
+  assert.doesNotMatch(coverageCall.sql, /legacy_steamdb/);
+  assert.doesNotMatch(coverageCall.sql, /source_records/);
+});
+
+// --- FIELD_DEFS -----------------------------------------------------------------------------------
+
+test('FIELD_DEFS: every source value is a plain site name or gamegauntlets, never a compound/legacy label', () => {
+  const allowed = new Set([
+    'steam', 'gog', 'steamspy', 'gamefaqs', 'hltb', 'metacritic', 'igdb', 'gamerankings', 'wikidata', 'gamegauntlets',
+  ]);
+  for (const f of FIELD_DEFS) {
+    assert.ok(allowed.has(f.source), `FIELD_DEFS[${f.key}].source "${f.source}" is not a plain allowed source name`);
+  }
+});
+
+test('FIELD_DEFS: no removed key (dropped-legacy-only, frozen snapshots, duplicate grnk_score, CIS/RUB) remains', () => {
+  const keys = FIELD_DEFS.map((f) => f.key);
+  const removed = [
+    'store_promo_url', 'gfq_difficulty_comment', 'gfq_rating_comment', 'gfq_length', 'gfq_length_comment',
+    'stsp_mdntime', 'igdb_single', 'igdb_complete', 'igdb_popularity',
+    'published_meta', 'published_stsp', 'published_hltb', 'published_igdb',
+    'grnk_score',
+    'price_cis_usd', 'price_final_cis_usd', 'discount_cis_usd',
+    'price_rub', 'price_final_rub', 'discount_rub',
+  ];
+  for (const key of removed) assert.ok(!keys.includes(key), `${key} must not be in FIELD_DEFS`);
+});
+
+test('FIELD_DEFS: descriptions do not mention internal table/column names', () => {
+  const internalNames = ['score_critics_source', 'sr.payload', 'source_records', 'game_links', 'games.'];
+  for (const f of FIELD_DEFS) {
+    for (const name of internalNames) {
+      assert.ok(!f.description.includes(name), `FIELD_DEFS[${f.key}].description mentions internal name "${name}"`);
+    }
+  }
 });

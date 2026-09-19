@@ -5,29 +5,25 @@
 // which is what src/pipeline/maintenance.js's runExport() dynamically
 // imports for the worker's `maintenance` 'export' job.
 //
-// Schema v2 (2026-09-19): every legacy key from legacy/ajax/misc/dump.php's
-// SELECT is kept byte-for-byte (same names, same order, same renames —
-// mapRow() below, untouched) so nothing downstream in the public repo
-// (consumed as plain JSON, no schema) breaks. mapRowV2() spreads mapRow()'s
-// object first, then APPENDS the new columns the rewrite actually has that
-// dump.php never did (Steam review percent/count/label, average playtime,
-// Metacritic review count, gg_score/ggp, release_date, kind, GOG identity,
-// RUB/CIS prices, updated_at — see mapRowV2's own doc comment for the full
-// list and why each one is there) — object spread preserves insertion
-// order, so the file order is exactly "every legacy key, then every new
-// key", never interleaved.
-//
 // One dump, both catalogs (2026-09-19, owner's README review): steamdb.json/
 // steamdb.min.json/steamdb.min.json.gz (file names unchanged from the legacy
 // dump) carry every exported game, Steam and GOG-exclusive alike, ordered by
 // id — the appended `kind` field on each row ('steam' or 'gog_exclusive')
-// tells them apart; Steam-only legacy keys (sid, store_url, ...) are simply
-// null on a GOG-exclusive row (the LEFT JOINs/columns below already return
-// null for those, no per-kind branching needed). There used to be a second
-// gogdb.json/.min.json/.min.json.gz file pair (kind='gog_exclusive' only);
-// the owner asked for a single dump instead — src/pipeline/export-push.js's
-// push step removes any gogdb.* files still sitting in the public repo from
-// before this change (see that file).
+// tells them apart; store-specific keys (sid, store_url, gog_url, ...) are
+// simply null on a row from the other store (the LEFT JOINs/columns below
+// already return null for those, no per-kind branching needed). There used
+// to be a second gogdb.json/.min.json/.min.json.gz file pair
+// (kind='gog_exclusive' only); the owner asked for a single dump instead —
+// src/pipeline/export-push.js's push step removes any gogdb.* files still
+// sitting in the public repo from before this change (see that file).
+//
+// Cleanup (2026-09-19, owner's dump review): the export used to carry a
+// legacy key layout (mapRow()) with the rewrite's own fields appended after
+// it (mapRowV2()), plus a frozen legacy_steamdb snapshot join and RUB/CIS
+// price columns. Backward compatibility with that layout is no longer
+// required, so all of that collapsed into the single mapRow() below, with
+// one clean key order (identity, store data, per-source blocks, derived,
+// updated_at) and no dropped-legacy-only/frozen-snapshot/CIS/RUB keys.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -48,20 +44,7 @@ export const CHUNK_SIZE = 2000;
 // chunking on the primary key is trivial to unit-test with a fake `db`.
 //
 // LEFT JOIN game_links picks up the one link row per (game, source) the
-// unique key (game_id, source) guarantees (src/pipeline schema doc); LEFT
-// JOIN source_records picks up the *original Steam-side* legacy snapshot,
-// if this game was migrated from steamdb — matching `sr.external_id` back
-// to `g.id` (not just `sr.game_id = g.id`) is required because a game that
-// absorbed a merged GOG row (scripts/migrate-legacy.js) can have a SECOND
-// legacy_steamdb source_records row on the same game_id, keyed by the GOG
-// row's own (different) legacy id — without that filter the second row
-// would fan out the JOIN into a duplicate output row. The comparison casts
-// `sr.external_id` to UNSIGNED rather than casting `g.id` to CHAR: a CHAR
-// cast takes the connection's default collation for utf8mb4
-// (utf8mb4_general_ci), which fails "Illegal mix of collations" against
-// `external_id`'s column collation (utf8mb4_unicode_ci, confirmed against
-// the real gg schema) — comparing as integers sidesteps collations
-// entirely instead of chasing a matching one.
+// unique key (game_id, source) guarantees (src/pipeline schema doc).
 //
 // `g.kind` is selected (it's the JSON's own `kind` field) but is not a
 // filter here — this query returns every exported game regardless of kind,
@@ -76,8 +59,6 @@ export const EXPORT_QUERY = `
 SELECT
   g.id, g.kind, g.steam_appid, g.gog_id, g.image, g.name, g.description_en,
   g.price_usd, g.price_final_usd, g.discount_usd,
-  g.price_rub, g.price_final_rub, g.discount_rub,
-  g.price_cis_usd, g.price_final_cis_usd, g.discount_cis_usd,
   g.platforms, g.developers, g.publishers, g.languages, g.voiceovers, g.categories, g.genres, g.tags,
   g.achievements, g.difficulty, g.score_gamefaqs, g.owners_estimate, g.time_main, g.time_complete,
   g.time_average, g.time_average_source,
@@ -87,11 +68,7 @@ SELECT
   g.gg_score, g.ggp, g.release_date, g.release_precision, g.early_access_date, g.store_release_date,
   g.updated_at,
   gl_steam.url AS link_steam, gl_gog.url AS link_gog, gl_gfq.url AS link_gamefaqs, gl_hltb.url AS link_hltb,
-  gl_meta.url AS link_metacritic, gl_igdb.url AS link_igdb,
-  JSON_UNQUOTE(JSON_EXTRACT(sr.payload, '$.published_meta')) AS legacy_published_meta,
-  JSON_UNQUOTE(JSON_EXTRACT(sr.payload, '$.published_stsp')) AS legacy_published_stsp,
-  JSON_UNQUOTE(JSON_EXTRACT(sr.payload, '$.published_hltb')) AS legacy_published_hltb,
-  JSON_UNQUOTE(JSON_EXTRACT(sr.payload, '$.published_igdb')) AS legacy_published_igdb
+  gl_meta.url AS link_metacritic, gl_igdb.url AS link_igdb
 FROM games g
 LEFT JOIN game_links gl_steam ON gl_steam.game_id = g.id AND gl_steam.source = 'steam'
 LEFT JOIN game_links gl_gog   ON gl_gog.game_id   = g.id AND gl_gog.source   = 'gog'
@@ -99,7 +76,6 @@ LEFT JOIN game_links gl_gfq   ON gl_gfq.game_id   = g.id AND gl_gfq.source   = '
 LEFT JOIN game_links gl_hltb  ON gl_hltb.game_id  = g.id AND gl_hltb.source  = 'hltb'
 LEFT JOIN game_links gl_meta  ON gl_meta.game_id  = g.id AND gl_meta.source  = 'metacritic'
 LEFT JOIN game_links gl_igdb  ON gl_igdb.game_id  = g.id AND gl_igdb.source  = 'igdb'
-LEFT JOIN source_records sr   ON sr.game_id = g.id AND sr.source = 'legacy_steamdb' AND CAST(sr.external_id AS UNSIGNED) = g.id
 WHERE g.non_game IS NULL AND g.purchasable = 1 AND (g.discount_usd <> 100 OR g.discount_usd IS NULL) AND g.id > ?
 ORDER BY g.id
 LIMIT ?
@@ -116,63 +92,39 @@ function num(value) {
   return Number.isFinite(n) ? n : null;
 }
 
-/** Pipe-wrapped list column ('|a|b|') -> legacy comma string ('a,b'), or null. */
+/** Pipe-wrapped list column ('|a|b|') -> comma string ('a,b'), or null. */
 function pipeToComma(text) {
   const items = fromPipeList(text);
   return items.length ? items.join(',') : null;
 }
 
 /**
- * One row of the shape `EXPORT_QUERY` returns -> the exact object shape
- * legacy/ajax/misc/dump.php put in steamdb.json / steamdb.min.json (same
- * keys, same order, same renames as its SELECT). Pure, no I/O. Unchanged
- * since the legacy dump — see mapRowV2() for the schema-v2 fields appended
- * after this shape in the actual export output.
+ * One row of the shape `EXPORT_QUERY` returns -> the exported JSON object.
+ * Pure, no I/O. Key order (identity, store data, per-source blocks, derived,
+ * updated_at last) is exactly the file order written to steamdb.json —
+ * documented in full, table form, in the generated README (see
+ * src/pipeline/export-readme.js's FIELD_DEFS, which mirrors this order).
  *
- * Fields with no equivalent in the rewrite are always null here (documented
- * per field, rather than guessed at — dump.php's consumers only ever saw a
- * live scraper's values for these; a stable null beats a fabricated one):
- *   - store_promo_url: legacy igdb.php wrote this (a YouTube trailer url);
- *     the rewrite has no column for it.
- *   - gfq_difficulty_comment / gfq_rating_comment / gfq_length_comment: were
- *     already always NULL in production (dead columns, never written by
- *     any legacy parser).
- *   - gfq_length: GameFAQs' own completion-time estimate; the rewrite only
- *     persists HLTB's main/complete time (time_main/time_complete).
- *   - stsp_mdntime: SteamSpy median playtime; not persisted in the rewrite
- *     as such (see mapRowV2's average_playtime_hours for its replacement).
- *   - igdb_single / igdb_complete / igdb_popularity: were already always
- *     NULL in production too (legacy igdb.php never requested them, see
- *     .claude/docs/parsers.md) — not a regression.
- *   - published_meta / published_stsp / published_hltb / published_igdb:
- *     the rewrite keeps only the resolver's final release_date and the
- *     store's own store_release_date on `games`, not a per-source
- *     candidate — so these are the frozen legacy values (LEFT JOIN
- *     source_records source='legacy_steamdb'), present for every game
- *     migrated from steamdb, null for a game that only ever existed in the
- *     rewrite (a real per-source re-derivation would need one extra query
- *     per independent source per row; not "cheap" at export time).
- *   - meta_score: legacy `meta_score` specifically means Metacritic; the
- *     rewrite's score_critics can also come from OpenCritic
- *     (score_critics_source), so this is only ever the rewrite's
- *     score_critics when that source is 'metacritic', null otherwise.
- *     meta_uscore (score_users_metacritic) is unambiguously Metacritic-only
- *     and frozen forever, so it is always passed through as-is.
+ * `meta_score`/`metacritic_reviews` are only ever the rewrite's
+ * score_critics(_count) when score_critics_source is 'metacritic' (that
+ * column can also come from OpenCritic) — null otherwise. `meta_uscore` is
+ * unambiguously Metacritic-only, so it always passes through as-is.
  */
 export function mapRow(row) {
+  const isMetacritic = row.score_critics_source === 'metacritic';
   return {
+    // --- identity ---
+    id: num(row.id),
+    kind: row.kind ?? null,
     sid: num(row.steam_appid),
-    store_url: row.link_steam ?? null,
-    store_promo_url: null,
-    store_uscore: row.score_steam ?? null,
-    published_store: row.store_release_date ?? null,
-    published_meta: row.legacy_published_meta ?? null,
-    published_stsp: row.legacy_published_stsp ?? null,
-    published_hltb: row.legacy_published_hltb ?? null,
-    published_igdb: row.legacy_published_igdb ?? null,
-    image: row.image ?? null,
+    gog_id: num(row.gog_id),
     name: row.name ?? null,
+    image: row.image ?? null,
     description: row.description_en ?? null,
+    store_url: row.link_steam ?? null,
+    gog_url: row.link_gog ?? null,
+
+    // --- store data ---
     full_price: row.price_usd ?? null,
     current_price: row.price_final_usd ?? null,
     discount: row.discount_usd ?? null,
@@ -185,113 +137,53 @@ export function mapRow(row) {
     genres: pipeToComma(row.genres),
     tags: pipeToComma(row.tags),
     achievements: row.achievements ?? null,
-    gfq_url: row.link_gamefaqs ?? null,
-    gfq_difficulty: row.difficulty ?? null,
-    gfq_difficulty_comment: null,
-    gfq_rating: num(row.score_gamefaqs),
-    gfq_rating_comment: null,
-    gfq_length: null,
-    gfq_length_comment: null,
-    stsp_owners: row.owners_estimate ?? null,
-    stsp_mdntime: null,
-    hltb_url: row.link_hltb ?? null,
-    hltb_single: num(row.time_main),
-    hltb_complete: num(row.time_complete),
-    meta_url: row.link_metacritic ?? null,
-    meta_score: row.score_critics_source === 'metacritic' ? (row.score_critics ?? null) : null,
-    meta_uscore: row.score_users_metacritic ?? null,
-    grnk_score: row.score_gamerankings ?? null,
-    igdb_url: row.link_igdb ?? null,
-    igdb_single: null,
-    igdb_complete: null,
-    igdb_score: row.score_igdb ?? null,
-    igdb_uscore: row.score_igdb_users ?? null,
-    igdb_popularity: null,
-  };
-}
+    release_date: row.release_date ?? null,
+    release_precision: row.release_precision ?? null,
+    early_access_date: row.early_access_date ?? null,
+    published_store: row.store_release_date ?? null,
 
-/**
- * Schema v2: mapRow()'s legacy shape, unchanged, with the rewrite's own
- * fields APPENDED after it (never interleaved — downstream consumers that
- * parse positionally, however unlikely, still see every legacy key first).
- * This is what runExport() actually writes to steamdb.json/gogdb.json.
- * Documented in full, table form, in the generated README (see
- * src/pipeline/export-readme.js's SCHEMA_FIELDS).
- *
- *   - steam_reviews_percent/count/label, steam_recent_percent/count/label:
- *     games.score_steam(_votes)/score_steam_recent(_votes)
- *     (migrations/002_time_average.sql) — `label` via
- *     src/lib/steam-review-label.js's steamReviewLabel(), which is already
- *     null under 10 votes (both "all" and "recent"), matching
- *     src/lib/game-card.js's card. Unlike the card, the raw recent
- *     percent/count are still exported even under 10 votes (only the
- *     *label* is suppressed) — a data consumer, unlike the card UI, may
- *     still want the raw numbers.
- *   - average_playtime_hours/source: games.time_average/time_average_source
- *     (migrations/002_time_average.sql, priority order fixed by 003) —
- *     replaces the dropped legacy stsp_mdntime with a real (better-sourced)
- *     value.
- *   - metacritic_reviews: games.score_critics_count
- *     (migrations/001_init.sql), gated the same way legacy meta_score is
- *     (null unless score_critics_source='metacritic') — the one Metacritic
- *     number dump.php never had. metacritic_score itself is NOT repeated
- *     here: legacy meta_score already carries games.score_critics under
- *     the same 'metacritic'-source gate, so a second copy would be a pure
- *     duplicate.
- *   - gamerankings_score: games.score_gamerankings, a readable alias of the
- *     legacy grnk_score key above (same value) — kept for consumers that
- *     don't want to learn the legacy abbreviations to read schema v2 keys.
- *   - gg_score, ggp: games.gg_score/ggp (migrations/001_init.sql) — the
- *     site's own composite score/priority, never published before.
- *   - release_date, release_precision: games.release_date/release_precision
- *     (migrations/001_init.sql) — the resolver's cross-source consensus
- *     date, distinct from published_store above (which is just the store's
- *     own listing date, sometimes a re-listing — see legacy-map.js's
- *     referenceYear doc for why the two differ).
- *   - kind: games.kind ('steam' or 'gog_exclusive') — which catalog this
- *     row belongs to; always 'steam' in steamdb.json, always 'gog_exclusive'
- *     in gogdb.json (see runFullExport), included on both for a consumer
- *     that concatenates the two files.
- *   - gog_id, gog_url: games.gog_id (own column — set on a Steam row too
- *     when the resolver cross-matched it to a GOG listing, e.g. via
- *     wikidata) and game_links (source='gog') respectively.
- *   - early_access_date: games.early_access_date (migrations/001_init.sql).
- *   - price_rub/price_final_rub/discount_rub, price_cis_usd/
- *     price_final_cis_usd/discount_cis_usd: games.* (migrations/
- *     001_init.sql) — the legacy dump only ever published the USD price
- *     (full_price/current_price/discount above); RUB and the CIS "backup
- *     region" price were never exported.
- *   - updated_at: games.updated_at (migrations/001_init.sql) — lets a
- *     consumer diff against a previous dump without re-downloading it.
- */
-export function mapRowV2(row) {
-  const isMetacritic = row.score_critics_source === 'metacritic';
-  return {
-    ...mapRow(row),
+    // --- steam reviews ---
+    store_uscore: row.score_steam ?? null,
     steam_reviews_percent: num(row.score_steam),
     steam_reviews_count: num(row.score_steam_votes),
     steam_reviews_label: steamReviewLabel(row.score_steam, row.score_steam_votes),
     steam_recent_percent: num(row.score_steam_recent),
     steam_recent_count: num(row.score_steam_recent_votes),
     steam_recent_label: steamReviewLabel(row.score_steam_recent, row.score_steam_recent_votes),
-    average_playtime_hours: num(row.time_average),
-    average_playtime_source: row.time_average_source ?? null,
+
+    // --- steamspy ---
+    stsp_owners: row.owners_estimate ?? null,
+
+    // --- gamefaqs ---
+    gfq_url: row.link_gamefaqs ?? null,
+    gfq_difficulty: row.difficulty ?? null,
+    gfq_rating: num(row.score_gamefaqs),
+
+    // --- hltb ---
+    hltb_url: row.link_hltb ?? null,
+    hltb_single: num(row.time_main),
+    hltb_complete: num(row.time_complete),
+
+    // --- metacritic ---
+    meta_url: row.link_metacritic ?? null,
+    meta_score: isMetacritic ? (row.score_critics ?? null) : null,
+    meta_uscore: row.score_users_metacritic ?? null,
     metacritic_reviews: isMetacritic ? num(row.score_critics_count) : null,
+
+    // --- igdb ---
+    igdb_url: row.link_igdb ?? null,
+    igdb_score: row.score_igdb ?? null,
+    igdb_uscore: row.score_igdb_users ?? null,
+
+    // --- gamerankings ---
     gamerankings_score: row.score_gamerankings ?? null,
+
+    // --- derived ---
     gg_score: row.gg_score ?? null,
     ggp: row.ggp ?? null,
-    release_date: row.release_date ?? null,
-    release_precision: row.release_precision ?? null,
-    kind: row.kind ?? null,
-    gog_id: num(row.gog_id),
-    gog_url: row.link_gog ?? null,
-    early_access_date: row.early_access_date ?? null,
-    price_rub: row.price_rub ?? null,
-    price_final_rub: row.price_final_rub ?? null,
-    discount_rub: row.discount_rub ?? null,
-    price_cis_usd: row.price_cis_usd ?? null,
-    price_final_cis_usd: row.price_final_cis_usd ?? null,
-    discount_cis_usd: row.discount_cis_usd ?? null,
+    average_playtime_hours: num(row.time_average),
+    average_playtime_source: row.time_average_source ?? null,
+
     updated_at: row.updated_at ?? null,
   };
 }
@@ -359,14 +251,13 @@ function unlinkQuiet(file) {
  * `ctx = { db, log }` — `db.query(sql, params)` -> rows; `log` optional.
  * `opts.outDir` is required. `opts.baseName` (default 'steamdb') sets the
  * file names to write under. `opts.chunkSize` overrides CHUNK_SIZE (tests
- * use a small one). `opts.mapRow` overrides the row mapper (default
- * mapRowV2 — the schema-v2 shape actually published; tests exercising the
- * legacy-only shape pass mapRow explicitly).
+ * use a small one). `opts.mapRow` overrides the row mapper (default the
+ * exported mapRow above; a caller can pass its own for a custom shape).
  * Returns `{ count, baseName, prettyPath, minPath, gzPath }`.
  */
 export async function runExport(ctx, opts = {}) {
   const { db, log } = ctx;
-  const { outDir, chunkSize, baseName = 'steamdb', mapRow: mapFn = mapRowV2 } = opts;
+  const { outDir, chunkSize, baseName = 'steamdb', mapRow: mapFn = mapRow } = opts;
   if (!outDir) throw new Error('runExport: opts.outDir is required');
 
   fs.mkdirSync(outDir, { recursive: true });
