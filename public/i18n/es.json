@@ -179,5 +179,19 @@
 	"Very Negative": "Muy negativas",
 	"Overwhelmingly Negative": "Extremadamente negativas",
 	"Site code": "Código del sitio",
-	"Database": "Base de datos"
+	"Database": "Base de datos",
+	"seo.title": "Game Gauntlets — Selector aleatorio de juegos para Steam y GOG",
+	"seo.description": "Gira la ruleta para elegir un juego aleatorio de Steam o GOG. Filtra por duración, puntuación y precio con datos de SteamSpy, HLTB, Metacritic y GameFAQs.",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "Un randomizador único en su tipo y una base de datos de todos los juegos que han existido en Steam (+ exclusivos de GOG), con información adicional sobre la dificultad, las valoraciones y la duración obtenida de GameFAQ, SteamSpy, HLTB, Metacritic e IGDB.",
+	"intro.paragraph2": "Usa la ruleta de esta página para descubrir a qué juego deberías jugar a continuación, configura tus preferencias en la página de ajustes o prueba uno de nuestros retos.",
+	"intro.paragraph3": "El objetivo de un reto es experimentar lo “diversa” que puede llegar a ser la industria de los videojuegos.",
+	"intro.examplesHeading": "Ejemplos de retos:",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b>: Completa juegos publicados en los siguientes periodos: <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b>: Completa juegos dentro de los siguientes rangos de precio: <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b>: Completa 10 juegos aleatorios entre un 15-25% más rápido que el “tiempo para completar” indicado;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b>: Completa 10 juegos indie aleatorios y apoya a desarrolladores independientes;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b>: Cualquier SGG con un filtro de juego cooperativo junto a un amigo interesado;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b>: Cualquier GG limitado a un único género específico (solo RPG, FPS, etc.);",
+	"Search Your Favorite Games...": "Busca tus juegos favoritos..."
 }

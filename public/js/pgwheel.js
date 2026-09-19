@@ -573,15 +573,14 @@ function renderProfile() {
 }
 
 // Shows the game-char block sized for the current language (legacy: PHP `if ($_SESSION['language']
-// == "ru")` picked one of two static blocks server-side — see public/pages/wheel.html) and the
-// matching intro paragraph in the description panel.
+// == "ru")` picked one of two static blocks server-side — see public/pages/wheel.html). The intro
+// paragraph itself is now a single data-i18n-html block (public/pages/wheel.html) translated by
+// GG.i18n.apply() like everything else, so it needs no per-language switching here anymore.
 function applyLanguageLayout() {
 	var isRu = __language === "ru";
 	$(".game-char").css("height", isRu ? "273px" : "290px");
 	// The static sample card in the fragment is the legacy RU one; legacy's non-RU block carried English values.
 	if (!isRu) $("#aboutg [data-en]").each(function () { $(this).text($(this).attr("data-en")); });
-	$(isRu ? "#intro-en" : "#intro-ru").remove();
-	$(isRu ? "#intro-ru" : "#intro-en").css("display", "");
 }
 
 // Called synchronously on purpose: jQuery 3 runs $(document).ready callbacks asynchronously even when the

@@ -179,5 +179,19 @@
 	"Very Negative": "Sehr negativ",
 	"Overwhelmingly Negative": "Äußerst negativ",
 	"Site code": "Quellcode",
-	"Database": "Datenbank"
+	"Database": "Datenbank",
+	"seo.title": "Game Gauntlets — Zufälliger Spielauswähler für Steam & GOG",
+	"seo.description": "Dreh das Rad für ein zufälliges Steam- oder GOG-Spiel. Filtere nach Spieldauer, Wertung und Preis mit Daten von SteamSpy, HLTB, Metacritic und GameFAQs.",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "Ein einzigartiger Zufallsgenerator und eine Datenbank aller Spiele, die es auf Steam (+ GOG-exklusive Titel) gibt, mit zusätzlichen Informationen zu Schwierigkeit, Bewertungen und Spieldauer von GameFAQ, SteamSpy, HLTB, Metacritic und IGDB.",
+	"intro.paragraph2": "Nutze das Rad auf dieser Seite, um herauszufinden, welches Spiel du als Nächstes spielen solltest, lege deine Vorlieben auf der Einstellungsseite fest oder probiere eine unserer Herausforderungen aus.",
+	"intro.paragraph3": "Der Sinn einer Herausforderung ist es zu erleben, wie “vielfältig” die Videospielbranche sein kann.",
+	"intro.examplesHeading": "Beispiele für Herausforderungen:",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b>: Spiele aus den angegebenen Zeiträumen durchspielen: <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b>: Spiele aus den angegebenen Preisspannen durchspielen: <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b>: Spiele 10 zufällige Spiele 15-25% schneller durch, als bei “Zeit zum Durchspielen” angegeben;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b>: Spiele 10 zufällige Indie-Spiele durch und unterstütze unabhängige Entwickler;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b>: Ein beliebiges SGG mit Filter auf kooperatives Gameplay mit einem interessierten Freund;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b>: Ein beliebiges GG in nur einem bestimmten Genre (nur RPG, FPS usw.);",
+	"Search Your Favorite Games...": "Suche deine Lieblingsspiele..."
 }

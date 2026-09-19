@@ -4,6 +4,12 @@
 <head>
     <meta charset="utf-8">
 
+    <!-- Makes every relative asset URL (css/…, js/…, pages/…, i18n/…) resolve against the site root
+         regardless of the current path, so src/api/pages.js's localized shells (/<lang>/) load the
+         same assets as "/" without rewriting a single URL in the markup below. See public/js/pgindex.js
+         for the one place this required a matching fix (the header nav's hash-only navigation). -->
+    <base href="/">
+
     <!--
              _   _  _____ ______  _____  _____   ___    _____  _____  ___  ___  ___
             | | | ||  ___|| ___ \|  ___||  __ \ / _ \  |_   _||  ___|/ _ \ |  \/  |
@@ -22,7 +28,6 @@
                                     - - -
 
             Game Gauntlets :: Random Game Picker - Copyright Hepega Team
-            You may not redistribute this file.
 
         -->
 
@@ -77,6 +82,22 @@
     <meta property="og:site_name" content="GG" />
     <meta property="og:description" content="Welcome to Game Gauntlets. Filter all Steam and GOG games by playtime, score, reviews using our random game picker and data from Steam Spy, GameFAQs, HLTB and Metacritic.">
     <meta property="og:url" content="https://gamegauntlets.com/" />
+    <!-- BEGIN og:locale (rewritten per request by src/api/pages.js: primary locale first, the other
+         12 supported languages as og:locale:alternate) -->
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ru_RU" />
+    <meta property="og:locale:alternate" content="de_DE" />
+    <meta property="og:locale:alternate" content="fr_FR" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:locale:alternate" content="pt_PT" />
+    <meta property="og:locale:alternate" content="it_IT" />
+    <meta property="og:locale:alternate" content="pl_PL" />
+    <meta property="og:locale:alternate" content="tr_TR" />
+    <meta property="og:locale:alternate" content="uk_UA" />
+    <meta property="og:locale:alternate" content="ja_JP" />
+    <meta property="og:locale:alternate" content="ko_KR" />
+    <meta property="og:locale:alternate" content="zh_CN" />
+    <!-- END og:locale -->
     <meta property="og:image" content="https://gamegauntlets.com/img/preview.jpg" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta itemprop="image" content="https://gamegauntlets.com/img/preview.jpg" />
@@ -98,12 +119,24 @@
     <link rel="manifest" href="/manifest.json?v=dev">
 
     <link rel="image_src" href="https://gamegauntlets.com/img/preview.jpg" />
+    <!-- canonical href is rewritten per request by src/api/pages.js ("/" for the x-default shell,
+         "/<lang>/" for a localized one); the hreflang set below is the full reciprocal set and is
+         identical on every shell, so pages.js never needs to touch it. -->
     <link rel="canonical" href="https://gamegauntlets.com/" />
     <link rel="alternate" href="https://gamegauntlets.com/" hreflang="x-default" />
-    <link rel="alternate" href="https://gamegauntlets.com/?en" hreflang="en-us" />
-    <link rel="alternate" href="https://gamegauntlets.com/?ru" hreflang="ru-ru" />
-    <link rel="alternate" href="https://gamegauntlets.com/?de" hreflang="de-de" />
-    <link rel="alternate" href="https://gamegauntlets.com/?fr" hreflang="fr-fr" />
+    <link rel="alternate" href="https://gamegauntlets.com/en/" hreflang="en" />
+    <link rel="alternate" href="https://gamegauntlets.com/ru/" hreflang="ru" />
+    <link rel="alternate" href="https://gamegauntlets.com/de/" hreflang="de" />
+    <link rel="alternate" href="https://gamegauntlets.com/fr/" hreflang="fr" />
+    <link rel="alternate" href="https://gamegauntlets.com/es/" hreflang="es" />
+    <link rel="alternate" href="https://gamegauntlets.com/pt/" hreflang="pt" />
+    <link rel="alternate" href="https://gamegauntlets.com/it/" hreflang="it" />
+    <link rel="alternate" href="https://gamegauntlets.com/pl/" hreflang="pl" />
+    <link rel="alternate" href="https://gamegauntlets.com/tr/" hreflang="tr" />
+    <link rel="alternate" href="https://gamegauntlets.com/uk/" hreflang="uk" />
+    <link rel="alternate" href="https://gamegauntlets.com/ja/" hreflang="ja" />
+    <link rel="alternate" href="https://gamegauntlets.com/ko/" hreflang="ko" />
+    <link rel="alternate" href="https://gamegauntlets.com/zh/" hreflang="zh-Hans" />
 
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -142,6 +175,7 @@
             "@type": "VideoObject",
             "name": "Game Gauntlets",
             "description": "Welcome to Game Gauntlets. Filter all Steam and GOG games by playtime, score, reviews using our random game picker and data from Steam Spy, GameFAQs, HLTB and Metacritic.",
+            "inLanguage": "en",
             "thumbnailUrl": "https://gamegauntlets.com/img/preview.jpg",
             "uploadDate": "2018-06-28T08:00:00+08:00",
             "duration": "PT1M05S",
@@ -164,6 +198,15 @@
 
 <body>
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MMRRFPC" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- Localized title/description for crawlers and visitors without JavaScript (the app itself is
+         entirely client-rendered); title/description text is rewritten per request by
+         src/api/pages.js from the same seo.title/seo.description i18n keys as the <head> tags above. -->
+    <noscript>
+        <div id="seo-noscript">
+            <h1>Game Gauntlets :: Random Game Picker</h1>
+            <p>Welcome to Game Gauntlets. Filter all Steam and GOG games by playtime, score, reviews using our random game picker and data from Steam Spy, GameFAQs, HLTB and Metacritic.</p>
+        </div>
+    </noscript>
     <div id="header" class="overlay">
         <div>
             <nav class="header-nav">

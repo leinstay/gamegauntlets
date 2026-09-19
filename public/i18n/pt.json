@@ -179,5 +179,19 @@
 	"Very Negative": "Muito negativas",
 	"Overwhelmingly Negative": "Extremamente negativas",
 	"Site code": "Código do site",
-	"Database": "Base de dados"
+	"Database": "Base de dados",
+	"seo.title": "Game Gauntlets — Seletor aleatório de jogos para Steam e GOG",
+	"seo.description": "Gira a roda para escolheres um jogo aleatório da Steam ou GOG. Filtra por duração, pontuação e preço com dados da SteamSpy, HLTB, Metacritic e GameFAQs.",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "Um randomizador único no seu género e uma base de dados de todos os jogos que já existiram na Steam (+ exclusivos da GOG), com informação adicional sobre a dificuldade, as classificações e a duração obtida a partir da GameFAQ, SteamSpy, HLTB, Metacritic e IGDB.",
+	"intro.paragraph2": "Usa a roda desta página para descobrires a que jogo deves jogar a seguir, define as tuas preferências na página de definições ou experimenta um dos nossos desafios.",
+	"intro.paragraph3": "O objetivo de um desafio é experimentares o quão “diversa” a indústria dos videojogos pode ser.",
+	"intro.examplesHeading": "Exemplos de desafios:",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b>: Termina jogos lançados nos seguintes períodos: <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b>: Termina jogos dentro das seguintes faixas de preço: <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b>: Termina 10 jogos aleatórios 15-25% mais rápido do que o “tempo para terminar” indicado;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b>: Termina 10 jogos indie aleatórios e apoia programadores independentes;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b>: Qualquer SGG com um filtro de jogo cooperativo com um amigo interessado;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b>: Qualquer GG limitado a um único género específico (apenas RPG, FPS, etc.);",
+	"Search Your Favorite Games...": "Procura os teus jogos favoritos..."
 }

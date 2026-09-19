@@ -7,6 +7,10 @@
 //     BEFORE the responsive calculations (legacy had nothing to apply here: strings were already
 //     rendered server-side).
 //   - Service worker registers "./sw.js" (legacy: "./worker.js").
+//   - The header nav click handler sets `location.hash` instead of `location.href` (see below): with
+//     index.html's `<base href="/">` (added for src/api/pages.js's /<lang>/ shell routes), assigning
+//     a relative `location.href = "#wheel"` would resolve against that base and navigate to "/#wheel",
+//     dropping the "/<lang>/" prefix; `location.hash` only ever touches the fragment, never the path.
 var mainRequest, musIndex = Math.floor(5 * Math.random()) + 0,
 	timeFVars = {},
 	currentPage = "wheel",
@@ -224,7 +228,7 @@ $('body').on('click', '#frostmouse', function () {
 window.location.hash.substr(1) && "." != window.location.hash.substr(1)[1] ? ($('.' + window.location.hash.substr(1) + "-link").addClass("active"), loadAjaxPage(window.location.hash.substr(1))) : ($(".wheel-link").addClass("active"), loadAjaxPage("wheel")), $(".header-nav a").on("click", function (e) {
 	var a = $(this).attr("href");
 	if (a.charAt(0) !== "#") return; // e.g. the Admin nav item links to /admin.html, not a hash route
-	e.preventDefault(), location.href = a, (window.navigator.userAgent.indexOf("Trident") > 0 || window.navigator.userAgent.indexOf("MSIE ") > 0) && loadAjaxPage(location.hash)
+	e.preventDefault(), location.hash = a.slice(1), (window.navigator.userAgent.indexOf("Trident") > 0 || window.navigator.userAgent.indexOf("MSIE ") > 0) && loadAjaxPage(location.hash)
 }), $(window).bind("hashchange", function (e) {
 	loadAjaxPage("#" + window.location.href.split("#")[1])
 }), "serviceWorker" in navigator && navigator.serviceWorker.register("./sw.js").then(() => navigator.serviceWorker.ready.then(e => {

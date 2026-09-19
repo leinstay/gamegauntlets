@@ -179,5 +179,19 @@
 	"Very Negative": "Çok Olumsuz",
 	"Overwhelmingly Negative": "Son Derece Olumsuz",
 	"Site code": "Site kodu",
-	"Database": "Veritabanı"
+	"Database": "Veritabanı",
+	"seo.title": "Game Gauntlets — Steam ve GOG için Rastgele Oyun Seçici",
+	"seo.description": "Steam veya GOG'dan rastgele bir oyun seçmek için çarkı çevirin. SteamSpy, HLTB, Metacritic ve GameFAQs verileriyle süre, puan ve fiyata göre filtreleyin.",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "Steam'de (+ GOG'a özel oyunlar dahil) var olmuş tüm oyunların benzersiz bir rastgele seçicisi ve veritabanı; GameFAQ, SteamSpy, HLTB, Metacritic ve IGDB'den alınan zorluk, puanlama ve oyun süresi bilgileriyle.",
+	"intro.paragraph2": "Bir sonraki oynayacağınız oyunu öğrenmek için bu sayfadaki çarkı kullanın, tercihlerinizi ayarlar sayfasında belirleyin veya meydan okumalarımızdan birini deneyin.",
+	"intro.paragraph3": "Bir meydan okumanın amacı, video oyun endüstrisinin ne kadar “çeşitli” olabileceğini deneyimlemektir.",
+	"intro.examplesHeading": "Meydan okuma örnekleri:",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b>: Belirtilen dönemlerdeki oyunları tamamlayın: <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b>: Belirtilen fiyat aralıklarındaki oyunları tamamlayın: <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b>: 10 rastgele oyunu belirtilen “bitirme süresinden” %15-25 daha hızlı tamamlayın;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b>: 10 rastgele bağımsız oyunu tamamlayın ve bağımsız geliştiricileri destekleyin;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b>: İlgilenen bir arkadaşınızla birlikte oynanacak, kooperatif filtresine sahip herhangi bir SGG;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b>: Yalnızca belirli bir türde (sadece RPG, FPS vb.) herhangi bir GG;",
+	"Search Your Favorite Games...": "Favori oyunlarınızı arayın..."
 }

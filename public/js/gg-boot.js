@@ -6,13 +6,20 @@
 (function (window, document) {
   "use strict";
 
-  // Mirrors src/lib/languages.js's SUPPORTED (config.json site.languages) — kept here only for the
-  // bare "?xx" URL query shortcut below, which has to run before the first GET /api/session response
-  // (the one place that hands the frontend the authoritative list, exposed as `session.languages` and
-  // re-used by pgsettings.js's language dropdown so that list itself isn't duplicated a second time).
+  // Mirrors src/lib/languages.js's SUPPORTED (config.json site.languages) — kept here only for
+  // detectLangFromQuery() below (the "/<lang>/" path and the legacy bare "?xx" query shortcut), which
+  // has to run before the first GET /api/session response (the one place that hands the frontend the
+  // authoritative list, exposed as `session.languages` and re-used by pgsettings.js's language
+  // dropdown so that list itself isn't duplicated a second time).
   var SUPPORTED_LANGS = ["en", "ru", "de", "fr", "es", "pt", "it", "pl", "tr", "uk", "ja", "ko", "zh"];
 
   function detectLangFromQuery() {
+    // /<lang>/ (server-rendered by src/api/pages.js, e.g. "/ja/") wins over anything in the query
+    // string -- it's the URL the page was actually served at, so the session language must match it.
+    // location.pathname never carries the query/hash, so matching "/xx" or "/xx/..." is enough.
+    var pathMatch = /^\/([a-z]{2})(?:\/|$)/.exec(window.location.pathname);
+    if (pathMatch && SUPPORTED_LANGS.indexOf(pathMatch[1]) !== -1) return pathMatch[1];
+
     // Legacy (`ajax/scripts/init.php` -> getlang()): "?en"/"?ru"/"?de"/"?fr"/... in the URL wins.
     var search = window.location.search.replace(/^\?/, "");
     var candidate = search.split("&")[0];

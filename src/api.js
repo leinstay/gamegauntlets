@@ -13,6 +13,7 @@ import { log } from './log.js';
 import { SESSION_COOKIE, verifySession, timingSafeEqualStr } from './lib/session.js';
 import { queueFor as realQueueFor, enqueue as realEnqueue, enqueueResolve as realEnqueueResolve } from './queue.js';
 
+import pagesRoutes from './api/pages.js';
 import sessionRoutes from './api/session.js';
 import wheelRoutes from './api/wheel.js';
 import gamesRoutes from './api/games.js';
@@ -143,6 +144,10 @@ export function buildApp({
     reply.code(500).send({ error: 'internal_error' });
   });
 
+  // No prefix: these are server-rendered SEO shells (GET /, GET /:lang/, GET /sitemap.xml), not API
+  // endpoints -- see src/api/pages.js's file header for why they're exempt from the CSRF/same-origin
+  // hook above (GET-only, stateless).
+  app.register(pagesRoutes);
   app.register(sessionRoutes, { prefix: '/api' });
   app.register(wheelRoutes, { prefix: '/api' });
   app.register(gamesRoutes, { prefix: '/api' });

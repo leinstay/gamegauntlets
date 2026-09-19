@@ -179,5 +179,19 @@
 	"Very Negative": "매우 부정적",
 	"Overwhelmingly Negative": "압도적으로 부정적",
 	"Site code": "사이트 코드",
-	"Database": "데이터베이스"
+	"Database": "데이터베이스",
+	"seo.title": "Game Gauntlets — Steam·GOG 무작위 게임 선택기",
+	"seo.description": "휠을 돌려 Steam이나 GOG의 무작위 게임을 골라보세요. SteamSpy, HLTB, Metacritic, GameFAQs 데이터로 플레이 시간, 평점, 가격을 필터링할 수 있습니다.",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "Steam(+ GOG 독점작 포함)에 존재했던 모든 게임을 아우르는 독보적인 랜덤 선택기이자 데이터베이스입니다. GameFAQ, SteamSpy, HLTB, Metacritic, IGDB에서 가져온 난이도, 평점, 플레이 시간 정보도 함께 제공합니다.",
+	"intro.paragraph2": "이 페이지의 휠을 사용해 다음에 플레이할 게임을 찾아보거나, 설정 페이지에서 선호도를 지정하거나, 저희의 도전 과제(건틀릿) 중 하나를 시도해 보세요.",
+	"intro.paragraph3": "건틀릿의 목적은 게임 업계가 얼마나 “다양”할 수 있는지 체험하는 것입니다.",
+	"intro.examplesHeading": "건틀릿 예시:",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b>: 지정된 기간의 게임을 클리어: <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b>: 지정된 가격대의 게임을 클리어: <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b>: 무작위 게임 10개를 “클리어 시간”보다 15-25% 더 빠르게 클리어;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b>: 무작위 인디 게임 10개를 클리어하고 인디 개발자를 응원;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b>: 관심 있는 친구와 함께 협동 플레이 필터를 적용한 아무 SGG;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b>: 하나의 특정 장르로만 제한한 아무 GG(RPG, FPS 등만);",
+	"Search Your Favorite Games...": "좋아하는 게임 검색..."
 }

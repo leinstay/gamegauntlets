@@ -179,5 +179,19 @@
 	"Very Negative": "非常に不評",
 	"Overwhelmingly Negative": "圧倒的に不評",
 	"Site code": "サイトコード",
-	"Database": "データベース"
+	"Database": "データベース",
+	"seo.title": "Game Gauntlets — SteamとGOGのランダムゲーム選択",
+	"seo.description": "ホイールを回してSteamやGOGのランダムなゲームを選びましょう。SteamSpy、HLTB、Metacritic、GameFAQsのデータを使い、プレイ時間・評価・価格でフィルターできます。",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "Steamに存在した全てのゲーム(+GOG限定タイトル)を網羅した、唯一無二のランダマイザー兼データベースです。GameFAQ、SteamSpy、HLTB、Metacritic、IGDBから取得した難易度、評価、プレイ時間の追加情報も含まれます。",
+	"intro.paragraph2": "このページのホイールを使って次にプレイするゲームを見つけたり、設定ページで好みを指定したり、私たちのガントレット(挑戦企画)のひとつに挑戦してみましょう。",
+	"intro.paragraph3": "ガントレットの目的は、ゲーム業界がいかに「多様」であるかを体験することです。",
+	"intro.examplesHeading": "ガントレットの例:",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b>: 指定された期間のゲームをクリアする: <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b>: 指定された価格帯のゲームをクリアする: <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b>: ランダムな10本のゲームを「クリア時間」より15-25%速くクリアする;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b>: ランダムなインディーゲームを10本クリアしてインディー開発者を応援する;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b>: 興味を持ってくれた友人と一緒に、協力プレイフィルターを使った任意のSGG;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b>: 特定の1ジャンルのみに絞った任意のGG(RPGやFPSなど);",
+	"Search Your Favorite Games...": "お気に入りのゲームを検索..."
 }

@@ -179,5 +179,19 @@
 	"Very Negative": "Дуже негативні",
 	"Overwhelmingly Negative": "Надзвичайно негативні",
 	"Site code": "Код сайту",
-	"Database": "База даних"
+	"Database": "База даних",
+	"seo.title": "Game Gauntlets — випадковий вибір ігор для Steam і GOG",
+	"seo.description": "Крутіть колесо, щоб обрати випадкову гру Steam або GOG. Фільтруйте за тривалістю, оцінкою і ціною, використовуючи дані SteamSpy, HLTB, Metacritic і GameFAQs.",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "Унікальний рандомайзер і база даних усіх ігор, що коли-небудь існували в Steam (+ ексклюзиви GOG), з додатковою інформацією про складність, рейтинги та тривалість проходження, взятою з GameFAQ, SteamSpy, HLTB, Metacritic, IGDB.",
+	"intro.paragraph2": "Використовуйте колесо на цій сторінці, щоб дізнатися, в яку гру вам варто зіграти наступною, вкажіть свої вподобання на сторінці налаштувань або спробуйте один з наших челенджів.",
+	"intro.paragraph3": "Суть челенджу полягає в тому, щоб відчути, наскільки “різноманітною” може бути ігрова індустрія.",
+	"intro.examplesHeading": "Приклади челенджів:",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b>: Пройти ігри у проміжках: <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b>: Пройти ігри в ціновому діапазоні: <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b>: Пройдіть 10 випадкових ігор на 15-25% швидше, ніж зазначено у графі “час проходження”;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b>: Пройдіть 10 випадкових Indie-ігор і підтримайте незалежних розробників;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b>: Будь-який SGG із фільтром на кооперативне проходження із зацікавленим другом;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b>: Будь-який GG в одному певному жанрі (лише RPG, FPS тощо);",
+	"Search Your Favorite Games...": "Знайдіть свої улюблені ігри..."
 }

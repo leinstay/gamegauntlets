@@ -42,6 +42,12 @@
     // call inside the same element, e.g. <strong>__("Release date"): </strong> or " hour(s)".
     if (key) el.textContent = (el.getAttribute("data-i18n-prefix") || "") + t(key) + (el.getAttribute("data-i18n-suffix") || "");
 
+    // data-i18n-html: like data-i18n, but sets innerHTML instead of textContent. Only meant for a
+    // handful of trusted, static, dictionary-authored strings (the wheel intro block's list items
+    // carry <b>/<i> markup) — never for anything derived from user or game data.
+    var htmlKey = el.getAttribute("data-i18n-html");
+    if (htmlKey) el.innerHTML = t(htmlKey);
+
     var titleKey = el.getAttribute("data-i18n-title");
     if (titleKey) el.setAttribute("title", t(titleKey));
 
@@ -57,13 +63,13 @@
 
   function apply(root) {
     root = root || document;
-    if (root.nodeType === 1 && (root.hasAttribute("data-i18n") || root.hasAttribute("data-i18n-title") ||
-        root.hasAttribute("data-i18n-placeholder") || root.hasAttribute("data-i18n-aria-label") ||
-        root.hasAttribute("data-i18n-data-placeholder"))) {
+    if (root.nodeType === 1 && (root.hasAttribute("data-i18n") || root.hasAttribute("data-i18n-html") ||
+        root.hasAttribute("data-i18n-title") || root.hasAttribute("data-i18n-placeholder") ||
+        root.hasAttribute("data-i18n-aria-label") || root.hasAttribute("data-i18n-data-placeholder"))) {
       applyOne(root);
     }
     var all = root.querySelectorAll(
-      "[data-i18n], [data-i18n-title], [data-i18n-placeholder], [data-i18n-aria-label], [data-i18n-data-placeholder]"
+      "[data-i18n], [data-i18n-html], [data-i18n-title], [data-i18n-placeholder], [data-i18n-aria-label], [data-i18n-data-placeholder]"
     );
     for (var i = 0; i < all.length; i++) applyOne(all[i]);
   }

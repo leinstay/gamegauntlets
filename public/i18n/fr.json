@@ -179,5 +179,19 @@
 	"Very Negative": "Très négatives",
 	"Overwhelmingly Negative": "Extrêmement négatives",
 	"Site code": "Code du site",
-	"Database": "Base de données"
+	"Database": "Base de données",
+	"seo.title": "Game Gauntlets — Sélecteur de jeu aléatoire pour Steam & GOG",
+	"seo.description": "Faites tourner la roue pour choisir un jeu Steam ou GOG au hasard. Filtrez par durée, note et prix grâce aux données SteamSpy, HLTB, Metacritic et GameFAQs.",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "Un randomiseur unique en son genre et une base de données de tous les jeux ayant existé sur Steam (+ exclusivités GOG), avec des informations supplémentaires sur la difficulté, les notes et la durée de vie tirées de GameFAQ, SteamSpy, HLTB, Metacritic et IGDB.",
+	"intro.paragraph2": "Utilisez la roue sur cette page pour découvrir à quel jeu vous devriez jouer ensuite, définissez vos préférences dans les paramètres ou essayez l'un de nos défis.",
+	"intro.paragraph3": "Le but d'un défi est de ressentir à quel point l'industrie du jeu vidéo peut être “diversifiée”.",
+	"intro.examplesHeading": "Exemples de défis :",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b> : Terminez des jeux sortis pendant les périodes indiquées : <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b> : Terminez des jeux dans les tranches de prix indiquées : <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b> : Terminez 10 jeux aléatoires 15 à 25 % plus vite que le “temps pour terminer” indiqué;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b> : Terminez 10 jeux indépendants aléatoires et soutenez des développeurs indépendants;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b> : N'importe quel SGG avec un filtre sur le jeu coopératif, avec un ami intéressé;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b> : N'importe quel GG dans un seul genre spécifique (uniquement RPG, FPS, etc.);",
+	"Search Your Favorite Games...": "Recherchez vos jeux préférés..."
 }

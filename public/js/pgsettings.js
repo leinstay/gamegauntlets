@@ -95,9 +95,10 @@ $('#rangeend button').click(function () {
 
 // Language switch: legacy POSTed an `actionType=changeLang` request to the settings page endpoint
 // then reloaded so the whole page re-rendered server-side in the new language. The new backend has
-// no such endpoint;
-// GET /api/session?lang=xx persists the language on the (cookie-based) session the same way, then
-// a reload lets the page shell re-fetch session + i18n bundle in the new language.
+// no such endpoint; instead, navigating to the localized URL (src/api/pages.js's GET /<lang>/) both
+// re-renders the SEO shell in the new language AND persists it on the session, since gg-boot.js's
+// detectLangFromQuery() reads the language straight out of the path and passes it to GET
+// /api/session?lang=... on the next load -- no separate API call needed here.
 //
 // The static markup (public/pages/settings.html) only ever hardcoded 4 <div class="item"> languages;
 // GG.session.languages (GET /api/session's `languages` field, set by gg-boot.js -- see src/lib/languages.js)
@@ -120,17 +121,8 @@ $('#changeLang').dropdown({
 		// on switching to any other language, before the reload below re-renders the page -- don't wait
 		// for the reload to pick this up from the (still ru-scoped) checkbox state.
 		if (value !== 'ru') sessionStorage.setItem('backupRegion', false);
-		if (window.GG && GG.api && typeof GG.api.get === 'function') {
-			GG.api.get('/api/session?lang=' + value).then(function () {
-				location.reload();
-			}).catch(function (err) {
-				console.error('pgsettings.js: failed to persist language change, reloading anyway', err);
-				location.reload();
-			});
-		} else {
-			console.error('pgsettings.js: GG.api.get is unavailable, cannot persist language change; reloading anyway.');
-			location.reload();
-		}
+		// Keep the current hash route (#wheel/#settings) across the navigation.
+		window.location.href = '/' + value + '/' + window.location.hash;
 	}
 });
 

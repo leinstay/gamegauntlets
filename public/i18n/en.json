@@ -179,5 +179,19 @@
 	"Very Negative": "Very Negative",
 	"Overwhelmingly Negative": "Overwhelmingly Negative",
 	"Site code": "Site code",
-	"Database": "Database"
+	"Database": "Database",
+	"seo.title": "Game Gauntlets — Random Game Picker for Steam & GOG",
+	"seo.description": "Spin the wheel for a random Steam or GOG game. Filter by playtime, score and price using SteamSpy, HLTB, Metacritic and GameFAQs data.",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "A one of a kind randomizer and database of all the games that existed in Steam (+GOG exclusives) with additional information about the difficulty, ratings and game length from GameFAQ, SteamSpy, HLTB, Metacritic, IGDB.",
+	"intro.paragraph2": "Use the wheel on this page to find out which game you are going to play next, set your preferences on the settings page or try one of our gauntlets.",
+	"intro.paragraph3": "The point of gauntlet is to experience how “diverse” the video game industry can be.",
+	"intro.examplesHeading": "Examples of gauntlets:",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b>: Complete games in the specified time periods: <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b>: Complete games in the specified price periods: <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b>: Complete 10 random games 15-25% faster than in “time to beat”;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b>: Complete 10 random Indie games and support independent developers;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b>: Any SGG with a filter for cooperative gameplay with an interested friend;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b>: Any GG in one specific genre (only RPG, FPS, etc.);",
+	"Search Your Favorite Games...": "Search Your Favorite Games..."
 }

@@ -179,5 +179,19 @@
 	"Very Negative": "Molto negative",
 	"Overwhelmingly Negative": "Estremamente negative",
 	"Site code": "Codice del sito",
-	"Database": "Database"
+	"Database": "Database",
+	"seo.title": "Game Gauntlets — Selezione casuale di giochi per Steam e GOG",
+	"seo.description": "Gira la ruota per un gioco casuale su Steam o GOG. Filtra per durata, voto e prezzo con dati da SteamSpy, HLTB, Metacritic e GameFAQs.",
+	"seo.ogTitle": "Game Gauntlets",
+	"intro.paragraph1": "Un randomizzatore unico nel suo genere e un database di tutti i giochi mai esistiti su Steam (+ esclusive GOG), con informazioni aggiuntive su difficoltà, valutazioni e durata tratte da GameFAQ, SteamSpy, HLTB, Metacritic e IGDB.",
+	"intro.paragraph2": "Usa la ruota in questa pagina per scoprire quale gioco giocare la prossima volta, imposta le tue preferenze nella pagina delle impostazioni oppure prova una delle nostre sfide.",
+	"intro.paragraph3": "Lo scopo di una sfida è sperimentare quanto possa essere “varia” l'industria dei videogiochi.",
+	"intro.examplesHeading": "Esempi di sfide:",
+	"intro.list.sgg": "<b style='font-weight: bolder;'>SGG</b>: Completa giochi usciti nei seguenti periodi: <i style='font-style: italic;'>1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;",
+	"intro.list.hpg": "<b style='font-weight: bolder;'>HPG</b>: Completa giochi nelle seguenti fasce di prezzo: <i style='font-style: italic;'>0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;",
+	"intro.list.speedrun": "<b style='font-weight: bolder;'>Speedrun GG</b>: Completa 10 giochi casuali il 15-25% più velocemente rispetto al “tempo per completare” indicato;",
+	"intro.list.indie": "<b style='font-weight: bolder;'>Indie GG</b>: Completa 10 giochi indie casuali e sostieni gli sviluppatori indipendenti;",
+	"intro.list.coop": "<b style='font-weight: bolder;'>Coop GG</b>: Qualsiasi SGG con un filtro per il gioco cooperativo con un amico interessato;",
+	"intro.list.oneTrick": "<b style='font-weight: bolder;'>One-trick GG</b>: Qualsiasi GG in un solo genere specifico (solo RPG, FPS, ecc.);",
+	"Search Your Favorite Games...": "Cerca i tuoi giochi preferiti..."
 }
