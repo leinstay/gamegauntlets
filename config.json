@@ -1,7 +1,7 @@
 {
   "site": {
     "origin": "https://gamegauntlets.com",
-    "languages": ["en", "ru", "de", "fr"],
+    "languages": ["en", "ru", "de", "fr", "es", "pt", "it", "pl", "tr", "uk", "ja", "ko", "zh"],
     "previewOrigins": []
   },
   "admins": [],

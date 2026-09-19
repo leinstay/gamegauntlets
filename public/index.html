@@ -130,6 +130,9 @@
     <!-- layout.css: narrow-viewport (<1024px) layout fixes on top of the legacy grids; loaded last
          so it always wins the cascade. Does not touch the >=1024px desktop look (see file header). -->
     <link rel="stylesheet" href="css/layout.css?v=dev" />
+    <!-- i18n.css: CJK/Unicode font-fallback safety net for the few spots pinned to a single custom
+         display font with no fallback (see that file's header) -- kept after compat.css so it wins. -->
+    <link rel="stylesheet" href="css/i18n.css?v=dev" />
 
     <link rel='stylesheet' href='pio/pio.css?v=dev' />
 

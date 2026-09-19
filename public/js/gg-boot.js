@@ -6,10 +6,14 @@
 (function (window, document) {
   "use strict";
 
-  var SUPPORTED_LANGS = ["en", "ru", "de", "fr"];
+  // Mirrors src/lib/languages.js's SUPPORTED (config.json site.languages) — kept here only for the
+  // bare "?xx" URL query shortcut below, which has to run before the first GET /api/session response
+  // (the one place that hands the frontend the authoritative list, exposed as `session.languages` and
+  // re-used by pgsettings.js's language dropdown so that list itself isn't duplicated a second time).
+  var SUPPORTED_LANGS = ["en", "ru", "de", "fr", "es", "pt", "it", "pl", "tr", "uk", "ja", "ko", "zh"];
 
   function detectLangFromQuery() {
-    // Legacy (`ajax/scripts/init.php` -> getlang()): "?en"/"?ru"/"?de"/"?fr" in the URL wins.
+    // Legacy (`ajax/scripts/init.php` -> getlang()): "?en"/"?ru"/"?de"/"?fr"/... in the URL wins.
     var search = window.location.search.replace(/^\?/, "");
     var candidate = search.split("&")[0];
     return SUPPORTED_LANGS.indexOf(candidate) !== -1 ? candidate : null;

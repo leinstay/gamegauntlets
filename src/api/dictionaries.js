@@ -10,6 +10,8 @@
 // this endpoint. `lang` is accepted and used as part of the cache key so wiring real translations in
 // later is a localized change, but until then this endpoint returns the same `name` for every lang.
 
+import { SUPPORTED } from '../lib/languages.js';
+
 const PIPE_LIST_FIELDS = new Set(['genres', 'tags', 'categories', 'languages', 'voiceovers', 'developers', 'publishers']);
 const VALID_FIELDS = new Set([...PIPE_LIST_FIELDS, 'difficulty', 'presets']);
 
@@ -41,21 +43,30 @@ async function loadPresets(db) {
   return db.query('SELECT id, name FROM presets ORDER BY sort_order ASC, name ASC');
 }
 
-const paramsSchema = {
-  params: {
-    type: 'object',
-    additionalProperties: false,
-    required: ['field'],
-    properties: { field: { type: 'string' } },
-  },
-  querystring: {
-    type: 'object',
-    additionalProperties: false,
-    properties: { lang: { type: 'string', enum: ['en', 'ru', 'de', 'fr'] } },
-  },
-};
+// `lang`'s enum is built per-app from `config.json` site.languages (see dictionariesRoutes() below)
+// instead of being hardcoded, so every configured UI language can be requested.
+function buildParamsSchema(languages) {
+  return {
+    params: {
+      type: 'object',
+      additionalProperties: false,
+      required: ['field'],
+      properties: { field: { type: 'string' } },
+    },
+    querystring: {
+      type: 'object',
+      additionalProperties: false,
+      properties: { lang: { type: 'string', enum: languages } },
+    },
+  };
+}
 
 export default async function dictionariesRoutes(app) {
+  const languages = Array.isArray(app.appConfig?.site?.languages) && app.appConfig.site.languages.length
+    ? app.appConfig.site.languages
+    : SUPPORTED;
+  const paramsSchema = buildParamsSchema(languages);
+
   app.get('/dictionaries/:field', { schema: paramsSchema }, async (req, reply) => {
     const { field } = req.params;
     if (!VALID_FIELDS.has(field)) {

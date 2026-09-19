@@ -216,6 +216,27 @@ test('POST /api/wheel: steamLibrary resolves owned appids and narrows the SQL (s
   assert.deepEqual(capturedParams, [10, 20]);
 });
 
+test('POST /api/wheel: cisPrices is ignored (forced off) when lang is not "ru" ("Goal B" defence in depth)', async () => {
+  let capturedSql = null;
+  const db = makeWheelDb({ ids: [1], rows: [gameRow(1, { price_cis_usd: 111, price_final_cis_usd: 111 })] });
+  const originalQuery = db.query;
+  db.query = async (sql, params) => {
+    if (/^SELECT games\.id/.test(sql)) capturedSql = sql;
+    return originalQuery(sql, params);
+  };
+  const app = buildTestApp({ db });
+  const session = await establishSession(app);
+
+  const res = await postJson(app, '/api/wheel', { segments: 1, filters: { allowEmpty: true, cisPrices: true } }, session);
+  assert.equal(res.statusCode, 200);
+  // en's region condition must still be applied — a non-ru request can never take the "use CIS
+  // region" branch, no matter what it sends.
+  assert.match(capturedSql, /NOT \(COALESCE\(price_usd, 0\) = 0 AND COALESCE\(price_rub, 0\) > 0\)/);
+  const body = JSON.parse(res.body);
+  assert.equal(body.games[0].price.currency, 'USD');
+  assert.equal(body.games[0].price.final, 999);
+});
+
 test('POST /api/wheel/random: returns a single GameCard and logs source "random"', async () => {
   const inserts = [];
   const db = makeWheelDb({ ids: [5, 6, 7], inserts });
@@ -315,6 +336,32 @@ test('POST /api/wheel/random: cisPrices true drops the region condition from eve
     assert.ok(!sql.includes('COALESCE(price_usd'));
     assert.match(sql, /purchasable = 1/);
   }
+});
+
+test('POST /api/wheel/random: cisPrices is ignored (forced off) when lang is not "ru" ("Goal B" defence in depth)', async () => {
+  const capturedSql = [];
+  const db = {
+    query: async () => [],
+    one: async (sql) => {
+      capturedSql.push(sql);
+      if (/^SELECT MIN\(id\)/.test(sql)) return { lo: 1, hi: 1 };
+      if (/^SELECT \* FROM games WHERE id >=/.test(sql)) return gameRow(1, { price_cis_usd: 111, price_final_cis_usd: 111 });
+      return null;
+    },
+  };
+  const app = buildTestApp({ db });
+  const session = await establishSession(app);
+
+  const res = await postJson(app, '/api/wheel/random', { lang: 'en', cisPrices: true }, session);
+  assert.equal(res.statusCode, 200);
+  // The en region condition must still be applied (cisPrices: true alone doesn't drop it -- a non-ru
+  // request can never take the "use CIS region" branch, no matter what it sends).
+  for (const sql of capturedSql) {
+    assert.match(sql, /NOT \(COALESCE\(price_usd, 0\) = 0 AND COALESCE\(price_rub, 0\) > 0\)/);
+  }
+  // And the returned card's price is the plain USD one, not the CIS-region price.
+  assert.equal(JSON.parse(res.body).game.price.currency, 'USD');
+  assert.equal(JSON.parse(res.body).game.price.final, 999);
 });
 
 test('POST /api/wheel/marbles: returns a CSV of names and logs source "list"', async () => {

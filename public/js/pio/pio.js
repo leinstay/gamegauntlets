@@ -27,6 +27,9 @@ const KNOWN_MOODS = ['normal', 'happy', 'enjoy', 'unhappy', 'kira', 'deformed'];
 const TYPE_CHAR_MS = 24;
 const VISIBLE_KEY = 'pio.visible';
 const SOUND_KEY = 'pio.sound';
+// public/pio/dialogues/ only ships en/ru/de/fr.json; every other UI language falls back to this one
+// (see ensurePoolWithFallback() below).
+const DEFAULT_LANG = 'en';
 
 function readBoolPref(key, fallback) {
   try {
@@ -208,9 +211,21 @@ export function createPio(opts = {}) {
     }
   }
 
-  async function setLanguage(lang) {
+  // public/pio/dialogues/ only has en/ru/de/fr.json (owner decision -- no new dialogue files for the
+  // other UI languages public/i18n/*.json now supports). Falls back to English's pool -- the one
+  // that's guaranteed to exist -- for any language ensurePool() couldn't load a file for, instead of
+  // silently leaving the engine on a language with no pool at all (pick() would then always return
+  // null and Pio would never say anything). Returns the language whose pool actually ended up active.
+  async function ensurePoolWithFallback(lang) {
     await ensurePool(lang);
-    dialogueEngine.setLanguage(lang);
+    if (dialogueEngine.hasPool(lang)) return lang;
+    if (lang !== DEFAULT_LANG) await ensurePool(DEFAULT_LANG);
+    return DEFAULT_LANG;
+  }
+
+  async function setLanguage(lang) {
+    const resolved = await ensurePoolWithFallback(lang);
+    dialogueEngine.setLanguage(resolved);
   }
 
   function onHit(hitAreaNames) {
@@ -237,7 +252,8 @@ export function createPio(opts = {}) {
   }
 
   async function init() {
-    await ensurePool(initialLang);
+    const resolvedLang = await ensurePoolWithFallback(initialLang);
+    dialogueEngine.setLanguage(resolvedLang);
     dialogueEngine.markVisit();
     setSoundEnabled(opts.sound != null ? opts.sound : readBoolPref(SOUND_KEY, true));
 

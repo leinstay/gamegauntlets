@@ -104,3 +104,75 @@ test('GET /api/session: rejects an unknown lang value (schema validation)', asyn
   const res = await app.inject({ method: 'GET', url: '/api/session?lang=xx' });
   assert.equal(res.statusCode, 400);
 });
+
+test('GET /api/session: exposes the configured languages as {code, name}, no second hardcoded list needed', async () => {
+  const app = buildTestApp({});
+  const res = await app.inject({ method: 'GET', url: '/api/session' });
+  const body = JSON.parse(res.body);
+  assert.ok(Array.isArray(body.languages));
+  assert.deepEqual(body.languages.find((l) => l.code === 'en'), { code: 'en', name: 'English' });
+  assert.deepEqual(body.languages.find((l) => l.code === 'de'), { code: 'de', name: 'Deutsch (German)' });
+  assert.deepEqual(body.languages.find((l) => l.code === 'ja'), { code: 'ja', name: '日本語 (Japanese)' });
+});
+
+test('GET /api/session: accepts every configured UI language via ?lang= (schema enum from config.json)', async () => {
+  const app = buildTestApp({});
+  for (const lang of ['es', 'pt', 'it', 'pl', 'tr', 'uk', 'ja', 'ko', 'zh']) {
+    const res = await app.inject({ method: 'GET', url: `/api/session?lang=${lang}` });
+    assert.equal(res.statusCode, 200, `lang=${lang}`);
+    assert.equal(JSON.parse(res.body).lang, lang);
+  }
+});
+
+test('GET /api/session: first visit with no ?lang= picks the first supported Accept-Language match', async () => {
+  const app = buildTestApp({});
+  const res = await app.inject({
+    method: 'GET',
+    url: '/api/session',
+    headers: { 'accept-language': 'ja,en-US;q=0.9' },
+  });
+  assert.equal(JSON.parse(res.body).lang, 'ja');
+});
+
+test('GET /api/session: Accept-Language region/script variants normalize to their base language', async () => {
+  const app = buildTestApp({});
+  const res = await app.inject({
+    method: 'GET',
+    url: '/api/session',
+    headers: { 'accept-language': 'zh-TW,pt-BR;q=0.5' },
+  });
+  assert.equal(JSON.parse(res.body).lang, 'zh');
+});
+
+test('GET /api/session: an unsupported/garbage Accept-Language falls back to "en"', async () => {
+  const app = buildTestApp({});
+  const res = await app.inject({
+    method: 'GET',
+    url: '/api/session',
+    headers: { 'accept-language': 'xx-XX,garbage;q=0.5' },
+  });
+  assert.equal(JSON.parse(res.body).lang, 'en');
+});
+
+test('GET /api/session: ?lang= wins over Accept-Language on first visit', async () => {
+  const app = buildTestApp({});
+  const res = await app.inject({
+    method: 'GET',
+    url: '/api/session?lang=fr',
+    headers: { 'accept-language': 'ja,en-US;q=0.9' },
+  });
+  assert.equal(JSON.parse(res.body).lang, 'fr');
+});
+
+test('GET /api/session: an existing session keeps its saved language even with a different Accept-Language', async () => {
+  const app = buildTestApp({});
+  const first = await establishSession(app);
+  assert.equal(first.body.lang, 'en'); // no ?lang=, no Accept-Language on establishSession()'s bare GET
+
+  const second = await app.inject({
+    method: 'GET',
+    url: '/api/session',
+    headers: { cookie: first.cookieHeader, 'accept-language': 'ja' },
+  });
+  assert.equal(JSON.parse(second.body).lang, 'en'); // saved session language wins, Accept-Language is only for first visits
+});

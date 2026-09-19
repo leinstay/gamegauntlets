@@ -1,0 +1,36 @@
+/* i18n.css — CJK/Unicode font-fallback safety net.
+ *
+ * public/i18n/*.json now ships ja/ko/zh (and es/pt/it/pl/tr/uk) strings on top of en/ru/de/fr, and
+ * those strings can land inside a handful of spots that main.css / inline styles pin to a single
+ * custom display font with NO fallback list at all:
+ *   - #rname          (js/pgwheel.js: winner/preview game title)              -> SwagFont
+ *   - #profile-name    (Steam display name -- any Unicode script, any UI lang) -> Custom6
+ *   - #rdesc           (main.css: game description text)                      -> Gothic
+ *   - #privacy .description, #empty .content .content (pages/wheel.html: data-i18n modal text)
+ *                                                                              -> Gothic
+ * None of those custom webfonts (SwagFont/Custom6/Gothic -- see main.css's @font-face rules) cover
+ * CJK glyphs, and a bare `font-family: X` with no comma-separated fallback is the one pattern that
+ * unreliably falls back to a system CJK font across browsers/engines. This file only ever ADDS a
+ * generic `sans-serif` fallback after each element's existing primary font -- it never removes or
+ * replaces the decorative look for the scripts those fonts DO cover (en/ru/de/fr/es/pt/it/pl/tr/uk
+ * all render exactly as before).
+ *
+ * `!important` + matching selectors are required to outrank the inline `style="font-family: ..."`
+ * attributes in public/pages/wheel.html (out of scope for this task -- see public/js/pio/* for the
+ * only other CJK-fallback change, dialogue files). Loaded after compat.css (see public/index.html)
+ * so it always wins the cascade.
+ */
+
+#rname {
+	font-family: SwagFont, sans-serif !important;
+}
+
+#profile-name {
+	font-family: Custom6, sans-serif !important;
+}
+
+#rdesc,
+#privacy .description,
+#empty .content .content {
+	font-family: Gothic, sans-serif !important;
+}

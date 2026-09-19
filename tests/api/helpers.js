@@ -2,12 +2,13 @@
 // pick it up), just plain helpers.
 
 import { buildApp } from '../../src/api.js';
+import { SUPPORTED } from '../../src/lib/languages.js';
 
 export const PUBLIC_ORIGIN = 'https://gamegauntlets.com';
 
 export function testConfig(overrides = {}) {
   return {
-    site: { origin: PUBLIC_ORIGIN, languages: ['en', 'ru', 'de', 'fr'], previewOrigins: [] },
+    site: { origin: PUBLIC_ORIGIN, languages: [...SUPPORTED], previewOrigins: [] },
     admins: [],
     wheel: { minSegments: 1, maxSegments: 16, defaultSegments: 12, marblesDailyLimit: 100 },
     ...overrides,

@@ -3,40 +3,53 @@
 
 import { toGameCard } from '../lib/game-card.js';
 import { normalizeName } from '../lib/names.js';
+import { SUPPORTED } from '../lib/languages.js';
 
-const searchSchema = {
-  querystring: {
-    type: 'object',
-    additionalProperties: false,
-    required: ['q'],
-    properties: {
-      // empty q is allowed (the search dropdown queries on focus before anything is typed) -> []
-      q: { type: 'string', maxLength: 128 },
-      lang: { type: 'string', enum: ['en', 'ru', 'de', 'fr'] },
-      // jQuery's cache-buster (`cache: false` in Semantic UI apiSettings appends `_=<timestamp>`)
-      _: { type: 'string', maxLength: 32 },
+// `lang`'s enum is built per-app from `config.json` site.languages (see gamesRoutes() below) instead
+// of being hardcoded, so every configured UI language can be requested.
+function buildSearchSchema(languages) {
+  return {
+    querystring: {
+      type: 'object',
+      additionalProperties: false,
+      required: ['q'],
+      properties: {
+        // empty q is allowed (the search dropdown queries on focus before anything is typed) -> []
+        q: { type: 'string', maxLength: 128 },
+        lang: { type: 'string', enum: languages },
+        // jQuery's cache-buster (`cache: false` in Semantic UI apiSettings appends `_=<timestamp>`)
+        _: { type: 'string', maxLength: 32 },
+      },
     },
-  },
-};
+  };
+}
 
-const byIdSchema = {
-  params: {
-    type: 'object',
-    additionalProperties: false,
-    required: ['id'],
-    properties: { id: { type: 'integer', minimum: 1 } },
-  },
-  querystring: {
-    type: 'object',
-    additionalProperties: false,
-    properties: {
-      lang: { type: 'string', enum: ['en', 'ru', 'de', 'fr'] },
-      cisPrices: { type: 'boolean' },
+function buildByIdSchema(languages) {
+  return {
+    params: {
+      type: 'object',
+      additionalProperties: false,
+      required: ['id'],
+      properties: { id: { type: 'integer', minimum: 1 } },
     },
-  },
-};
+    querystring: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        lang: { type: 'string', enum: languages },
+        cisPrices: { type: 'boolean' },
+      },
+    },
+  };
+}
 
 export default async function gamesRoutes(app) {
+  const languages = Array.isArray(app.appConfig?.site?.languages) && app.appConfig.site.languages.length
+    ? app.appConfig.site.languages
+    : SUPPORTED;
+  const searchSchema = buildSearchSchema(languages);
+  const byIdSchema = buildByIdSchema(languages);
+
   app.get('/games/search', { schema: searchSchema }, async (req) => {
     // normalizeName() falls back to returning its raw input unchanged when everything strips away
     // to nothing (e.g. whitespace-only input) — trim before the emptiness check so those queries
@@ -63,12 +76,14 @@ export default async function gamesRoutes(app) {
 
   app.get('/games/:id', { schema: byIdSchema }, async (req, reply) => {
     const lang = req.query.lang || req.ggSession?.lang || 'en';
+    // Defence in depth: CIS prices only ever apply to Russian (src/api/wheel.js has the same rule).
+    const cisPrices = lang === 'ru' && !!req.query.cisPrices;
     const row = await app.db.one('SELECT * FROM games WHERE id = ? LIMIT 1', [req.params.id]);
     if (!row) {
       reply.code(404);
       return { error: 'not_found' };
     }
     const links = await app.db.query('SELECT source, url FROM game_links WHERE game_id = ?', [req.params.id]);
-    return toGameCard(row, links, { lang, cisPrices: !!req.query.cisPrices });
+    return toGameCard(row, links, { lang, cisPrices });
   });
 }

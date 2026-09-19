@@ -85,3 +85,38 @@ test('GET /api/games/:id: non-integer id is a schema validation error', async ()
   const res = await app.inject({ method: 'GET', url: '/api/games/not-a-number' });
   assert.equal(res.statusCode, 400);
 });
+
+test('GET /api/games/:id: accepts every configured UI language (schema enum from config.json)', async () => {
+  const db = {
+    query: async () => [],
+    one: async () => ({ id: 1, name: 'Portal 2', description_en: 'desc', platforms: 'WIN', genres: null, tags: null }),
+  };
+  const app = buildTestApp({ db });
+
+  const res = await app.inject({ method: 'GET', url: '/api/games/1?lang=ja' });
+  assert.equal(res.statusCode, 200);
+});
+
+test('GET /api/games/:id: cisPrices is ignored (forced off) when lang is not "ru"', async () => {
+  const db = {
+    query: async () => [],
+    one: async () => ({
+      id: 1,
+      name: 'Portal 2',
+      description_en: 'desc',
+      platforms: 'WIN',
+      genres: null,
+      tags: null,
+      price_usd: 999,
+      price_final_usd: 999,
+      price_cis_usd: 111,
+      price_final_cis_usd: 111,
+    }),
+  };
+  const app = buildTestApp({ db });
+
+  const res = await app.inject({ method: 'GET', url: '/api/games/1?lang=en&cisPrices=true' });
+  const body = JSON.parse(res.body);
+  assert.equal(body.price.currency, 'USD');
+  assert.equal(body.price.final, 999);
+});

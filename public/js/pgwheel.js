@@ -172,10 +172,12 @@ var LIST_FILTER_FIELDS = ["genres", "tags", "categories", "languages", "voiceove
 // Legacy gated this the same way server-side (gateway.php ~line 68: `$isBackupRegion = ($post['backupRegion']
 // == "true" || $post['select']) && (empty($post['language']) || $post['language'] == "ru")`) - the toggle
 // itself only exists in the settings UI for ru (public/pages/settings.html's `data-lang="ru"` wrapper,
-// stripped for every other language by pgsettings.js), but sessionStorage("backupRegion") defaults to true
-// (below) regardless of language, so the request builder must re-check the language here too rather than
-// trusting the stored flag on its own - otherwise an en/de/fr session would send cisPrices=true by default
-// and silently skip the regional-availability filter meant for it.
+// stripped for every other language by pgsettings.js). Owner's rule ("Goal B"): it only ever concerns
+// Russian and can never be on in any other language, and it's off by default -- sessionStorage("backupRegion")
+// defaults to false regardless of language (below), and pgsettings.js forces it back to false the instant
+// the language changes away from ru. This function still re-checks the language itself rather than trusting
+// the stored flag alone -- defence in depth against a stale/tampered sessionStorage value (src/api/wheel.js
+// enforces the same rule server-side, independently).
 function cisPricesEnabled() {
 	return (!__language || __language === "ru") && "true" == sessionStorage.getItem("backupRegion");
 }
@@ -611,7 +613,9 @@ GG.api.music().then(function (tracks) {
 
 theWheel && theWheel.stopAnimation(!1);
 sessionStorage.getItem("smart") || sessionStorage.setItem("smart", !1);
-sessionStorage.getItem("backupRegion") || sessionStorage.setItem("backupRegion", !0);
+// "Use CIS region" (owner's rule, "Goal B"): off by default, and it only ever concerns Russian
+// (see cisPricesEnabled() above) -- default it to false, not true.
+sessionStorage.getItem("backupRegion") || sessionStorage.setItem("backupRegion", !1);
 sessionStorage.getItem("empty") || sessionStorage.setItem("empty", !0);
 sessionStorage.getItem("steam") || sessionStorage.setItem("steam", !1);
 sessionStorage.getItem("music") || sessionStorage.setItem("music", !0);

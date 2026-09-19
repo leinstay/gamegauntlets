@@ -97,12 +97,28 @@ $('#rangeend button').click(function () {
 // no such endpoint;
 // GET /api/session?lang=xx persists the language on the (cookie-based) session the same way, then
 // a reload lets the page shell re-fetch session + i18n bundle in the new language.
+//
+// The static markup (public/pages/settings.html) only ever hardcoded 4 <div class="item"> languages;
+// GG.session.languages (GET /api/session's `languages` field, set by gg-boot.js -- see src/lib/languages.js)
+// is now the single source of truth for the full list, so the menu's contents are rebuilt from it here
+// instead. Falls back to leaving the static 4-item markup alone if GG.session isn't available for some
+// reason (offline/degraded gg-boot.js init -- see its own catch branch).
+if (window.GG && GG.session && Array.isArray(GG.session.languages)) {
+	var $langMenu = $('#changeLang .scrolling.menu').empty();
+	GG.session.languages.forEach(function (lang) {
+		$('<div>', { class: 'item', 'data-value': lang.code, text: lang.name }).appendTo($langMenu);
+	});
+}
+
 $('#changeLang').dropdown({
 	action: 'activate',
-	onChange: function (value, text, $selectedItem) {
-		var fullName = $selectedItem.attr('data-text') + (($selectedItem.attr('data-english') != $selectedItem.attr('data-text')) ? (" (" + $selectedItem.attr('data-english') + ")") : "");
-		$('#changeLang.dropdown > .text').html(fullName);
+	onChange: function (value, text) {
+		$('#changeLang.dropdown > .text').html(text);
 		sessionStorage.setItem('price', '');
+		// "Use CIS region" only ever concerns Russian (owner's rule, "Goal B"): turn it off immediately
+		// on switching to any other language, before the reload below re-renders the page -- don't wait
+		// for the reload to pick this up from the (still ru-scoped) checkbox state.
+		if (value !== 'ru') sessionStorage.setItem('backupRegion', false);
 		if (window.GG && GG.api && typeof GG.api.get === 'function') {
 			GG.api.get('/api/session?lang=' + value).then(function () {
 				location.reload();
@@ -118,7 +134,9 @@ $('#changeLang').dropdown({
 });
 
 if (__language) {
-	var fullName = $('#changeLang.dropdown .item[data-value=' + __language + ']').attr('data-text') + ($('#changeLang.dropdown .item[data-value=' + __language + ']').attr('data-english') != $('#changeLang.dropdown .item[data-value=' + __language + ']').attr('data-text') ? (" (" + $('#changeLang.dropdown .item[data-value=' + __language + ']').attr('data-english') + ")") : "");
+	var currentLangEntry = (window.GG && GG.session && Array.isArray(GG.session.languages)) ?
+		GG.session.languages.filter(function (l) { return l.code === __language; })[0] : null;
+	var fullName = currentLangEntry ? currentLangEntry.name : $('#changeLang.dropdown .item[data-value=' + __language + ']').text();
 	$('#changeLang.dropdown > .text').html(fullName);
 }
 
@@ -385,7 +403,7 @@ $(".setscore").on('click', function () {
 });
 
 $("#resetSettings").on('click', function () {
-	$('#backupRegion').checkbox('check');
+	$('#backupRegion').checkbox('uncheck'); // "Use CIS region": off by default (owner's rule, "Goal B")
 	$('#empty').checkbox('check');
 	$('#steam').checkbox('uncheck');
 	$('#music').checkbox('check');
@@ -416,7 +434,7 @@ $("#resetSettings").on('click', function () {
 		from: 12
 	});
 
-	sessionStorage.setItem('backupRegion', true);
+	sessionStorage.setItem('backupRegion', false); // off by default (owner's rule, "Goal B")
 	sessionStorage.setItem('empty', true);
 	sessionStorage.setItem('steam', false);
 	sessionStorage.setItem('music', true);

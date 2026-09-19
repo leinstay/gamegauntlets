@@ -6,6 +6,7 @@ import { randomInt } from 'node:crypto';
 import { buildWheelQuery, regionAvailabilityCondition } from '../lib/wheel-query.js';
 import { toGameCard } from '../lib/game-card.js';
 import { getOwnedGames } from '../lib/steam-openid.js';
+import { SUPPORTED } from '../lib/languages.js';
 
 const WHEEL_RATE_LIMIT = { max: 60, timeWindow: '1 minute' };
 const MARBLES_MAX = 100;
@@ -52,28 +53,34 @@ const filtersSchema = {
 
 // NOTE: `{ type: 'null' }` must come FIRST in every anyOf: Fastify's AJV runs with coerceTypes, and an
 // earlier integer/array branch would coerce a JSON null into 0 / [null] before the null branch is tried.
-const wheelBodySchema = {
-  body: {
-    type: 'object',
-    additionalProperties: false,
-    properties: {
-      lang: { type: 'string', enum: ['en', 'ru', 'de', 'fr'] },
-      segments: { type: 'integer', minimum: 1, maximum: 16 },
-      filters: filtersSchema,
+// `lang`'s enum is built per-app from `config.json` site.languages (see wheelRoutes() below) instead
+// of being hardcoded here, so every configured UI language can be requested.
+function buildWheelBodySchema(languages) {
+  return {
+    body: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        lang: { type: 'string', enum: languages },
+        segments: { type: 'integer', minimum: 1, maximum: 16 },
+        filters: filtersSchema,
+      },
     },
-  },
-};
+  };
+}
 
-const randomBodySchema = {
-  body: {
-    type: 'object',
-    additionalProperties: false,
-    properties: {
-      lang: { type: 'string', enum: ['en', 'ru', 'de', 'fr'] },
-      cisPrices: { type: 'boolean' },
+function buildRandomBodySchema(languages) {
+  return {
+    body: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        lang: { type: 'string', enum: languages },
+        cisPrices: { type: 'boolean' },
+      },
     },
-  },
-};
+  };
+}
 
 /** Fisher-Yates, stopping after `count` swaps: O(count) instead of shuffling the whole array. */
 function samplePartialShuffle(ids, count) {
@@ -172,15 +179,25 @@ async function resolveSteamLibrary(app, req, filters) {
 }
 
 export default async function wheelRoutes(app) {
+  const languages = Array.isArray(app.appConfig?.site?.languages) && app.appConfig.site.languages.length
+    ? app.appConfig.site.languages
+    : SUPPORTED;
+  const wheelBodySchema = buildWheelBodySchema(languages);
+  const randomBodySchema = buildRandomBodySchema(languages);
+
   app.post('/wheel', { schema: wheelBodySchema, config: { rateLimit: WHEEL_RATE_LIMIT } }, async (req) => {
     const lang = req.body.lang || req.ggSession?.lang || 'en';
     const segments = clampSegments(app.appConfig, req.body.segments);
     const rawFilters = req.body.filters || {};
+    // Defence in depth (owner's rule, "Goal B": CIS prices only ever apply to Russian) - the frontend
+    // already only ever sends cisPrices=true when lang is ru (public/js/pgwheel.js cisPricesEnabled()),
+    // but a non-ru request must never get the CIS-region SQL branch even if it lies about this flag.
+    const cisPrices = lang === 'ru' && !!rawFilters.cisPrices;
 
     const { filters, error } = await resolveSteamLibrary(app, req, rawFilters);
     if (error) return { error };
 
-    const { sql, params } = buildWheelQuery(filters, { lang, cisPrices: !!filters.cisPrices, config: app.appConfig });
+    const { sql, params } = buildWheelQuery(filters, { lang, cisPrices, config: app.appConfig });
     const idRows = await app.db.query(sql, params);
     const allIds = idRows.map((r) => r.id);
     if (allIds.length === 0) return { error: 'empty' };
@@ -190,7 +207,7 @@ export default async function wheelRoutes(app) {
     const games = finalIds
       .map((id) => byId.get(id))
       .filter(Boolean)
-      .map((entry) => toGameCard(entry.row, entry.links, { lang, cisPrices: !!filters.cisPrices }));
+      .map((entry) => toGameCard(entry.row, entry.links, { lang, cisPrices }));
 
     const source = Array.isArray(rawFilters.names) && rawFilters.names.length > 0 ? 'direct' : 'web';
     await logRoll(app.db, { source, gameIds: finalIds, steamid: req.ggSession?.steamid, ip: req.ip });
@@ -200,7 +217,8 @@ export default async function wheelRoutes(app) {
 
   app.post('/wheel/random', { schema: randomBodySchema, config: { rateLimit: WHEEL_RATE_LIMIT } }, async (req) => {
     const lang = req.body?.lang || req.ggSession?.lang || 'en';
-    const cisPrices = !!req.body?.cisPrices;
+    // Same defence in depth as /wheel above.
+    const cisPrices = lang === 'ru' && !!req.body?.cisPrices;
 
     // Same base conditions as buildWheelQuery() (src/lib/wheel-query.js): steam_delisted/non_game/
     // purchasable, plus the regional-availability filter (legacy gateway.php lines ~160-166) - this route
@@ -244,10 +262,13 @@ export default async function wheelRoutes(app) {
       return { error: 'rate_limited' };
     }
 
+    // Same defence in depth as /wheel above.
+    const cisPrices = lang === 'ru' && !!rawFilters.cisPrices;
+
     const { filters, error } = await resolveSteamLibrary(app, req, rawFilters);
     if (error) return { error };
 
-    const { sql, params } = buildWheelQuery(filters, { lang, cisPrices: !!filters.cisPrices, config: app.appConfig });
+    const { sql, params } = buildWheelQuery(filters, { lang, cisPrices, config: app.appConfig });
     const idRows = await app.db.query(sql, params);
     const allIds = idRows.map((r) => r.id);
     if (allIds.length === 0) return { error: 'empty' };
