@@ -136,3 +136,29 @@
 		box-sizing: border-box;
 	}
 }
+
+/* Phones: the CIS pill's label ("Использовать CIS регион") does not fit next to the language dropdown - at
+   360px it was cut to "И…". Below 520px the two controls sit on their own full-width rows instead. */
+@media screen and (max-width: 519px) {
+	.settingsright {
+		flex-wrap: wrap;
+	}
+	.settingsright > .ui.vertical.segment,
+	.settingsright > #changeLang.ui.dropdown {
+		flex: 0 0 100%;
+	}
+	.settingsright > .ui.vertical.segment {
+		justify-content: flex-start;
+	}
+}
+
+/* The stacked layout has no room for the fixed desktop footer (legacy already hid it at <=960px; between 961
+   and 1023px it wrapped to three lines over the content). */
+@media screen and (max-width: 1023px) {
+	#footer {
+		display: none;
+	}
+	#content-wrapper {
+		bottom: 0;
+	}
+}
