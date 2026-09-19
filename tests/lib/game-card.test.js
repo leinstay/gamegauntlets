@@ -192,8 +192,8 @@ test('buildLinks: maps known sources, missing ones are null', () => {
   assert.equal(links.hltb, null);
   assert.equal(links.igdb, null);
   assert.equal(links.gamefaqs, null);
-  assert.equal(links.opencritic, null);
   assert.equal(links.metacritic, null);
+  assert.equal('opencritic' in links, false);
 });
 
 test('buildLinks: wikipedia prefers the language-matching source, falls back to the other', () => {

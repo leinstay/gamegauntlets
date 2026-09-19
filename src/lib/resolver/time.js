@@ -57,12 +57,12 @@ export function finalTime(input = {}) {
 // Steam reviews first, NOT SteamSpy: SteamSpy's median_forever/average_forever turned out to be
 // essentially dead in production - 0 of 80,339 stored SteamSpy payloads have either > 0 (live-verified
 // against Portal 2 and Baldur's Gate 3's own appdetails too - still 0), and the legacy DB only ever had
-// stsp_mdntime for 2 of ~111k games. Steam's own reviews (src/sources/steam.js: median of
+// stsp_mdntime (the frozen legacy fallback, dropped 2026-09-19 - it never survived resolution for any of
+// the ~111k migrated games) for 2 of ~111k games. Steam's own reviews (src/sources/steam.js: median of
 // author.playtime_at_review over one helpfulness-ranked page of up to 100 reviews) are the only real
 // source, so they're tried first once there are enough of them to trust (`config.resolver.playtime.
-// minReviews`); SteamSpy remains a fallback for the rare game that does have it, a lower-confidence
-// small-sample reviews median is tried before falling further, and the frozen legacy stsp_mdntime is
-// the last resort.
+// minReviews`); SteamSpy remains a fallback for the rare game that does have it, and a lower-confidence
+// small-sample reviews median is tried before giving up.
 //
 // Bias note (src/sources/steam.js's summarizeReviewPlaytime has the same note next to where these
 // numbers are computed): Steam reviewers skew towards more-engaged players than the player base as a
@@ -91,15 +91,13 @@ const FEWER_REVIEWS_FLOOR = 3;
 
 /**
  * `resolveAveragePlaytime({ steamReviewsMedianMinutes, steamReviewsCount, steamspyMedianMinutes,
- * steamspyAverageMinutes, legacyMedianMinutes }, config) ->
- * { hours, source: 'steam_reviews'|'steamspy'|'legacy' } | null`.
+ * steamspyAverageMinutes }, config) -> { hours, source: 'steam_reviews'|'steamspy' } | null`.
  *
  * All minutes inputs are optional. `src/lib/resolver/index.js` sources `steamReviewsMedianMinutes`/
- * `steamReviewsCount` from the `steam` source specifically, `steamspyMedianMinutes`/
- * `steamspyAverageMinutes` from `steamspy`, and `legacyMedianMinutes` from any other source reporting
- * the fallback (in practice only `legacy_steamdb`) - this function itself is pure and
- * source-name-agnostic. `config`: `config.json`'s `resolver.playtime` (`{ minReviews }`) - defaults to
- * `DEFAULT_MIN_REVIEWS` when absent (e.g. in older test fixtures).
+ * `steamReviewsCount` from the `steam` source specifically and `steamspyMedianMinutes`/
+ * `steamspyAverageMinutes` from `steamspy` - this function itself is pure and source-name-agnostic.
+ * `config`: `config.json`'s `resolver.playtime` (`{ minReviews }`) - defaults to `DEFAULT_MIN_REVIEWS`
+ * when absent (e.g. in older test fixtures).
  *
  * Priority (see the module note above):
  *  1. Steam reviews median, when there are at least `minReviews` reviews with usable playtime.
@@ -107,12 +105,11 @@ const FEWER_REVIEWS_FLOOR = 3;
  *  3. SteamSpy average (`average_forever`).
  *  4. Steam reviews median again, with as few as `FEWER_REVIEWS_FLOOR` reviews - better than nothing
  *     once SteamSpy has nothing either.
- *  5. The legacy snapshot's median (`stsp_mdntime`).
- *  6. `null` - the resolver then leaves `games.time_average`/`time_average_source` untouched (see
+ *  5. `null` - the resolver then leaves `games.time_average`/`time_average_source` untouched (see
  *     src/pipeline/resolve.js's "never blank a column no source reported" rule).
  */
 export function resolveAveragePlaytime(
-  { steamReviewsMedianMinutes, steamReviewsCount, steamspyMedianMinutes, steamspyAverageMinutes, legacyMedianMinutes } = {},
+  { steamReviewsMedianMinutes, steamReviewsCount, steamspyMedianMinutes, steamspyAverageMinutes } = {},
   config = {}
 ) {
   const minReviews = Number.isFinite(config.minReviews) ? config.minReviews : DEFAULT_MIN_REVIEWS;
@@ -134,9 +131,6 @@ export function resolveAveragePlaytime(
   if (hasReviews && reviewsCount >= FEWER_REVIEWS_FLOOR) {
     return { hours: minutesToHours(reviewsMedian), source: 'steam_reviews' };
   }
-
-  const legacyMedian = positiveOrNull(legacyMedianMinutes);
-  if (legacyMedian !== null) return { hours: minutesToHours(legacyMedian), source: 'legacy' };
 
   return null;
 }

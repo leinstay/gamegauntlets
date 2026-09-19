@@ -77,14 +77,9 @@ test('extract: difficulty and ownersEstimate pass through as-is', () => {
   assert.equal(fields.ownersEstimate, 10000);
 });
 
-test('extract: stsp_mdntime maps to playtimeMedianMinutes (games.time_average legacy fallback)', () => {
+test('extract: stsp_mdntime is not mapped to anything (legacy games.time_average fallback dropped 2026-09-19)', () => {
   const fields = extract({ ...fixture.fullRow, stsp_mdntime: 654 });
-  assert.equal(fields.playtimeMedianMinutes, 654);
-});
-
-test('extract: stsp_mdntime of 0/null (fullRow\'s real value) maps to playtimeMedianMinutes: null', () => {
-  assert.equal(extract(fixture.fullRow).playtimeMedianMinutes, null); // fixture's fullRow has stsp_mdntime: null
-  assert.equal(extract({ ...fixture.fullRow, stsp_mdntime: 0 }).playtimeMedianMinutes, null);
+  assert.equal('playtimeMedianMinutes' in fields, false);
 });
 
 test('extract: comma-separated legacy lists become arrays; a blank list is null', () => {

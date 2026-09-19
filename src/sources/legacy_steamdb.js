@@ -34,10 +34,9 @@
 //                                             dedicated 'hltb'/'igdb' source exists yet for this game)
 //   gfq_difficulty                        -> difficulty
 //   stsp_owners                           -> ownersEstimate
-//   stsp_mdntime                          -> playtimeMedianMinutes (last-resort fallback for
-//                                             games.time_average - src/lib/resolver/time.js only
-//                                             reaches for this when neither a live 'steam' reviews
-//                                             median nor a live 'steamspy' median/average exists yet)
+//   (stsp_mdntime was mapped to playtimeMedianMinutes as a last-resort games.time_average fallback;
+//    dropped 2026-09-19 - it never survived resolution for any of the ~111k migrated games, see
+//    src/lib/resolver/time.js's module note)
 //   platforms/developers/publishers/
 //     genres/tags/categories/languages/
 //     voiceovers (comma-separated text)   -> arrays (toPipeList-ready, resolver unions them)
@@ -147,7 +146,6 @@ export function extract(payload = {}) {
 
     difficulty: payload.gfq_difficulty ?? null,
     ownersEstimate: payload.stsp_owners ?? null,
-    playtimeMedianMinutes: payload.stsp_mdntime > 0 ? payload.stsp_mdntime : null,
 
     platforms: splitList(payload.platforms),
     developers: splitList(payload.developers),

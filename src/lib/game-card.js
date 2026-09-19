@@ -5,11 +5,11 @@
 //     criticsSource, igdb, gamefaqs, steamReviews: {all, recent}}, time: {main, complete, average},
 //     difficulty, ggp, price: {amount, final, discount, currency}, platforms, genres, tags, developers,
 //     publishers, categories, languages, voiceovers, owners, achievements,
-//     links: {steam, gog, hltb, igdb, gamefaqs, opencritic, metacritic, wikipedia} }
+//     links: {steam, gog, hltb, igdb, gamefaqs, metacritic, wikipedia} }
 //
 // `time.average` is `games.time_average` (hours, DECIMAL(6,1)) as resolved by
-// src/lib/resolver/time.js's resolveAveragePlaytime - restores legacy's "Average playtime" card row
-// (stsp_mdntime), null when no source has produced an estimate for this game yet.
+// src/lib/resolver/time.js's resolveAveragePlaytime (Steam reviews median, else SteamSpy) - restores
+// legacy's "Average playtime" card row, null when no source has produced an estimate for this game yet.
 //
 // `scores.steamReviews.all` is `{percent, votes, label}` from `score_steam`/`score_steam_votes`
 // (`label` from src/lib/steam-review-label.js's steamReviewLabel(), itself `null` under 10 votes), or
@@ -39,7 +39,7 @@
 import { decodeHtmlEntities } from './names.js';
 import { steamReviewLabel } from './steam-review-label.js';
 
-const LINK_SOURCES = ['steam', 'gog', 'hltb', 'igdb', 'gamefaqs', 'opencritic', 'metacritic'];
+const LINK_SOURCES = ['steam', 'gog', 'hltb', 'igdb', 'gamefaqs', 'metacritic'];
 
 // `<br>`/`<br/>`/`<br />`, a paragraph's closing `</p>`, and an opening `<li>` (with or without
 // attributes) each stand in for a line break in the source markup; every other tag is structural

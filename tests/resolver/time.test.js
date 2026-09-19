@@ -75,14 +75,13 @@ describe('finalTime: rounding', () => {
   });
 });
 
-describe('resolveAveragePlaytime: priority (Steam reviews >= minReviews > SteamSpy median > SteamSpy average > reviews < minReviews > legacy)', () => {
+describe('resolveAveragePlaytime: priority (Steam reviews >= minReviews > SteamSpy median > SteamSpy average > reviews < minReviews)', () => {
   test('prefers the Steam reviews median once there are at least minReviews reviews, even over SteamSpy', () => {
     const result = resolveAveragePlaytime({
       steamReviewsMedianMinutes: 300,
       steamReviewsCount: 25,
       steamspyMedianMinutes: 600,
       steamspyAverageMinutes: 1200,
-      legacyMedianMinutes: 6000,
     });
     assert.deepEqual(result, { hours: 5, source: 'steam_reviews' }); // 300/60
   });
@@ -100,9 +99,9 @@ describe('resolveAveragePlaytime: priority (Steam reviews >= minReviews > SteamS
     assert.deepEqual(result, { hours: 2, source: 'steam_reviews' }); // 120/60
   });
 
-  test('does NOT use a reviews median below the 3-review floor - falls through to legacy instead', () => {
-    const result = resolveAveragePlaytime({ steamReviewsMedianMinutes: 120, steamReviewsCount: 2, legacyMedianMinutes: 300 });
-    assert.deepEqual(result, { hours: 5, source: 'legacy' }); // 300/60, reviews median (2 reviews) is skipped
+  test('does NOT use a reviews median below the 3-review floor - null when SteamSpy has nothing either', () => {
+    const result = resolveAveragePlaytime({ steamReviewsMedianMinutes: 120, steamReviewsCount: 2 });
+    assert.equal(result, null);
   });
 
   test('prefers the SteamSpy median when present and reviews are below minReviews', () => {
@@ -111,13 +110,12 @@ describe('resolveAveragePlaytime: priority (Steam reviews >= minReviews > SteamS
       steamReviewsCount: 5,
       steamspyMedianMinutes: 600,
       steamspyAverageMinutes: 1200,
-      legacyMedianMinutes: 6000,
     });
     assert.deepEqual(result, { hours: 10, source: 'steamspy' });
   });
 
   test('falls back to the SteamSpy average when the median is absent', () => {
-    const result = resolveAveragePlaytime({ steamspyAverageMinutes: 90, legacyMedianMinutes: 6000 });
+    const result = resolveAveragePlaytime({ steamspyAverageMinutes: 90 });
     assert.deepEqual(result, { hours: 1.5, source: 'steamspy' });
   });
 
@@ -126,15 +124,10 @@ describe('resolveAveragePlaytime: priority (Steam reviews >= minReviews > SteamS
     assert.deepEqual(result, { hours: 1.5, source: 'steamspy' });
   });
 
-  test('falls back to legacyMedianMinutes (stsp_mdntime) when SteamSpy has neither median nor average', () => {
-    const result = resolveAveragePlaytime({ legacyMedianMinutes: 300 });
-    assert.deepEqual(result, { hours: 5, source: 'legacy' });
-  });
-
   test('null when nothing at all is available', () => {
     assert.equal(resolveAveragePlaytime({}), null);
     assert.equal(resolveAveragePlaytime(), null);
-    assert.equal(resolveAveragePlaytime({ steamspyMedianMinutes: 0, steamspyAverageMinutes: 0, legacyMedianMinutes: 0 }), null);
+    assert.equal(resolveAveragePlaytime({ steamspyMedianMinutes: 0, steamspyAverageMinutes: 0 }), null);
   });
 });
 

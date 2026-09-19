@@ -4,7 +4,7 @@
 //
 // `fieldsBySource` is `{ <sourceName>: <extractedFields> }` — one entry per source module that has data for this
 // game (source names match `game_links.source` / `source_records.source`: steam, gog, legacy_steamdb, hltb, igdb,
-// steamspy, gamefaqs, opencritic, wikidata, ...). The shape of `<extractedFields>` (every key optional) is the
+// steamspy, gamefaqs, wikidata, ...). The shape of `<extractedFields>` (every key optional) is the
 // "Extracted-field vocabulary" in `docs/plans/2026-09-19-rewrite-plan.md` (Shared contracts -> Source module
 // interface) — read that instead of duplicating it here; source modules (T8-T16) are expected to produce exactly
 // those keys (`storeRelease`/`release`/`earlyAccess` for dates, `descriptionEn`/`descriptionRu`, `prices.{usd,rub,
@@ -188,14 +188,15 @@ function bestEarlyAccess(fieldsBySource) {
 }
 
 /**
- * Critics score (spec §7, updated for the live src/sources/metacritic.js source): priority is (1) the live
- * `metacritic` source module itself, (2) any *other* source reporting Metacritic provenance — the frozen
- * `legacy_steamdb`/`legacy_metacritic` snapshot, in insertion order — then (3) OpenCritic (disabled by default as of
- * this rewrite, see config.json's `sources.opencritic.enabled`, but still consulted here so a game an admin
- * re-enables it for keeps working). The live source wins even when a legacy-provenance entry happens to iterate
- * first in `fieldsBySource`, which a plain `firstAcrossAll` insertion-order lookup would get wrong. A source is
- * treated as "Metacritic" either because it says so via `scoreCriticsSource`, or, failing that, because its source
- * name mentions it (covers the frozen legacy snapshot regardless of which exact source key T7's migration used).
+ * Critics score (spec §7, updated for the live src/sources/metacritic.js source; OpenCritic dropped from
+ * the project 2026-09-19 — see config.json's `sources.opencritic` removal): priority is (1) the live
+ * `metacritic` source module itself, then (2) any *other* source reporting Metacritic provenance — the
+ * frozen `legacy_steamdb`/`legacy_metacritic` snapshot, in insertion order. The live source wins even when
+ * a legacy-provenance entry happens to iterate first in `fieldsBySource`, which a plain `firstAcrossAll`
+ * insertion-order lookup would get wrong. A source is treated as "Metacritic" either because it says so via
+ * `scoreCriticsSource`, or, failing that, because its source name mentions it (covers the frozen legacy
+ * snapshot regardless of which exact source key T7's migration used). `score_critics_source` is therefore
+ * either `'metacritic'` or `null` — never anything else.
  */
 function resolveCriticsScore(fieldsBySource) {
   const live = fieldsBySource.metacritic;
@@ -203,20 +204,14 @@ function resolveCriticsScore(fieldsBySource) {
     return { score: live.scoreCritics, count: live.scoreCriticsCount ?? null, source: 'metacritic' };
   }
 
-  let metacritic = null;
-  let opencritic = null;
-
   for (const [source, fields] of Object.entries(fieldsBySource)) {
     if (source === 'metacritic') continue; // already checked above (missing/empty live value)
     if (!fields || phpEmpty(fields.scoreCritics)) continue;
-    const provenance = fields.scoreCriticsSource || (source.includes('metacritic') ? 'metacritic' : source.includes('opencritic') ? 'opencritic' : null);
-    if (provenance === 'metacritic' && !metacritic) metacritic = { fields, provenance };
-    else if (provenance === 'opencritic' && !opencritic) opencritic = { fields, provenance };
+    const provenance = fields.scoreCriticsSource || (source.includes('metacritic') ? 'metacritic' : null);
+    if (provenance === 'metacritic') return { score: fields.scoreCritics, count: fields.scoreCriticsCount ?? null, source: 'metacritic' };
   }
 
-  const chosen = metacritic || opencritic;
-  if (!chosen) return { score: null, count: null, source: null };
-  return { score: chosen.fields.scoreCritics, count: chosen.fields.scoreCriticsCount ?? null, source: chosen.provenance };
+  return { score: null, count: null, source: null };
 }
 
 /**
@@ -359,24 +354,15 @@ export function resolveGame(fieldsBySource = {}, overrides = {}, config = {}, no
   columns.final_time = finalTimeValue;
   columns.time_complete = timeComplete;
 
-  // --- average playtime (Steam reviews median > SteamSpy > legacy - see time.js's resolveAveragePlaytime) ---
-  // `playtimeMedianMinutes` is reported under the same key by both a live 'steamspy' source_records row
-  // and the legacy_steamdb fallback (stsp_mdntime) - same pattern as `ownersEstimate` above - but
-  // time_average_source must say which one actually won, so (unlike firstAcrossAll's plain
-  // insertion-order lookup) this reads 'steamspy' specifically first and only then falls back to
-  // whatever *other* source reported the same key (in practice always legacy_steamdb).
+  // --- average playtime (Steam reviews median > SteamSpy - see time.js's resolveAveragePlaytime) ---
   const steamFields = fieldsBySource.steam || {};
   const steamspyFields = fieldsBySource.steamspy || {};
-  const legacyPlaytimeFields = Object.entries(fieldsBySource).find(
-    ([source, fields]) => source !== 'steamspy' && fields && !phpEmpty(fields.playtimeMedianMinutes)
-  )?.[1];
   const averagePlaytime = resolveAveragePlaytime(
     {
       steamReviewsMedianMinutes: steamFields.playtimeReviewsMedianMinutes,
       steamReviewsCount: steamFields.playtimeReviewsCount,
       steamspyMedianMinutes: steamspyFields.playtimeMedianMinutes,
       steamspyAverageMinutes: steamspyFields.playtimeAverageMinutes,
-      legacyMedianMinutes: legacyPlaytimeFields?.playtimeMedianMinutes,
     },
     resolverCfg.playtime
   );

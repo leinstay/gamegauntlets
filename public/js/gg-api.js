@@ -152,8 +152,6 @@
     var isGog = kind === "gog_exclusive";
     var links = card.links || {};
 
-    var criticsIsOpenCritic = card.scores && card.scores.criticsSource === "opencritic" && links.opencritic;
-
     return {
       id: card.id,
       name: card.name,
@@ -189,9 +187,7 @@
       hltb_url: links.hltb || null,
       gfq_url: links.gamefaqs || null,
       igdb_url: links.igdb || null,
-      meta_url: criticsIsOpenCritic ? links.opencritic : links.metacritic,
-      meta_is_opencritic: !!criticsIsOpenCritic,
-      opencritic_url: links.opencritic || null,
+      meta_url: links.metacritic,
       store_platform: isGog ? "GOG" : "Steam",
       description: descriptionToHtml(card.description),
       // Raw (untranslated) facts for the Pio mascot's phrase conditions and placeholders — see pioContext() in pgwheel.js.

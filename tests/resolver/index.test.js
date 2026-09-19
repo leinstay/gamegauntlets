@@ -85,27 +85,7 @@ describe('resolveGame: store field fallback to a non-steam/gog source (e.g. lega
   });
 });
 
-describe('resolveGame: critic score source priority (spec §7, updated for the live metacritic source)', () => {
-  test('a source declaring scoreCriticsSource metacritic wins over opencritic', () => {
-    const { columns } = resolveGame(
-      {
-        legacy_steamdb: { scoreCritics: 85, scoreCriticsSource: 'metacritic', scoreCriticsCount: 40 },
-        opencritic: { scoreCritics: 90, scoreCriticsSource: 'opencritic', scoreCriticsCount: 12 },
-      },
-      {},
-      config,
-      NOW
-    );
-    assert.equal(columns.score_critics, 85);
-    assert.equal(columns.score_critics_source, 'metacritic');
-  });
-
-  test('falls back to opencritic when there is no metacritic value at all', () => {
-    const { columns } = resolveGame({ opencritic: { scoreCritics: 77, scoreCriticsSource: 'opencritic' } }, {}, config, NOW);
-    assert.equal(columns.score_critics, 77);
-    assert.equal(columns.score_critics_source, 'opencritic');
-  });
-
+describe('resolveGame: critic score source priority (spec §7, updated for the live metacritic source; OpenCritic dropped)', () => {
   test('a source named legacy_metacritic is recognised even without an explicit scoreCriticsSource field', () => {
     const { columns } = resolveGame({ legacy_metacritic: { scoreCritics: 60 } }, {}, config, NOW);
     assert.equal(columns.score_critics, 60);
@@ -127,20 +107,6 @@ describe('resolveGame: critic score source priority (spec §7, updated for the l
     assert.equal(columns.score_critics_source, 'metacritic');
   });
 
-  test('the live metacritic source wins over opencritic even when opencritic iterates first', () => {
-    const { columns } = resolveGame(
-      {
-        opencritic: { scoreCritics: 70, scoreCriticsSource: 'opencritic' },
-        metacritic: { scoreCritics: 88, scoreCriticsSource: 'metacritic', scoreCriticsCount: 30 },
-      },
-      {},
-      config,
-      NOW
-    );
-    assert.equal(columns.score_critics, 88);
-    assert.equal(columns.score_critics_source, 'metacritic');
-  });
-
   test('a live metacritic entry with no score yet (tbd) falls back to a legacy Metacritic-provenance snapshot', () => {
     const { columns } = resolveGame(
       {
@@ -153,6 +119,12 @@ describe('resolveGame: critic score source priority (spec §7, updated for the l
     );
     assert.equal(columns.score_critics, 72);
     assert.equal(columns.score_critics_source, 'metacritic');
+  });
+
+  test('no source reporting a critics score resolves to null/null, not an empty object', () => {
+    const { columns } = resolveGame({ steam: { name: 'No critics data' } }, {}, config, NOW);
+    assert.equal(columns.score_critics, null);
+    assert.equal(columns.score_critics_source, null);
   });
 });
 
@@ -359,7 +331,7 @@ describe('resolveGame: time to beat glue (HLTB primary, IGDB secondary)', () => 
   });
 });
 
-describe('resolveGame: average playtime (Steam reviews >= minReviews > SteamSpy > legacy stsp_mdntime fallback)', () => {
+describe('resolveGame: average playtime (Steam reviews >= minReviews > SteamSpy)', () => {
   test('Steam reviews median wins once there are enough reviews, even over a live SteamSpy row', () => {
     const { columns } = resolveGame(
       {
@@ -388,11 +360,10 @@ describe('resolveGame: average playtime (Steam reviews >= minReviews > SteamSpy 
     assert.equal(columns.time_average_source, 'steamspy');
   });
 
-  test('a low-sample Steam reviews median (>= 3) still beats the legacy fallback when SteamSpy has nothing', () => {
+  test('a low-sample Steam reviews median (>= 3) still wins when SteamSpy has nothing', () => {
     const { columns } = resolveGame(
       {
         steam: { playtimeReviewsMedianMinutes: 120, playtimeReviewsCount: 3 },
-        legacy_steamdb: { playtimeMedianMinutes: 6000 },
       },
       {},
       config,
@@ -402,30 +373,10 @@ describe('resolveGame: average playtime (Steam reviews >= minReviews > SteamSpy 
     assert.equal(columns.time_average_source, 'steam_reviews');
   });
 
-  test('SteamSpy median wins even when a legacy snapshot also reports one', () => {
-    const { columns } = resolveGame(
-      {
-        steamspy: { playtimeMedianMinutes: 600, playtimeAverageMinutes: 900 },
-        legacy_steamdb: { playtimeMedianMinutes: 6000 },
-      },
-      {},
-      config,
-      NOW
-    );
-    assert.equal(columns.time_average, 10); // 600 / 60
-    assert.equal(columns.time_average_source, 'steamspy');
-  });
-
   test('falls back to SteamSpy average when its median is absent/0', () => {
     const { columns } = resolveGame({ steamspy: { playtimeAverageMinutes: 300 } }, {}, config, NOW);
     assert.equal(columns.time_average, 5); // 300 / 60
     assert.equal(columns.time_average_source, 'steamspy');
-  });
-
-  test('falls back to the legacy snapshot (stsp_mdntime, via legacy_steamdb) when no live SteamSpy data exists', () => {
-    const { columns } = resolveGame({ legacy_steamdb: { playtimeMedianMinutes: 120 } }, {}, config, NOW);
-    assert.equal(columns.time_average, 2); // 120 / 60
-    assert.equal(columns.time_average_source, 'legacy');
   });
 
   test('leaves time_average/time_average_source untouched (undefined in columns) when no source reports anything', () => {

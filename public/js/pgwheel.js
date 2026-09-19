@@ -4,8 +4,8 @@
 // unchanged from legacy. What changed:
 //   - Every $.ajax(.../gateway.php) call -> GG.api.* (public/js/gg-api.js), which already speaks the
 //     new JSON API and maps results back to the legacy game-object shape.
-//   - Gabestore -> GOG (#rgabebtn -> #rgogbtn), Metacritic button relabels itself to "Check on
-//     OpenCritic" when the card's critic score source is OpenCritic.
+//   - Gabestore -> GOG (#rgabebtn -> #rgogbtn). OpenCritic dropped from the project (2026-09-19): the
+//     Metacritic button no longer relabels itself, it always links Metacritic.
 //   - Video/YouTube support removed (no `store_promo_url` from the new backend).
 //   - "Average playtime" (#rhlaverage / stsp_mdntime) removed (not in the new data).
 //   - Two `.game-char` blocks (ru vs default sizing, ids suffixed "2" on the default block) are both
@@ -429,9 +429,8 @@ function populateAbout(e) {
 		setBoth("rval", $("#rval").html()),
 		$("#rbtn").attr("onclick", "window.open('" + (e.store_url ? e.store_url : "https://www.google.com/search?q=Buy+" + e.name) + "', '_blank')"),
 		$("#rgfbtn").attr("onclick", "window.open('" + (e.gfq_url ? e.gfq_url : "https://gamefaqs.gamespot.com/search?game=" + e.name) + "', '_blank')"),
-		(e.meta_is_opencritic
-			? ($("#rmetabtn").attr("onclick", "window.open('" + (e.opencritic_url || "https://opencritic.com/search?criteria=" + e.name) + "', '_blank')"), $("#rmetabtn").text(GG.i18n.t("Check on OpenCritic")))
-			: ($("#rmetabtn").attr("onclick", "window.open('" + (e.meta_url ? e.meta_url : "http://www.metacritic.com/search/game/" + e.name + "/results?plats[3]=1&search_type=advanced") + "', '_blank')"), $("#rmetabtn").text(GG.i18n.t("Check on Metacritic")))),
+		$("#rmetabtn").attr("onclick", "window.open('" + (e.meta_url ? e.meta_url : "http://www.metacritic.com/search/game/" + e.name + "/results?plats[3]=1&search_type=advanced") + "', '_blank')"),
+		$("#rmetabtn").text(GG.i18n.t("Check on Metacritic")),
 		$("#rigdbbtn").attr("onclick", "window.open('" + (e.igdb_url ? e.igdb_url : "https://www.igdb.com/") + "', '_blank')"),
 		$("#rgogbtn").attr("onclick", "window.open('" + (e.gog_url ? e.gog_url : "https://www.gog.com/games?query=" + e.name) + "', '_blank')"),
 		$("#rhltbbtn").attr("onclick", "window.open('" + (e.hltb_url ? e.hltb_url : "https://howlongtobeat.com/") + "', '_blank')"), $("#deskLabel").attr("onclick", "window.open('" + (e.store_url ? e.store_url : "https://www.google.com/search?q=Buy+" + e.name) + "', '_blank')"), $("#deskLabel .label").each(function (e, t) {
