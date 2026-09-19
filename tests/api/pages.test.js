@@ -248,3 +248,15 @@ test('cache re-reads public/index.html when its mtime changes', async (t) => {
   const second = await app.inject({ method: 'GET', url: '/' });
   assert.match(second.body, /<div id="marker">B<\/div>/);
 });
+
+test('GET /?ru and /?lang=ja: legacy language links redirect 301 to the localized URL', async () => {
+  const app = buildTestApp({});
+  const bare = await app.inject({ method: 'GET', url: '/?ru' });
+  assert.equal(bare.statusCode, 301);
+  assert.equal(bare.headers.location, '/ru/');
+  const explicit = await app.inject({ method: 'GET', url: '/?lang=ja' });
+  assert.equal(explicit.statusCode, 301);
+  assert.equal(explicit.headers.location, '/ja/');
+  const other = await app.inject({ method: 'GET', url: '/?utm_source=x' });
+  assert.equal(other.statusCode, 200);
+});

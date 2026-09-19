@@ -239,6 +239,12 @@ export default async function pagesRoutes(app) {
   // x-default: language picked from Accept-Language (never from the session cookie -- this route is
   // stateless/cacheable, see file header), but the canonical URL always stays "/".
   app.get('/', async (req, reply) => {
+    // Old-style language links ("/?ru", "/?lang=ru" - indexed and shared for years) move to the localized URL.
+    const rawQuery = (req.raw.url.split('?')[1] || '').split('#')[0];
+    const bare = rawQuery.split('&')[0].toLowerCase();
+    const explicit = typeof req.query?.lang === 'string' ? req.query.lang.toLowerCase() : null;
+    const legacyLang = isSupported(explicit) ? explicit : isSupported(bare) ? bare : null;
+    if (legacyLang) return reply.redirect(`/${legacyLang}/`, 301);
     const lang = pickLanguageFromAcceptHeader(req.headers['accept-language'], languages) || 'en';
     reply.header('Vary', 'Accept-Language');
     sendShell(reply, { lang, canonicalPath: '/' });
