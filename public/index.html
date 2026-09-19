@@ -127,6 +127,9 @@
     <!-- compat.css restores the handful of Semantic-2.4-era renderings (see file header) that Fomantic
          UI 2.9's otherwise-compatible CSS changed; keep it last so it always wins the cascade. -->
     <link rel="stylesheet" href="css/compat.css?v=dev" />
+    <!-- layout.css: narrow-viewport (<1024px) layout fixes on top of the legacy grids; loaded last
+         so it always wins the cascade. Does not touch the >=1024px desktop look (see file header). -->
+    <link rel="stylesheet" href="css/layout.css?v=dev" />
 
     <link rel='stylesheet' href='pio/pio.css?v=dev' />
 

@@ -1,0 +1,138 @@
+/*
+ * Layout tuning on top of the legacy main.css/responsive.css/compat.css stack (see index.html for
+ * load order -- this file is last, so any selector here wins the cascade at equal specificity).
+ *
+ * Ground rule: the desktop look at >=1024px must not change by a single pixel, EXCEPT the settings
+ * header gap below (explicitly approved). Every other rule in this file is scoped inside a
+ * `max-width: 1023px` (or narrower) media query for that reason.
+ */
+
+/* --------------------------------------------------------------------------------------------
+ * 1) Settings header: 10px gap between the "CIS region" pill and the language dropdown.
+ *    .settingsright is a flex row (display:flex from main.css) with justify-content:flex-end, so
+ *    its two children sit flush against each other, flush against the right edge. Adding `gap`
+ *    only pushes the first child (the pill) 10px further left; the dropdown (last child, still
+ *    pinned by justify-content:flex-end) does not move. This is the one change allowed at every
+ *    width, including >=1024px, per the task.
+ *
+ *    The old inline `style="height:47px; justify-content:flex-end"` on .settingsright (settings.html)
+ *    was moved here unchanged so the <768px block below can override it -- inline styles can't be
+ *    overridden by a stylesheet without !important, and the ground rule asks to avoid !important
+ *    hacks where the markup can just stop hardcoding it instead.
+ * ------------------------------------------------------------------------------------------ */
+.settingsright {
+	height: 47px;
+	justify-content: flex-end;
+	gap: 10px;
+}
+
+/* --------------------------------------------------------------------------------------------
+ * 2) Settings header on phones (<768px): title on its own line, then the CIS pill and the language
+ *    dropdown as two equal-width, equal-height controls on a second line with an 8px gap.
+ *    Before this, .settingsright kept its desktop `width:550px` `height:47px` box (or the 200px
+ *    width from responsive.css) with two content-sized children crammed into it -- hence the
+ *    wrapped/overlapping pill label and the dropdown text clipped at the viewport edge.
+ * ------------------------------------------------------------------------------------------ */
+@media screen and (max-width: 767px) {
+	.settingsleft,
+	.settingsright {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+	.settingsright {
+		height: auto;
+		width: auto;
+		justify-content: flex-start;
+		align-items: stretch;
+		gap: 8px;
+		padding: 6px 0 2px;
+		box-sizing: border-box;
+	}
+	/* the two controls: CIS-region pill (.ui.vertical.segment, only present for data-lang="ru") and
+	   #changeLang. Equal width, allowed to shrink below their content size (min-width:0) so the
+	   ellipsis rules below can kick in instead of overflowing. */
+	.settingsright > .ui.vertical.segment,
+	.settingsright > #changeLang.ui.dropdown {
+		flex: 1 1 0;
+		width: auto;
+		min-width: 0;
+		margin: 0;
+	}
+	.settingsright > .ui.vertical.segment {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+	}
+	.settingsright #backupRegion {
+		max-width: 100%;
+		min-width: 0;
+	}
+	.settingsright #backupRegion label {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		max-width: 100%;
+	}
+	#changeLang.ui.dropdown {
+		text-align: center;
+	}
+	#changeLang.ui.dropdown > .text {
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+/* --------------------------------------------------------------------------------------------
+ * 3) & 4) Wheel page and settings page below 1024px: single full-width column instead of the
+ *    legacy grids squeezing into ~250px columns.
+ *
+ *    #content itself is `.ui.container`; semantic.css gives it a *fixed* width in the 768-991px
+ *    (923px) and 992-1199px (1133px) brackets -- both wider than the viewport at the low end of
+ *    their own bracket. #content-wrapper has `overflow-x:hidden` at every width, so the excess
+ *    silently clips instead of scrolling: that's the "wrapped buttons / clipped text" the owner
+ *    reported. Forcing #content back to an auto width (like semantic.css already does <=767px)
+ *    makes the grids below lay out against the real viewport width.
+ * ------------------------------------------------------------------------------------------ */
+@media screen and (max-width: 1023px) {
+	#content.ui.container {
+		width: auto !important;
+		margin-left: 1em !important;
+		margin-right: 1em !important;
+	}
+
+	/* --- Task 3: wheel page (public/pages/wheel.html), ".ui.equal.width.grid" --- */
+	#content .ui.equal.width.grid {
+		display: flex;
+		flex-direction: column;
+	}
+	#content .ui.equal.width.grid > .column {
+		width: 100% !important;
+		max-width: 100%;
+		min-width: 0 !important; /* overrides the inline 250/350/550px min-widths and the pgindex.js
+		                            resizeWheel() inline min-width set on the wheel's own column */
+		box-sizing: border-box;
+		flex: 0 0 auto;
+	}
+	/* Required order: wheel canvas, About the game, then the profile/description/full-list column
+	   (that column's own internal order -- profile card, Description, Full list -- is already the
+	   markup order, nothing to do there). The wheel column is the only one that needs to move. */
+	#content .ui.equal.width.grid > .column.six.wide {
+		order: -1;
+	}
+
+	/* --- Task 4: settings page (public/pages/settings.html) filter columns --- */
+	#content .three.column.stackable.doubling.centered.ui.grid {
+		margin-left: 0 !important;
+		margin-right: 0 !important;
+	}
+	#content .three.column.stackable.doubling.centered.ui.grid > .column {
+		width: 100% !important;
+		margin: 0 !important;
+		box-shadow: none !important;
+		padding: 1rem 1rem !important;
+		box-sizing: border-box;
+	}
+}

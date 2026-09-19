@@ -11,7 +11,12 @@ var mainRequest, musIndex = Math.floor(5 * Math.random()) + 0,
 	timeFVars = {},
 	currentPage = "wheel",
 	screenVersion = "PC",
-	reroll = false;
+	reroll = false,
+	// Below this width the wheel/settings grids stack to a single column (public/css/layout.css);
+	// screenVersion must switch to "Mobile" at the same width so calculateResponsiveOnResize()/
+	// calculateLeftHeight()/calculateRightHeight() stop trying to size two side-by-side columns.
+	// Was 768 (phones only) before the 768-1023px range also got the stacked layout.
+	MOBILE_BREAKPOINT = 1024;
 
 function loadAjaxPage(e) {
 	$.each(timeFVars, function (b) {
@@ -106,8 +111,12 @@ function calculateResponsiveOnResize() {
 
 function resizeWheel() {
 	if (theWheel) {
-		wheelHeight = ((screenVersion == 'Mobile') ? $(window).width() - 7 : Math.min(690, Math.max($(window).width() / 3.264705882352941, 310)));
-		wheelWidth = ((screenVersion == 'Mobile') ? $(window).width() - 7 : Math.min(690, Math.max($(window).width() / 3.264705882352941, 310)));
+		// Mobile mode used to only run <768px, where "window width - 7" stays reasonable. Now that
+		// it also runs up to 1023px, cap it at 690px (same cap as the PC formula) so the wheel
+		// doesn't become absurdly large around 1000px; #canvas already centers itself (margin:auto
+		// in main.css) within its now-full-width column (public/css/layout.css).
+		wheelHeight = ((screenVersion == 'Mobile') ? Math.min(690, $(window).width() - 7) : Math.min(690, Math.max($(window).width() / 3.264705882352941, 310)));
+		wheelWidth = ((screenVersion == 'Mobile') ? Math.min(690, $(window).width() - 7) : Math.min(690, Math.max($(window).width() / 3.264705882352941, 310)));
 		wheelSize = wheelWidth / 2;
 		$("#spin_button").css({
 	        bottom: wheelWidth / 2 + wheelWidth / 5 / 2 + 10 + "px",
@@ -168,7 +177,7 @@ function calculateRightHeight() {
 }
 
 function checkScreenType() {
-	if ($(window).width() < 768)
+	if ($(window).width() < MOBILE_BREAKPOINT)
 	    screenVersion = "Mobile";
 	else
 	    screenVersion = "PC";
