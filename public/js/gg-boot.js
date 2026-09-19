@@ -16,6 +16,8 @@
     // Legacy (`ajax/scripts/init.php` -> getlang()): "?en"/"?ru"/"?de"/"?fr"/... in the URL wins.
     var search = window.location.search.replace(/^\?/, "");
     var candidate = search.split("&")[0];
+    var explicit = /(?:^|&)lang=([a-zA-Z-]+)/.exec(search); // "?lang=ja" works too
+    if (explicit) candidate = explicit[1].toLowerCase();
     return SUPPORTED_LANGS.indexOf(candidate) !== -1 ? candidate : null;
   }
 
