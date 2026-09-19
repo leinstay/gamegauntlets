@@ -3,9 +3,14 @@
 // run, auto-refresh 10 s").
 
 import { getSources, pauseSource, resumeSource, runSource } from "./api.js";
-import { escapeHtml, fmtDateTime, showError } from "./ui.js";
+import { escapeHtml, fmtDateTime, fmtAge, ageHours, showError } from "./ui.js";
 
 const REFRESH_MS = 10_000;
+
+// An error older than this shows in the muted colour instead of red — a still-red last_error would
+// otherwise read as "this is happening right now" long after the source recovered (its age, shown
+// next to the text, is what actually tells the admin how stale it is).
+const STALE_ERROR_HOURS = 6;
 
 function fmtQueue(counts) {
   if (!counts) return '<span class="muted">n/a (queue unreachable)</span>';
@@ -15,12 +20,23 @@ function fmtQueue(counts) {
   return parts.join(", ") || "-";
 }
 
+/** The last_error cell: text + its age ("3 h ago"), muted instead of red once older than STALE_ERROR_HOURS. */
+function fmtLastError(source) {
+  if (!source.lastError) return { html: "-", cellClass: "cell-error" };
+  const age = ageHours(source.lastErrorAt);
+  const isStale = age !== null && age > STALE_ERROR_HOURS;
+  const ageLabel = fmtAge(source.lastErrorAt);
+  const html = `${escapeHtml(source.lastError)}${ageLabel ? ` <span class="error-age">(${escapeHtml(ageLabel)})</span>` : ""}`;
+  return { html, cellClass: isStale ? "cell-error cell-error-stale" : "cell-error" };
+}
+
 function rowHtml(source) {
   const statusBadge = source.paused
     ? '<span class="badge badge-warn">paused</span>'
     : source.enabled
       ? '<span class="badge badge-ok">running</span>'
       : '<span class="badge">disabled</span>';
+  const lastError = fmtLastError(source);
 
   return `
     <tr data-source="${escapeHtml(source.name)}">
@@ -28,7 +44,7 @@ function rowHtml(source) {
       <td>${statusBadge}</td>
       <td>${fmtDateTime(source.lastRunAt)}</td>
       <td>${fmtDateTime(source.lastFullPassAt)}</td>
-      <td class="cell-error">${source.lastError ? escapeHtml(source.lastError) : "-"}</td>
+      <td class="${lastError.cellClass}">${lastError.html}</td>
       <td>${fmtQueue(source.queueCounts)}</td>
       <td>${source.recordsCount.toLocaleString()}</td>
       <td>${source.linksCount.toLocaleString()}</td>

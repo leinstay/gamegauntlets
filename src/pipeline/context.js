@@ -41,16 +41,48 @@ const UPSERT_LINK_SQL = `
     checked_at = VALUES(checked_at)
 `;
 
+const NULL_STALE_RECORD_GAME_ID_SQL = `
+  UPDATE source_records SET game_id = NULL WHERE source = ? AND external_id = ? AND game_id = ?
+`;
+
+/**
+ * Whether `err` is a MySQL foreign-key-constraint failure (errno 1452,
+ * `ER_NO_REFERENCED_ROW_2` — or the older `ER_NO_REFERENCED_ROW`) — the shape
+ * mysql2 throws when an INSERT/UPDATE references a parent row (here:
+ * `games.id`) that doesn't exist. This is exactly what happens when a game
+ * gets deleted (a non-game purge or a merge, see src/pipeline/purge-non-games.js)
+ * between a job being enqueued and it actually running: `game_links.game_id`
+ * has `fk_links_game`, so a `fetchOne()` still holding the old, now-vanished
+ * `gameId` fails right here instead of anywhere upstream.
+ */
+function isMissingGameForeignKeyError(err) {
+  return err?.errno === 1452 || err?.code === 'ER_NO_REFERENCED_ROW_2' || err?.code === 'ER_NO_REFERENCED_ROW';
+}
+
 /**
  * Upsert a `source_records` row (unique on `source`+`external_id`), keyed
  * `(source, externalId)`. `status` defaults to `'ok'` (the enum's other
  * values are `'not_found'`/`'error'`); `payload` is stored as a JSON string
  * (or `NULL`), never re-serialized on the raw string a module may already
  * hold.
+ *
+ * `source_records.game_id` carries no foreign key (unlike `game_links`, see
+ * `upsertLink`), so a `gameId` for a since-deleted game is not rejected by
+ * MySQL — this is handled defensively anyway (same `isMissingGameForeignKeyError`
+ * check, in case that ever changes): the row is still stored, just with
+ * `game_id = NULL` instead of throwing/aborting the caller's fetchOne.
  */
-export function upsertRecord(db, source, externalId, { status = 'ok', payload = null, error = null, gameId = null } = {}) {
+export async function upsertRecord(db, source, externalId, { status = 'ok', payload = null, error = null, gameId = null } = {}, log = null) {
   const payloadJson = payload === null || payload === undefined ? null : JSON.stringify(payload);
-  return db.query(UPSERT_RECORD_SQL, [source, externalId, gameId, status, payloadJson, error]);
+  try {
+    return await db.query(UPSERT_RECORD_SQL, [source, externalId, gameId, status, payloadJson, error]);
+  } catch (err) {
+    if (gameId !== null && isMissingGameForeignKeyError(err)) {
+      log?.info?.('pipeline: upsertRecord - game no longer exists, storing with game_id = NULL', { source, externalId, gameId });
+      return db.query(UPSERT_RECORD_SQL, [source, externalId, null, status, payloadJson, error]);
+    }
+    throw err;
+  }
 }
 
 /**
@@ -58,9 +90,30 @@ export function upsertRecord(db, source, externalId, { status = 'ok', payload = 
  * to `externalId` on `source`. `method` must be one of the
  * `match_method` enum values (`store`, `wikidata`, `igdb`, `name`, `manual`,
  * `legacy`); defaults to `'name'` for the fallback similarity match.
+ *
+ * `game_links.game_id` has `fk_links_game`: if `gameId` no longer exists (the
+ * game was deleted between enqueue and fetch — see `isMissingGameForeignKeyError`),
+ * this does NOT throw — a source's `fetchOne()` calling this after already
+ * calling `upsertRecord(...)` for the same `(source, externalId)` must be able
+ * to finish cleanly instead of the whole job failing (and `source_state.last_error`
+ * recording a confusing FK message for what is really just stale data, not a
+ * source problem). Instead: the stale `source_records` row `upsertRecord` may
+ * have just written for this exact `(source, externalId, gameId)` is corrected
+ * to `game_id = NULL` (it must not keep pointing at a game that no longer
+ * exists), and `{ status: 'skipped', reason: 'game-gone' }` is returned so the
+ * caller can log/return normally instead of throwing.
  */
-export function upsertLink(db, gameId, source, externalId, { url = null, method = 'name', confidence = 100 } = {}) {
-  return db.query(UPSERT_LINK_SQL, [gameId, source, externalId, url, method, confidence]);
+export async function upsertLink(db, gameId, source, externalId, { url = null, method = 'name', confidence = 100 } = {}, log = null) {
+  try {
+    return await db.query(UPSERT_LINK_SQL, [gameId, source, externalId, url, method, confidence]);
+  } catch (err) {
+    if (isMissingGameForeignKeyError(err)) {
+      log?.info?.('pipeline: upsertLink - game no longer exists, skipping link', { source, externalId, gameId });
+      await db.query(NULL_STALE_RECORD_GAME_ID_SQL, [source, externalId, gameId]);
+      return { status: 'skipped', reason: 'game-gone' };
+    }
+    throw err;
+  }
 }
 
 /**
@@ -93,8 +146,8 @@ export function createContext({ db, http, log, env, config, enqueue, enqueueReso
     enqueueResolve,
     queueCounts: queueCounts ?? (async () => ({ waiting: 0, delayed: 0 })),
     trimQueue: trimQueue ?? (async () => 0),
-    upsertRecord: (source, externalId, opts) => upsertRecord(db, source, externalId, opts),
-    upsertLink: (gameId, source, externalId, opts) => upsertLink(db, gameId, source, externalId, opts),
+    upsertRecord: (source, externalId, opts) => upsertRecord(db, source, externalId, opts, log),
+    upsertLink: (gameId, source, externalId, opts) => upsertLink(db, gameId, source, externalId, opts, log),
   };
 }
 

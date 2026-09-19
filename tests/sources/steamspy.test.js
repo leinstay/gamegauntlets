@@ -450,7 +450,7 @@ test('discover: persists the page cursor after every page (crash-resume)', async
   assert.deepEqual(JSON.parse(finalState.cursor_state), { nextPage: 0 });
 });
 
-test('discover: a failure mid-walk records last_error and rethrows without completing the pass', async () => {
+test('discover: a failure mid-walk rethrows without completing the pass', async () => {
   const db = createFakeDb({ gameRows: [], recordRows: [] });
   const http = {
     getJson: async () => {
@@ -460,7 +460,28 @@ test('discover: a failure mid-walk records last_error and rethrows without compl
   const config = { sources: { steamspy: { allPageDelayMs: 0 } } };
 
   await assert.rejects(() => discover(buildCtx({ db, http, config })), /boom/);
-  assert.equal(db.getStateRow().last_error, 'boom');
+  // Recording (and clearing) source_state.last_error is src/worker.js's job now (only on the final
+  // BullMQ retry attempt, via touchSourceState/isFinalAttempt) - discover() itself no longer writes
+  // it directly, so a since-recovered source never gets stuck showing a stale error (see worker.js's
+  // nextSourceState doc comment).
+  assert.equal(db.getStateRow().last_error, undefined);
+});
+
+test('discover: a non-JSON response (e.g. SteamSpy answering plain text "Connection failed") is rewrapped into a clear, retriable error', async () => {
+  const db = createFakeDb({ gameRows: [], recordRows: [] });
+  const http = {
+    getJson: async () => {
+      // Mirrors what src/lib/http.js's getJson() throws when res.body.json() fails: a native
+      // SyntaxError whose message already embeds a snippet of the non-JSON body.
+      throw new SyntaxError(`Unexpected token 'C', "Connection failed" is not valid JSON`);
+    },
+  };
+  const config = { sources: { steamspy: { allPageDelayMs: 0 } } };
+
+  await assert.rejects(
+    () => discover(buildCtx({ db, http, config })),
+    /steamspy: upstream returned non-JSON .*Connection failed/,
+  );
 });
 
 test('discover: is a no-op when disabled in config', async () => {
@@ -572,6 +593,56 @@ test('fetchOne: a network/HTTP failure records status error and rethrows for Bul
   await assert.rejects(() => fetchOne(ctx, { data: { externalId: '620' } }), /boom/);
   const record = db.calls.find((c) => /INSERT INTO source_records/i.test(c.sql));
   assert.equal(record.params[3], 'error');
+});
+
+test('fetchOne: a non-JSON response is rewrapped into a clear, retriable error and recorded as this appid\'s own source_records error', async () => {
+  const db = fakeDbForFetchOne();
+  const http = {
+    getJson: async () => {
+      throw new SyntaxError(`Unexpected token 'C', "Connection failed" is not valid JSON`);
+    },
+  };
+  const ctx = buildCtx({ db, http });
+
+  await assert.rejects(
+    () => fetchOne(ctx, { data: { externalId: '620' } }),
+    /steamspy: upstream returned non-JSON .*Connection failed/,
+  );
+  const record = db.calls.find((c) => /INSERT INTO source_records/i.test(c.sql));
+  assert.equal(record.params[3], 'error');
+  assert.match(record.params[5], /steamspy: upstream returned non-JSON/);
+});
+
+test('fetchOne: the game was deleted between enqueue and fetch (game_links FK failure) -> does not throw, does not enqueue a resolve', async () => {
+  const calls = [];
+  const db = {
+    calls,
+    query: async (sql, params = []) => {
+      calls.push({ sql, params });
+      if (/INSERT INTO game_links/i.test(sql)) {
+        const err = new Error('Cannot add or update a child row: a foreign key constraint fails (`gg`.`game_links`, CONSTRAINT `fk_links_game`)');
+        err.errno = 1452;
+        err.code = 'ER_NO_REFERENCED_ROW_2';
+        throw err;
+      }
+      return { affectedRows: 1 };
+    },
+    one: async (sql) => {
+      if (/SELECT id FROM games WHERE steam_appid/i.test(sql)) return null;
+      return null;
+    },
+  };
+  const http = { getJson: async () => PORTAL2 };
+  const resolveCalls = [];
+  const ctx = buildCtx({ db, http, enqueueResolve: async (id) => resolveCalls.push(id) });
+
+  const result = await fetchOne(ctx, { data: { gameId: 42, externalId: '620' } });
+
+  assert.equal(result.status, 'ok');
+  assert.equal(result.reason, 'game-gone');
+  assert.deepEqual(resolveCalls, [], 'must not enqueue a resolve for a game that no longer exists');
+  const nullingCall = calls.find((c) => /UPDATE source_records SET game_id = NULL/i.test(c.sql));
+  assert.ok(nullingCall, 'the just-written source_records row must be corrected to game_id = NULL');
 });
 
 test('fetchOne: throws when externalId is missing', async () => {

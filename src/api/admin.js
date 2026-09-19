@@ -48,6 +48,17 @@ function audit(req, action, meta = {}) {
   log.info(`admin: ${action}`, { steamid: req.ggSession?.steamid, ...meta });
 }
 
+/** `source_state.stats` may come back from mysql2 already parsed (a JSON column) or as a raw string. */
+function parseStatsJson(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'object') return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
 /** Random, colon-free suffix — BullMQ >= 6 rejects custom job ids containing ':'. */
 function uniqueSuffix() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -221,6 +232,9 @@ export default async function adminRoutes(app) {
           log.warn('admin: getJobCounts failed (Redis down?)', { source: mod.name, error: err });
           queueCounts = null;
         }
+        // `stats.lastErrorAt` (src/worker.js's nextSourceState()) is when `lastError` was last set -
+        // surfaced separately so the UI can show its age ("3 h ago") instead of just the bare text.
+        const stats = parseStatsJson(state?.stats);
         return {
           name: mod.name,
           enabled: configSources[mod.name]?.enabled !== false,
@@ -228,6 +242,7 @@ export default async function adminRoutes(app) {
           lastRunAt: state?.last_run_at ?? null,
           lastFullPassAt: state?.last_full_pass_at ?? null,
           lastError: state?.last_error ?? null,
+          lastErrorAt: stats?.lastErrorAt ?? null,
           stats: state?.stats ?? null,
           queueCounts,
           recordsCount: recordsBySource.get(mod.name) ?? 0,

@@ -415,7 +415,7 @@ function fakeHttp({ pages = {} } = {}) {
   };
 }
 
-function fakeFetchCtx({ game, existingLink = null, upsertRecordCalls = [], upsertLinkCalls = [], enqueueResolveCalls = [], conflictCalls = [], pauseCalls = [], http }) {
+function fakeFetchCtx({ game, existingLink = null, upsertRecordCalls = [], upsertLinkCalls = [], enqueueResolveCalls = [], conflictCalls = [], pauseCalls = [], http, upsertLinkResult = undefined }) {
   const db = {
     one: async (sql) => {
       if (sql.includes('FROM games WHERE id')) return game;
@@ -436,7 +436,10 @@ function fakeFetchCtx({ game, existingLink = null, upsertRecordCalls = [], upser
     config: {},
     db,
     upsertRecord: async (source, externalId, opts) => upsertRecordCalls.push({ source, externalId, opts }),
-    upsertLink: async (gameId, source, externalId, opts) => upsertLinkCalls.push({ gameId, source, externalId, opts }),
+    upsertLink: async (gameId, source, externalId, opts) => {
+      upsertLinkCalls.push({ gameId, source, externalId, opts });
+      return upsertLinkResult;
+    },
     enqueueResolve: async (gameId) => enqueueResolveCalls.push(gameId),
   };
 }
@@ -462,6 +465,22 @@ test('fetchOne: existing legacy link (bare slug) -> fetches directly, no guess',
   assert.equal(upsertLinkCalls[0].opts.method, 'legacy');
   assert.equal(upsertLinkCalls[0].opts.url, 'https://www.metacritic.com/game/portal-2/');
   assert.deepEqual(enqueueResolveCalls, [5]);
+});
+
+test('fetchOne: upsertLink reports the game was deleted (game-gone) -> does not enqueue a resolve for it', async () => {
+  const http = fakeHttp({ pages: { '/game/portal-2/': portal2Html } });
+  const enqueueResolveCalls = [];
+  const ctx = fakeFetchCtx({
+    http,
+    game: { id: 5, name: 'Portal 2', release_date: '2011-04-19' },
+    existingLink: { external_id: 'portal-2', url: null, match_method: 'legacy', confidence: 100 },
+    enqueueResolveCalls,
+    upsertLinkResult: { status: 'skipped', reason: 'game-gone' },
+  });
+  const result = await fetchOne(ctx, { data: { gameId: 5 } });
+  assert.equal(result.status, 'ok');
+  assert.equal(result.reason, 'game-gone');
+  assert.deepEqual(enqueueResolveCalls, [], 'must not enqueue a resolve for a game that no longer exists');
 });
 
 test('fetchOne: existing wikidata-style link ("game/pc/<slug>") -> normalises before fetching', async () => {
@@ -556,6 +575,26 @@ test('fetchOne: a non-legacy link (wikidata/name/manual) that 404s does NOT fall
     http,
     game: { id: 5, name: 'Portal 2', release_date: '2011-04-19' },
     existingLink: { external_id: 'gone-slug', url: null, match_method: 'name', confidence: 90 },
+    upsertRecordCalls,
+  });
+  const result = await fetchOne(ctx, { data: { gameId: 5 } });
+  assert.equal(result.status, 'not_found');
+  assert.equal(upsertRecordCalls[0].opts.status, 'not_found');
+});
+
+test('fetchOne: a 410 Gone page (delisted game) is treated like a 404 -> not_found, not a failure/last_error', async () => {
+  const http = {
+    getText: async () => {
+      const err = new Error('Gone');
+      err.statusCode = 410;
+      throw err;
+    },
+  };
+  const upsertRecordCalls = [];
+  const ctx = fakeFetchCtx({
+    http,
+    game: { id: 5, name: 'Portal 2', release_date: '2011-04-19' },
+    existingLink: { external_id: 'portal-2', url: null, match_method: 'legacy', confidence: 100 },
     upsertRecordCalls,
   });
   const result = await fetchOne(ctx, { data: { gameId: 5 } });

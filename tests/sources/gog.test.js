@@ -409,7 +409,7 @@ function fakeHttp({ en, ru, pricesUsd, pricesRub }) {
   };
 }
 
-function fakeCtx({ http, dbRouter, enqueueResolveCalls = [], upsertRecordCalls = [], upsertLinkCalls = [] }) {
+function fakeCtx({ http, dbRouter, enqueueResolveCalls = [], upsertRecordCalls = [], upsertLinkCalls = [], upsertLinkResult = undefined }) {
   return {
     http,
     log,
@@ -423,6 +423,7 @@ function fakeCtx({ http, dbRouter, enqueueResolveCalls = [], upsertRecordCalls =
     },
     upsertLink: async (gameId, source, externalId, opts) => {
       upsertLinkCalls.push({ gameId, source, externalId, opts });
+      return upsertLinkResult;
     },
     enqueueResolve: async (gameId) => {
       enqueueResolveCalls.push(gameId);
@@ -466,6 +467,56 @@ test('fetchOne: games row already has this gog_id -> reuses it, link only (no in
   assert.equal(upsertLinkCalls.length, 1);
   assert.equal(upsertLinkCalls[0].gameId, 777);
   assert.deepEqual(enqueueResolveCalls, [777]);
+});
+
+test('fetchOne: upsertLink reports the matched game was deleted (game-gone) -> does not enqueue a resolve for it', async () => {
+  const http = fakeHttp(homm3);
+  const enqueueResolveCalls = [];
+  const dbRouter = {
+    one: async (sql) => (sql.includes('WHERE gog_id = ?') ? { id: 777 } : null),
+    query: async () => [],
+  };
+  const ctx = fakeCtx({ http, dbRouter, enqueueResolveCalls, upsertLinkResult: { status: 'skipped', reason: 'game-gone' } });
+
+  const result = await fetchOne(ctx, { data: { externalId: '1207658787' } });
+
+  assert.equal(result.status, 'ok');
+  assert.equal(result.gameId, null);
+  assert.equal(result.reason, 'game-gone');
+  assert.deepEqual(enqueueResolveCalls, [], 'must not enqueue a resolve for a game that no longer exists');
+});
+
+test('fetchOne: GOG prices endpoint 400s (product no longer sold) -> treated as "no price", record still stored ok', async () => {
+  const http = {
+    getJson: async (url) => {
+      if (url.includes('locale=en-US')) return homm3.en;
+      if (url.includes('locale=ru-RU')) return homm3.ru;
+      if (url.includes('/prices')) {
+        const err = new Error(`HTTP 400 for ${url}`);
+        err.statusCode = 400;
+        throw err;
+      }
+      throw new Error(`fakeHttp: unexpected url ${url}`);
+    },
+  };
+  const upsertLinkCalls = [];
+  const upsertRecordCalls = [];
+  const dbRouter = {
+    one: async (sql) => (sql.includes('WHERE gog_id = ?') ? { id: 777 } : null),
+    query: async () => [],
+  };
+  const ctx = fakeCtx({ http, dbRouter, upsertLinkCalls, upsertRecordCalls });
+
+  const result = await fetchOne(ctx, { data: { externalId: '1207658787' } });
+
+  assert.equal(result.status, 'ok');
+  assert.equal(result.gameId, 777);
+  assert.equal(upsertRecordCalls.length, 1);
+  assert.equal(upsertRecordCalls[0].opts.status, 'ok');
+  assert.equal(upsertRecordCalls[0].opts.payload.pricesUsd, null);
+  assert.equal(upsertRecordCalls[0].opts.payload.pricesRub, null);
+  // extract() must simply see no price data rather than blowing up on a null prices response.
+  assert.equal(upsertRecordCalls[0].opts.payload.pricesUsd, null);
 });
 
 test('fetchOne: existing wikidata-derived game_links row -> attaches to that game', async () => {

@@ -164,6 +164,10 @@ input[type="text"], input[type="search"], input[type="number"], textarea, select
 .admin-table tr:last-child td { border-bottom: none; }
 .cell-actions { white-space: nowrap; }
 .cell-error { max-width: 260px; overflow-wrap: anywhere; color: var(--color-danger); }
+/* An error older than STALE_ERROR_HOURS (admin/sources.js) reads as resolved, not ongoing - muted
+   instead of red so a still-red row reliably means "this is happening right now". */
+.cell-error-stale { color: var(--color-text-muted); }
+.error-age { color: var(--color-text-muted); font-size: 11px; }
 
 .candidates {
   margin: 0;

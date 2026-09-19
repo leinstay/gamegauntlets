@@ -197,7 +197,10 @@ async function fetchMetacriticPage(ctx, slug) {
     return { blocked: false, html };
   } catch (err) {
     if (isBlockedResponse(err?.statusCode, err?.body)) return { blocked: true, html: null };
-    if (err?.statusCode === 404) return { blocked: false, html: null };
+    // 410 Gone is Metacritic's other "no such page" response for a delisted/removed game (a single
+    // game's page going away is a normal per-item outcome, not a source-wide failure) - treated
+    // exactly like a 404 so it never bubbles up as this source's `last_error` (see src/worker.js).
+    if (err?.statusCode === 404 || err?.statusCode === 410) return { blocked: false, html: null };
     throw err;
   }
 }
@@ -620,7 +623,12 @@ export async function fetchOne(ctx, job) {
   };
 
   await ctx.upsertRecord(name, slug, { status: 'ok', payload, gameId });
-  await ctx.upsertLink(gameId, name, slug, { url, method: linkMethod, confidence });
+  const linkResult = await ctx.upsertLink(gameId, name, slug, { url, method: linkMethod, confidence });
+  // `gameId` was deleted (purge/merge) between enqueue and fetch - upsertLink() already handled it
+  // without throwing (src/pipeline/context.js); nothing left to resolve for a game that's gone.
+  if (linkResult?.status === 'skipped') {
+    return { status: 'ok', externalId: slug, payload, reason: linkResult.reason };
+  }
   await ctx.enqueueResolve(gameId);
 
   return { status: 'ok', externalId: slug, payload };

@@ -39,6 +39,72 @@ import { resolveWorkerSources } from './lib/worker-sources.js';
 export const PAUSED_REQUEUE_DELAY_MS = 10 * 60 * 1000; // 10 minutes
 export const EGRESS_OFFLINE_LOG_INTERVAL_MS = 60 * 1000; // at most once/minute
 
+// How many consecutive successful jobs (discover or fetch) a source needs before its sticky
+// `source_state.last_error` is cleared — see `nextSourceState()`'s doc comment. Chosen so a single
+// lucky retry doesn't immediately hide a real problem, while a source that's actually healthy again
+// doesn't keep showing an hours-old error in the admin "Sources" table (the observed bug this fixes).
+export const LAST_ERROR_CLEAR_STREAK = 20;
+
+/**
+ * Whether `job` is on its last allowed attempt (no further BullMQ retry will happen after this
+ * failure) — `job.attemptsMade` (attempts already made, including this one — BullMQ sets it before
+ * invoking the processor) vs `job.opts.attempts` (this job's configured max, defaulting to
+ * `DEFAULT_JOB_OPTIONS.attempts` — see src/queue.js). Either being missing/not-a-number (e.g. a test
+ * job, or any BullMQ version/shape that doesn't expose them) is treated as "final" — the old,
+ * always-record behaviour — so a caller that doesn't care about retries still gets last_error
+ * recorded, same as before this function existed.
+ */
+export function isFinalAttempt(job) {
+  const attemptsMade = job?.attemptsMade;
+  const attempts = job?.opts?.attempts;
+  if (typeof attemptsMade !== 'number' || typeof attempts !== 'number') return true;
+  return attemptsMade >= attempts;
+}
+
+function parseStatsJson(value) {
+  if (value === null || value === undefined) return {};
+  if (typeof value === 'object') return value; // mysql2 may already have parsed the JSON column
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Pure: given the current `source_state` row's `stats`/`last_error` and the outcome of one
+ * completed job attempt (`ok`, whether it was a `discover` job, and — on failure — the error
+ * message), compute the next `stats` object and `last_error` value to persist.
+ *
+ * This is what makes `source_state.last_error` non-sticky (the observed admin-panel bug: hours-old
+ * errors from a now-healthy source never went away):
+ *  - a failure records `stats.lastErrorAt` (when, so the UI can show an age) and bumps
+ *    `stats.errorsSinceOk` (reset to 0 by the next success) — `last_error` becomes the given message;
+ *  - a success resets `stats.errorsSinceOk` to 0 and increments `stats.okStreak`; `last_error` is
+ *    cleared (set to `null`) once `okStreak` reaches `LAST_ERROR_CLEAR_STREAK`, OR immediately for a
+ *    successful `discover` job (a full catalog pass completing is itself strong evidence the source
+ *    is healthy again, regardless of how many prior attempts it took to get there) — otherwise the
+ *    previous `last_error` is carried forward unchanged.
+ *
+ * Only ever called for a *completed* attempt (success, or a failure on its final retry — see
+ * `isFinalAttempt`); an in-progress retry does not call this at all, so it can't reset the streak or
+ * touch `last_error` on a failure BullMQ is about to retry anyway.
+ */
+export function nextSourceState({ stats: currentStats, lastError: currentLastError }, { ok, isDiscover, errorMessage, now }) {
+  const stats = { ...parseStatsJson(currentStats) };
+  if (ok) {
+    stats.okStreak = (Number(stats.okStreak) || 0) + 1;
+    stats.errorsSinceOk = 0;
+    const shouldClear = isDiscover === true || stats.okStreak >= LAST_ERROR_CLEAR_STREAK;
+    return { stats, lastError: shouldClear ? null : (currentLastError ?? null) };
+  }
+  stats.okStreak = 0;
+  stats.errorsSinceOk = (Number(stats.errorsSinceOk) || 0) + 1;
+  stats.lastErrorAt = (now instanceof Date ? now : new Date(now ?? Date.now())).toISOString();
+  return { stats, lastError: errorMessage ?? currentLastError ?? null };
+}
+
 /**
  * Factory for the per-job handler each source's BullMQ Worker runs: `discover`
  * for a job named `'discover'`, `fetchOne` otherwise. Every dependency is
@@ -54,8 +120,14 @@ export const EGRESS_OFFLINE_LOG_INTERVAL_MS = 60 * 1000; // at most once/minute
  *    `source_state.last_error`, and must not pause the source. Logs at most
  *    once per `egressLogIntervalMs` (not once per job) so a long outage
  *    doesn't spam the log;
- *  - otherwise runs the module and records `last_run_at`/`last_error` via
- *    `touchSourceState`, rethrowing on error (a real job failure).
+ *  - on success, touches `last_run_at` and marks the outcome `ok: true` (see
+ *    `nextSourceState`) via `touchSourceState`, so a healthy source's sticky
+ *    `last_error` eventually clears instead of staying stuck forever;
+ *  - on any other error, always touches `last_run_at`, but only marks the
+ *    outcome (and thus records/overwrites `last_error`) when `isFinalAttempt(job)`
+ *    — a retry BullMQ is about to attempt again must not overwrite a still-valid
+ *    `last_error`/reset the success streak for what may turn out to be a
+ *    transient blip. Always rethrows (a real job failure either way).
  */
 export function createRunSourceJob({
   ctxForSource,
@@ -81,7 +153,7 @@ export function createRunSourceJob({
 
     try {
       const result = job.name === 'discover' ? await mod.discover(sourceCtx) : await mod.fetchOne(sourceCtx, job);
-      await touchSourceState(mod.name, { last_run_at: new Date() });
+      await touchSourceState(mod.name, { last_run_at: new Date(), ok: true, isDiscover: job.name === 'discover' });
       return result;
     } catch (err) {
       if (err?.code === 'EPROXY_UNAVAILABLE') {
@@ -93,7 +165,11 @@ export function createRunSourceJob({
         await queueForFn(mod.name).add(job.name, job.data, { delay: requeueDelayMs });
         return { skipped: true, reason: 'egress-proxy-offline' };
       }
-      await touchSourceState(mod.name, { last_run_at: new Date(), last_error: String(err?.message ?? err) });
+      if (isFinalAttempt(job)) {
+        await touchSourceState(mod.name, { last_run_at: new Date(), last_error: String(err?.message ?? err), ok: false });
+      } else {
+        await touchSourceState(mod.name, { last_run_at: new Date() });
+      }
       throw err;
     }
   };
@@ -155,7 +231,23 @@ async function main() {
     return Boolean(state?.paused);
   }
 
-  async function touchSourceState(sourceName, fields) {
+  // `fields` is whatever `createRunSourceJob` passes: always `last_run_at`; `ok` (boolean) and
+  // `isDiscover` present only for a *completed* attempt (a success, or a failure on its final retry
+  // — see isFinalAttempt), in which case `nextSourceState()` decides the actual `stats`/`last_error`
+  // to persist (non-sticky last_error — see its doc comment). An in-progress retry omits `ok`
+  // entirely, so only `last_run_at` is touched and the success streak / last_error are left alone.
+  async function touchSourceState(sourceName, { last_run_at, last_error, ok, isDiscover } = {}) {
+    const fields = { last_run_at };
+    if (ok !== undefined) {
+      const current = await db.one('SELECT stats, last_error FROM source_state WHERE source = ?', [sourceName]);
+      const next = nextSourceState(
+        { stats: current?.stats, lastError: current?.last_error ?? null },
+        { ok, isDiscover: !!isDiscover, errorMessage: last_error ?? null, now: new Date() },
+      );
+      fields.stats = JSON.stringify(next.stats);
+      fields.last_error = next.lastError;
+    }
+
     const columns = Object.keys(fields);
     if (columns.length === 0) return;
     const assignments = columns.map((c) => `${c} = VALUES(${c})`).join(', ');

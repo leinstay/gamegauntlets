@@ -149,8 +149,24 @@ async function markFullPass(db, stats) {
   );
 }
 
-async function markError(db, message) {
-  await db.query('UPDATE source_state SET last_error = ?, last_run_at = NOW() WHERE source = ?', [String(message).slice(0, 4000), name]);
+// --- non-JSON body detection --------------------------------------------
+//
+// SteamSpy occasionally answers a request with a plain-text body instead of JSON (e.g. "Connection
+// failed", observed live) - `http.getJson()` still tries to JSON.parse it and throws a native
+// `SyntaxError` whose message already embeds a snippet of the offending body (e.g. `Unexpected token
+// 'C', "Connection failed"... is not valid JSON`, Node's own JSON.parse wording). Both call sites
+// below rewrap that into an explicit, clearly-labelled error and let it propagate as a normal thrown
+// error - same as any other network hiccup - so BullMQ retries it per DEFAULT_JOB_OPTIONS
+// (src/queue.js) instead of it being mistaken for a real parse bug; whether it ends up recorded as
+// this source's `last_error` is entirely src/worker.js's `isFinalAttempt` call's decision (only the
+// last exhausted attempt gets recorded), not something this module needs to special-case.
+
+function isInvalidJsonError(err) {
+  return err instanceof SyntaxError;
+}
+
+function wrapInvalidJsonError(err, url) {
+  return new Error(`steamspy: upstream returned non-JSON for ${url} (${err.message})`);
 }
 
 // --- discover() ---------------------------------------------------------
@@ -201,12 +217,18 @@ export async function discover(ctx) {
   const getPage = async (page) => {
     if (!firstRequest) await sleep(pageDelayMs);
     firstRequest = false;
-    // retries: 0 - a page past the end of SteamSpy's data reliably 500s (see
-    // the module header); retrying that a default 3 times would just waste
-    // ~15s of backoff on every routine full pass for a result we already
-    // know how to interpret. A genuine transient error one page earlier
-    // would otherwise have been retried by http.js before reaching here.
-    return http.getJson(buildAllUrl(page), { retries: 0 });
+    const url = buildAllUrl(page);
+    try {
+      // retries: 0 - a page past the end of SteamSpy's data reliably 500s (see
+      // the module header); retrying that a default 3 times would just waste
+      // ~15s of backoff on every routine full pass for a result we already
+      // know how to interpret. A genuine transient error one page earlier
+      // would otherwise have been retried by http.js before reaching here.
+      return await http.getJson(url, { retries: 0 });
+    } catch (err) {
+      if (isInvalidJsonError(err)) throw wrapInvalidJsonError(err, url);
+      throw err;
+    }
   };
 
   try {
@@ -235,7 +257,10 @@ export async function discover(ctx) {
       await saveCursor(db, { nextPage: page + 1 });
     }
   } catch (err) {
-    await markError(db, err?.message ?? String(err));
+    // `last_error` recording (and only ever for the final BullMQ retry attempt) is src/worker.js's
+    // job via `touchSourceState`/`isFinalAttempt` - discover() itself no longer writes it directly, so
+    // a transient failure here (including the non-JSON case above, mid-retry) never leaves a stale
+    // `source_state.last_error` behind once the source recovers (the observed admin-panel bug).
     log.error('steamspy: discover failed', { error: err, stats });
     throw err;
   }
@@ -258,10 +283,12 @@ export async function fetchOne(ctx, job) {
   const jobGameId = job?.data?.gameId || null;
   if (!externalId) throw new Error('steamspy.fetchOne: job.data.externalId is required');
 
+  const detailsUrl = buildAppDetailsUrl(externalId);
   let body;
   try {
-    body = await http.getJson(buildAppDetailsUrl(externalId));
-  } catch (err) {
+    body = await http.getJson(detailsUrl);
+  } catch (rawErr) {
+    const err = isInvalidJsonError(rawErr) ? wrapInvalidJsonError(rawErr, detailsUrl) : rawErr;
     await ctx.upsertRecord(name, externalId, { status: 'error', error: String(err?.message ?? err), gameId: jobGameId });
     throw err; // let BullMQ retry per DEFAULT_JOB_OPTIONS
   }
@@ -283,11 +310,16 @@ export async function fetchOne(ctx, job) {
   }
 
   await ctx.upsertRecord(name, externalId, { status: 'ok', payload: body, gameId });
-  await ctx.upsertLink(gameId, name, externalId, {
+  const linkResult = await ctx.upsertLink(gameId, name, externalId, {
     url: `https://steamspy.com/app/${externalId}`,
     method: 'store',
     confidence: 100,
   });
+  // `gameId` was deleted (purge/merge) between enqueue and fetch - upsertLink() already handled it
+  // without throwing (src/pipeline/context.js); nothing left to resolve for a game that's gone.
+  if (linkResult?.status === 'skipped') {
+    return { status: 'ok', externalId, payload: body, reason: linkResult.reason };
+  }
   await ctx.enqueueResolve(gameId);
 
   return { status: 'ok', externalId, payload: body };

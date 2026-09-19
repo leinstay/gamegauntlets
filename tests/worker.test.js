@@ -5,7 +5,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createRunSourceJob, PAUSED_REQUEUE_DELAY_MS, EGRESS_OFFLINE_LOG_INTERVAL_MS } from '../src/worker.js';
+import {
+  createRunSourceJob,
+  PAUSED_REQUEUE_DELAY_MS,
+  EGRESS_OFFLINE_LOG_INTERVAL_MS,
+  LAST_ERROR_CLEAR_STREAK,
+  isFinalAttempt,
+  nextSourceState,
+} from '../src/worker.js';
 
 function fakeLogger() {
   const info = [];
@@ -121,6 +128,143 @@ test('createRunSourceJob: a normal error -> touches last_error and rethrows (cou
   assert.equal(touched.length, 1);
   assert.equal(touched[0].fields.last_error, 'boom');
   assert.equal(added.length, 0); // not requeued — this is a real failure, BullMQ's own retry/backoff applies
+});
+
+// --- only the final BullMQ attempt is recorded as last_error ---------------
+
+test('createRunSourceJob: a non-final attempt error touches last_run_at but not last_error/ok (BullMQ will retry)', async () => {
+  const { queueFor } = fakeQueue();
+  const touched = [];
+  const mod = { name: 'steamspy', fetchOne: async () => { throw new Error('transient'); } };
+  const runSourceJob = createRunSourceJob({
+    ctxForSource: new Map(),
+    defaultCtx: {},
+    isPaused: async () => false,
+    touchSourceState: async (source, fields) => touched.push({ source, fields }),
+    queueFor,
+    log: fakeLogger(),
+  });
+
+  const j = job('fetch', { gameId: 1 });
+  j.attemptsMade = 1;
+  j.opts = { attempts: 5 };
+
+  await assert.rejects(() => runSourceJob(mod, j), /transient/);
+  assert.equal(touched.length, 1);
+  assert.ok('last_run_at' in touched[0].fields);
+  assert.ok(!('last_error' in touched[0].fields));
+  assert.ok(!('ok' in touched[0].fields));
+});
+
+test('createRunSourceJob: the final attempt error DOES touch last_error/ok', async () => {
+  const { queueFor } = fakeQueue();
+  const touched = [];
+  const mod = { name: 'steamspy', fetchOne: async () => { throw new Error('exhausted'); } };
+  const runSourceJob = createRunSourceJob({
+    ctxForSource: new Map(),
+    defaultCtx: {},
+    isPaused: async () => false,
+    touchSourceState: async (source, fields) => touched.push({ source, fields }),
+    queueFor,
+    log: fakeLogger(),
+  });
+
+  const j = job('fetch', { gameId: 1 });
+  j.attemptsMade = 5;
+  j.opts = { attempts: 5 };
+
+  await assert.rejects(() => runSourceJob(mod, j), /exhausted/);
+  assert.equal(touched.length, 1);
+  assert.equal(touched[0].fields.last_error, 'exhausted');
+  assert.equal(touched[0].fields.ok, false);
+});
+
+test('createRunSourceJob: success also reports isDiscover so a completed discover pass can clear a sticky last_error', async () => {
+  const { queueFor } = fakeQueue();
+  const touched = [];
+  const mod = { name: 'metacritic', discover: async () => ({ enqueued: 0 }) };
+  const runSourceJob = createRunSourceJob({
+    ctxForSource: new Map(),
+    defaultCtx: {},
+    isPaused: async () => false,
+    touchSourceState: async (source, fields) => touched.push({ source, fields }),
+    queueFor,
+    log: fakeLogger(),
+  });
+
+  await runSourceJob(mod, job('discover'));
+  assert.equal(touched[0].fields.ok, true);
+  assert.equal(touched[0].fields.isDiscover, true);
+});
+
+// --- isFinalAttempt() (pure) ------------------------------------------------
+
+test('isFinalAttempt: true when attemptsMade/opts.attempts are missing (unknown -> assume final, old always-record behaviour)', () => {
+  assert.equal(isFinalAttempt({}), true);
+  assert.equal(isFinalAttempt({ attemptsMade: 1 }), true);
+  assert.equal(isFinalAttempt({ opts: { attempts: 5 } }), true);
+});
+
+test('isFinalAttempt: false while attemptsMade < opts.attempts, true once it reaches it', () => {
+  assert.equal(isFinalAttempt({ attemptsMade: 1, opts: { attempts: 5 } }), false);
+  assert.equal(isFinalAttempt({ attemptsMade: 4, opts: { attempts: 5 } }), false);
+  assert.equal(isFinalAttempt({ attemptsMade: 5, opts: { attempts: 5 } }), true);
+  assert.equal(isFinalAttempt({ attemptsMade: 6, opts: { attempts: 5 } }), true);
+});
+
+// --- nextSourceState() (pure) -----------------------------------------------
+
+test('nextSourceState: a failure sets lastErrorAt + errorsSinceOk, resets okStreak, and returns the error message', () => {
+  const now = new Date('2026-09-19T12:00:00.000Z');
+  const { stats, lastError } = nextSourceState(
+    { stats: { okStreak: 7 }, lastError: null },
+    { ok: false, isDiscover: false, errorMessage: 'boom', now },
+  );
+  assert.equal(lastError, 'boom');
+  assert.equal(stats.okStreak, 0);
+  assert.equal(stats.errorsSinceOk, 1);
+  assert.equal(stats.lastErrorAt, now.toISOString());
+});
+
+test('nextSourceState: consecutive failures accumulate errorsSinceOk', () => {
+  const now = new Date();
+  const first = nextSourceState({ stats: {}, lastError: null }, { ok: false, isDiscover: false, errorMessage: 'a', now });
+  const second = nextSourceState({ stats: first.stats, lastError: first.lastError }, { ok: false, isDiscover: false, errorMessage: 'b', now });
+  assert.equal(second.stats.errorsSinceOk, 2);
+  assert.equal(second.lastError, 'b');
+});
+
+test('nextSourceState: a success below the clear streak keeps the previous last_error, but bumps okStreak/resets errorsSinceOk', () => {
+  const { stats, lastError } = nextSourceState(
+    { stats: { okStreak: 3, errorsSinceOk: 2 }, lastError: 'stale error' },
+    { ok: true, isDiscover: false, errorMessage: null, now: new Date() },
+  );
+  assert.equal(lastError, 'stale error');
+  assert.equal(stats.okStreak, 4);
+  assert.equal(stats.errorsSinceOk, 0);
+});
+
+test(`nextSourceState: last_error clears once okStreak reaches LAST_ERROR_CLEAR_STREAK (${LAST_ERROR_CLEAR_STREAK})`, () => {
+  const { stats, lastError } = nextSourceState(
+    { stats: { okStreak: LAST_ERROR_CLEAR_STREAK - 1 }, lastError: 'old error' },
+    { ok: true, isDiscover: false, errorMessage: null, now: new Date() },
+  );
+  assert.equal(stats.okStreak, LAST_ERROR_CLEAR_STREAK);
+  assert.equal(lastError, null);
+});
+
+test('nextSourceState: a successful discover job clears last_error immediately, regardless of okStreak', () => {
+  const { stats, lastError } = nextSourceState(
+    { stats: { okStreak: 0 }, lastError: 'old error' },
+    { ok: true, isDiscover: true, errorMessage: null, now: new Date() },
+  );
+  assert.equal(stats.okStreak, 1);
+  assert.equal(lastError, null);
+});
+
+test('nextSourceState: tolerates a JSON-string stats column (mysql2 may return either shape)', () => {
+  const { stats } = nextSourceState({ stats: JSON.stringify({ okStreak: 2 }), lastError: null }, { ok: true, isDiscover: false, errorMessage: null, now: new Date() });
+  assert.equal(stats.okStreak, 3);
 });
 
 // --- EPROXY_UNAVAILABLE: egress offline, not a source failure --------------

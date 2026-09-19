@@ -171,6 +171,31 @@ test('GET /api/admin/sources: merges config/source_state/queue counts/record+lin
   assert.equal(hltb.queueCounts, null, 'a Redis failure for one source must not fail the whole request');
 });
 
+test('GET /api/admin/sources: exposes stats.lastErrorAt as lastErrorAt (its age is a frontend concern), tolerating a JSON-string stats column', async () => {
+  const db = {
+    query: async (sql) => {
+      if (/FROM source_state/.test(sql)) {
+        return [
+          { source: 'steam', paused: 0, last_run_at: null, last_full_pass_at: null, last_error: 'boom', stats: { lastErrorAt: '2026-09-19T06:00:00.000Z' } },
+          { source: 'hltb', paused: 0, last_run_at: null, last_full_pass_at: null, last_error: 'stale', stats: JSON.stringify({ lastErrorAt: '2026-09-18T00:00:00.000Z' }) },
+          { source: 'gog', paused: 0, last_run_at: null, last_full_pass_at: null, last_error: null, stats: null },
+        ];
+      }
+      return [];
+    },
+    one: async () => null,
+  };
+  const app = buildAdminApp({ db, queueFor: fakeQueueFor() });
+  const auth = authFor(ADMIN_STEAMID);
+
+  const res = await app.inject({ method: 'GET', url: '/api/admin/sources', headers: { cookie: auth.cookieHeader } });
+  const body = JSON.parse(res.body);
+
+  assert.equal(body.sources.find((s) => s.name === 'steam').lastErrorAt, '2026-09-19T06:00:00.000Z');
+  assert.equal(body.sources.find((s) => s.name === 'hltb').lastErrorAt, '2026-09-18T00:00:00.000Z');
+  assert.equal(body.sources.find((s) => s.name === 'gog').lastErrorAt, null);
+});
+
 // ---------------- pause / resume / run ----------------
 
 test('POST /api/admin/sources/steam/pause: happy path upserts source_state.paused=1', async () => {

@@ -616,7 +616,12 @@ async function fetchPrices(http, externalId, countryCode) {
   try {
     return await http.getJson(PRICES_URL(externalId, countryCode));
   } catch (err) {
-    if (err?.statusCode === 404) return null;
+    // 404 (unknown product) and 400 (a product GOG no longer sells has no /prices endpoint at all -
+    // confirmed live 2026-09-19, e.g. delisted products) both mean "no price for this product/region",
+    // not a job failure: treated as `null` here so extractPriceBlock()/computeGogPurchasable() simply
+    // see no price data, the rest of the record is still stored, and this never bubbles up as a failed
+    // job / source_state.last_error.
+    if (err?.statusCode === 404 || err?.statusCode === 400) return null;
     throw err;
   }
 }
@@ -808,11 +813,16 @@ export async function fetchOne(ctx, job) {
   await ctx.upsertRecord(name, externalId, { status: 'ok', payload, gameId: ambiguous ? null : gameId });
 
   if (gameId && !ambiguous) {
-    await ctx.upsertLink(gameId, name, externalId, {
+    const linkResult = await ctx.upsertLink(gameId, name, externalId, {
       url: fields.links?.gog?.url ?? null,
       method,
       confidence,
     });
+    // `gameId` was deleted (purge/merge) between enqueue and fetch - upsertLink() already left this
+    // gameId out of the loop without throwing (src/pipeline/context.js); nothing left to resolve.
+    if (linkResult?.status === 'skipped') {
+      return { status: 'ok', externalId, gameId: null, method, ambiguous, reason: linkResult.reason };
+    }
     await ctx.enqueueResolve(gameId);
   }
 
