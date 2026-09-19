@@ -182,7 +182,7 @@ export function mapRow(row) {
     gg_score: row.gg_score ?? null,
     ggp: row.ggp ?? null,
     average_playtime_hours: num(row.time_average),
-    average_playtime_source: row.time_average_source ?? null,
+    average_playtime_source: row.time_average_source === 'legacy' ? 'steamspy' : (row.time_average_source ?? null), // the old value came from SteamSpy too
 
     updated_at: row.updated_at ?? null,
   };
