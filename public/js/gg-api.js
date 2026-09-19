@@ -248,6 +248,13 @@
       return GG.api.post("/api/wheel/marbles", body);
     },
 
+    /** GET /api/music -> string[] of "/msc/theme*.mp3" tracks (background-music rotation). */
+    music: function () {
+      return GG.api.get("/api/music").then(function (res) {
+        return (res && res.tracks) || [];
+      });
+    },
+
     toLegacyGame: toLegacyGame,
     formatReleaseDate: formatReleaseDate,
     descriptionToHtml: descriptionToHtml,

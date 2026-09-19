@@ -18,6 +18,7 @@ import wheelRoutes from './api/wheel.js';
 import gamesRoutes from './api/games.js';
 import dictionariesRoutes from './api/dictionaries.js';
 import statsRoutes from './api/stats.js';
+import musicRoutes from './api/music.js';
 import authRoutes from './api/auth.js';
 import adminRoutes from './api/admin.js';
 
@@ -147,6 +148,7 @@ export function buildApp({
   app.register(gamesRoutes, { prefix: '/api' });
   app.register(dictionariesRoutes, { prefix: '/api' });
   app.register(statsRoutes, { prefix: '/api' });
+  app.register(musicRoutes, { prefix: '/api' });
   app.register(authRoutes, { prefix: '/api' });
   app.register(adminRoutes, { prefix: '/api' });
 

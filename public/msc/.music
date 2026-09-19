@@ -1,3 +1,12 @@
-Background music for the wheel lives in this folder on the server only (not in the repository):
-chowd.mp3, theme1.mp3, theme3.mp3, theme4.mp3, theme6.mp3 — see public/js/pgwheel.js.
-The deploy keeps whatever audio files are already here.
+This folder holds the wheel's background music. Files here are NOT tracked in git (only this
+marker is) and the deploy step leaves them untouched, so nothing here is ever overwritten or wiped.
+
+To add a track: copy a file named theme<anything>.mp3 (also .ogg/.m4a works) into
+/opt/gg/public/msc/ on the server, e.g.:
+  scp theme7.mp3 <server>:/opt/gg/public/msc/
+It joins the rotation within a minute — no commit, no deploy needed.
+
+To remove a track: delete its file from that folder.
+
+Other file names (e.g. chowd.mp3, carnage.mp3) are one-off sound effects played by explicit name
+from public/js/pgwheel.js and are not part of the theme* rotation.

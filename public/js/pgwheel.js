@@ -599,6 +599,16 @@ var musSrc = ["/msc/theme1.mp3", "/msc/theme3.mp3", "/msc/theme4.mp3", "/msc/the
 
 shuffle(musSrc);
 
+// Swap in the live rotation from the server (files dropped into public/msc/ on the server, see that
+// folder's .music note) once it resolves — keeps the hardcoded list above as the fallback for as
+// long as the request is pending, fails, or returns nothing. Fire-and-forget: never blocks or breaks
+// the spin (musSrc is only read when a spin actually starts, further down this file).
+GG.api.music().then(function (tracks) {
+	if (tracks && tracks.length) musSrc = tracks, shuffle(musSrc);
+}).catch(function (err) {
+	console.error("[pgwheel] music list fetch failed", err);
+});
+
 theWheel && theWheel.stopAnimation(!1);
 sessionStorage.getItem("smart") || sessionStorage.setItem("smart", !1);
 sessionStorage.getItem("backupRegion") || sessionStorage.setItem("backupRegion", !0);
