@@ -143,6 +143,9 @@ export async function exportAndPush({ outDir, push = true, chunkSize } = {}) {
   log.info('export: stats collected', { ms: statsMs });
 
   stats.files = describeDumpFiles(result);
+  // The README's "Example" section is the first row runFullExport() actually wrote (already mapped and
+  // in memory — nothing extra read from disk); omitted by renderReadme() when the export was empty.
+  stats.example = result.firstRow ?? null;
   const readme = renderReadme(stats, { generatedAt: new Date() });
   fs.writeFileSync(path.join(dir, 'README.md'), readme);
 

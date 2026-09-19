@@ -9,8 +9,8 @@
 // steamdb.min.json/steamdb.min.json.gz (file names unchanged from the legacy
 // dump) carry every exported game, Steam and GOG-exclusive alike, ordered by
 // id — the appended `kind` field on each row ('steam' or 'gog_exclusive')
-// tells them apart; store-specific keys (sid, store_url, gog_url, ...) are
-// simply null on a row from the other store (the LEFT JOINs/columns below
+// tells them apart; store-specific keys (steam_appid, steam_url, gog_url,
+// ...) are simply null on a row from the other store (the LEFT JOINs/columns below
 // already return null for those, no per-kind branching needed). There used
 // to be a second gogdb.json/.min.json/.min.json.gz file pair
 // (kind='gog_exclusive' only); the owner asked for a single dump instead —
@@ -24,6 +24,22 @@
 // required, so all of that collapsed into the single mapRow() below, with
 // one clean key order (identity, store data, per-source blocks, derived,
 // updated_at) and no dropped-legacy-only/frozen-snapshot/CIS/RUB keys.
+//
+// Final schema pass (2026-09-20, owner's relaunch review — backward
+// compatibility is explicitly not a goal): `store_uscore` was a byte-for-byte
+// duplicate of `steam_reviews_percent` (both `g.score_steam`) and is gone.
+// Every remaining cryptic legacy key was renamed to a self-explanatory
+// snake_case name grouped by source prefix (sid -> steam_appid, store_url ->
+// steam_url, full_price -> price_usd, current_price -> price_final_usd,
+// discount -> discount_percent, published_store -> store_release_date,
+// stsp_owners -> steamspy_owners, gfq_* -> gamefaqs_*, hltb_single ->
+// hltb_main_hours, hltb_complete -> hltb_complete_hours, meta_url/meta_score/
+// meta_uscore -> metacritic_url/metacritic_score/metacritic_user_score,
+// igdb_uscore -> igdb_user_score, ggp -> gg_points). List-type fields
+// (developers/publishers/languages/voiceovers/categories/genres/tags/
+// platforms) are now exported as JSON arrays of strings instead of
+// comma-joined strings — `[]` when empty, never `null` (see fromPipeList()/
+// platformsToArray() below).
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -92,23 +108,32 @@ function num(value) {
   return Number.isFinite(n) ? n : null;
 }
 
-/** Pipe-wrapped list column ('|a|b|') -> comma string ('a,b'), or null. */
-function pipeToComma(text) {
-  const items = fromPipeList(text);
-  return items.length ? items.join(',') : null;
+/** Pipe-wrapped list column ('|a|b|') -> array of strings (['a','b']), or `[]` when empty/null. */
+function pipeToArray(text) {
+  return fromPipeList(text);
+}
+
+/** SET column value ('WIN,MAC') -> array of strings, or `[]` when empty/null (never pipe-wrapped). */
+function platformsToArray(value) {
+  if (value === null || value === undefined) return [];
+  const str = String(value).trim();
+  if (str === '') return [];
+  return str.split(',').map((s) => s.trim()).filter(Boolean);
 }
 
 /**
  * One row of the shape `EXPORT_QUERY` returns -> the exported JSON object.
- * Pure, no I/O. Key order (identity, store data, per-source blocks, derived,
- * updated_at last) is exactly the file order written to steamdb.json —
- * documented in full, table form, in the generated README (see
- * src/pipeline/export-readme.js's FIELD_DEFS, which mirrors this order).
+ * Pure, no I/O. Key order (identity, release, store data, per-source blocks,
+ * derived, updated_at last) is exactly the file order written to
+ * steamdb.json — documented in full, table form, in the generated README
+ * (see src/pipeline/export-readme.js's FIELD_DEFS, which mirrors this
+ * order).
  *
- * `meta_score`/`metacritic_reviews` are only ever the rewrite's
+ * `metacritic_score`/`metacritic_reviews` are only ever the rewrite's
  * score_critics(_count) when score_critics_source is 'metacritic' (that
- * column can also come from OpenCritic) — null otherwise. `meta_uscore` is
- * unambiguously Metacritic-only, so it always passes through as-is.
+ * column can also come from OpenCritic) — null otherwise.
+ * `metacritic_user_score` is unambiguously Metacritic-only, so it always
+ * passes through as-is.
  */
 export function mapRow(row) {
   const isMetacritic = row.score_critics_source === 'metacritic';
@@ -116,34 +141,39 @@ export function mapRow(row) {
     // --- identity ---
     id: num(row.id),
     kind: row.kind ?? null,
-    sid: num(row.steam_appid),
-    gog_id: num(row.gog_id),
     name: row.name ?? null,
     image: row.image ?? null,
     description: row.description_en ?? null,
-    store_url: row.link_steam ?? null,
+
+    // --- steam ---
+    steam_appid: num(row.steam_appid),
+    steam_url: row.link_steam ?? null,
+
+    // --- gog ---
+    gog_id: num(row.gog_id),
     gog_url: row.link_gog ?? null,
 
-    // --- store data ---
-    full_price: row.price_usd ?? null,
-    current_price: row.price_final_usd ?? null,
-    discount: row.discount_usd ?? null,
-    platforms: row.platforms ?? null,
-    developers: pipeToComma(row.developers),
-    publishers: pipeToComma(row.publishers),
-    languages: pipeToComma(row.languages),
-    voiceovers: pipeToComma(row.voiceovers),
-    categories: pipeToComma(row.categories),
-    genres: pipeToComma(row.genres),
-    tags: pipeToComma(row.tags),
-    achievements: row.achievements ?? null,
+    // --- release ---
     release_date: row.release_date ?? null,
     release_precision: row.release_precision ?? null,
     early_access_date: row.early_access_date ?? null,
-    published_store: row.store_release_date ?? null,
+    store_release_date: row.store_release_date ?? null,
+
+    // --- store data ---
+    price_usd: row.price_usd ?? null,
+    price_final_usd: row.price_final_usd ?? null,
+    discount_percent: row.discount_usd ?? null,
+    platforms: platformsToArray(row.platforms),
+    developers: pipeToArray(row.developers),
+    publishers: pipeToArray(row.publishers),
+    languages: pipeToArray(row.languages),
+    voiceovers: pipeToArray(row.voiceovers),
+    categories: pipeToArray(row.categories),
+    genres: pipeToArray(row.genres),
+    tags: pipeToArray(row.tags),
+    achievements: row.achievements ?? null,
 
     // --- steam reviews ---
-    store_uscore: row.score_steam ?? null,
     steam_reviews_percent: num(row.score_steam),
     steam_reviews_count: num(row.score_steam_votes),
     steam_reviews_label: steamReviewLabel(row.score_steam, row.score_steam_votes),
@@ -152,39 +182,42 @@ export function mapRow(row) {
     steam_recent_label: steamReviewLabel(row.score_steam_recent, row.score_steam_recent_votes),
 
     // --- steamspy ---
-    stsp_owners: row.owners_estimate ?? null,
+    steamspy_owners: row.owners_estimate ?? null,
 
-    // --- gamefaqs ---
-    gfq_url: row.link_gamefaqs ?? null,
-    gfq_difficulty: row.difficulty ?? null,
-    gfq_rating: num(row.score_gamefaqs),
+    // --- derived ---
+    average_playtime_hours: num(row.time_average),
+    average_playtime_source: row.time_average_source ?? null,
 
     // --- hltb ---
     hltb_url: row.link_hltb ?? null,
-    hltb_single: num(row.time_main),
-    hltb_complete: num(row.time_complete),
+    hltb_main_hours: num(row.time_main),
+    hltb_complete_hours: num(row.time_complete),
+
+    // --- gamefaqs ---
+    gamefaqs_url: row.link_gamefaqs ?? null,
+    gamefaqs_difficulty: row.difficulty ?? null,
+    gamefaqs_rating: num(row.score_gamefaqs),
 
     // --- metacritic ---
-    meta_url: row.link_metacritic ?? null,
-    meta_score: isMetacritic ? (row.score_critics ?? null) : null,
-    meta_uscore: row.score_users_metacritic ?? null,
+    metacritic_url: row.link_metacritic ?? null,
+    metacritic_score: isMetacritic ? (row.score_critics ?? null) : null,
     metacritic_reviews: isMetacritic ? num(row.score_critics_count) : null,
+    metacritic_user_score: row.score_users_metacritic ?? null,
 
     // --- igdb ---
     igdb_url: row.link_igdb ?? null,
     igdb_score: row.score_igdb ?? null,
-    igdb_uscore: row.score_igdb_users ?? null,
+    igdb_user_score: row.score_igdb_users ?? null,
 
     // --- gamerankings ---
     gamerankings_score: row.score_gamerankings ?? null,
 
-    // --- derived ---
+    // --- gamegauntlets (derived) ---
     gg_score: row.gg_score ?? null,
-    ggp: row.ggp ?? null,
-    average_playtime_hours: num(row.time_average),
-    average_playtime_source: row.time_average_source ?? null,
+    gg_points: row.ggp ?? null,
 
-    updated_at: row.updated_at ?? null,
+    // the DB hands back 'YYYY-MM-DD HH:MM:SS' in UTC; publish real ISO 8601
+    updated_at: row.updated_at ? String(row.updated_at).replace(' ', 'T') + 'Z' : null,
   };
 }
 
@@ -253,7 +286,10 @@ function unlinkQuiet(file) {
  * file names to write under. `opts.chunkSize` overrides CHUNK_SIZE (tests
  * use a small one). `opts.mapRow` overrides the row mapper (default the
  * exported mapRow above; a caller can pass its own for a custom shape).
- * Returns `{ count, baseName, prettyPath, minPath, gzPath }`.
+ * Returns `{ count, baseName, prettyPath, minPath, gzPath, firstRow }` —
+ * `firstRow` is the first mapped row object (not accumulated per-row output,
+ * just the one row kept for the README's "Example" section in
+ * src/pipeline/export-push.js), or `undefined` when the export is empty.
  */
 export async function runExport(ctx, opts = {}) {
   const { db, log } = ctx;
@@ -273,6 +309,7 @@ export async function runExport(ctx, opts = {}) {
 
   let first = true;
   let count = 0;
+  let firstRow;
   try {
     await writeAll(prettyStream, '[\n');
     await writeAll(minStream, '[');
@@ -291,6 +328,8 @@ export async function runExport(ctx, opts = {}) {
           if (!first) {
             await writeAll(minStream, ',');
             await writeAll(prettyStream, ',\n');
+          } else {
+            firstRow = mapped;
           }
           await writeAll(minStream, jsonMin);
           await writeAll(prettyStream, jsonPretty);
@@ -326,7 +365,7 @@ export async function runExport(ctx, opts = {}) {
   }
 
   log?.info?.('export: done', { baseName, count, outDir });
-  return { count, baseName, prettyPath, minPath, gzPath };
+  return { count, baseName, prettyPath, minPath, gzPath, firstRow };
 }
 
 /**

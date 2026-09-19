@@ -12,11 +12,36 @@
 // explanation of how the site works internally, no CIS/RUB/legacy-schema wording, one-time
 // legacy_steamdb/gamerankings "snapshot" mentions removed entirely) — see export-readme.js's own
 // comments for the reasoning behind each change.
+//
+// 2026-09-20 final schema pass: FIELD_DEFS keys/order mirror export.js's renamed mapRow() keys
+// (sid -> steam_appid, meta_* -> metacritic_*, ggp -> gg_points, ...), each entry now also carries a
+// `type`, and the coverage table gained a "Type" column; a short "Example" section (one pretty-printed
+// game object) was added, sourced from `stats.example` (the caller's job to set, like `stats.files`).
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { renderReadme, collectStats, FIELD_DEFS, SOURCE_ORDER } from '../src/pipeline/export-readme.js';
+
+// Mirrors tests/export.test.js's own EXPECTED_KEY_ORDER for src/pipeline/export.js's mapRow() —
+// FIELD_DEFS documents that exact same key set, in that exact same order (see this file's own
+// comment header and export-readme.js's FIELD_DEFS comment).
+const EXPECTED_EXPORT_KEY_ORDER = [
+  'id', 'kind', 'name', 'image', 'description', 'steam_appid', 'steam_url', 'gog_id', 'gog_url',
+  'release_date', 'release_precision', 'early_access_date', 'store_release_date',
+  'price_usd', 'price_final_usd', 'discount_percent', 'platforms', 'developers', 'publishers',
+  'languages', 'voiceovers', 'categories', 'genres', 'tags', 'achievements',
+  'steam_reviews_percent', 'steam_reviews_count', 'steam_reviews_label',
+  'steam_recent_percent', 'steam_recent_count', 'steam_recent_label',
+  'steamspy_owners', 'average_playtime_hours', 'average_playtime_source',
+  'hltb_url', 'hltb_main_hours', 'hltb_complete_hours',
+  'gamefaqs_url', 'gamefaqs_difficulty', 'gamefaqs_rating',
+  'metacritic_url', 'metacritic_score', 'metacritic_reviews', 'metacritic_user_score',
+  'igdb_url', 'igdb_score', 'igdb_user_score',
+  'gamerankings_score',
+  'gg_score', 'gg_points',
+  'updated_at',
+];
 
 // --- renderReadme ------------------------------------------------------------------------------
 
@@ -29,8 +54,8 @@ function sampleStats() {
       bothStores: 1200,
     },
     coverage: [
-      { key: 'sid', source: 'steam', description: 'Steam appid', count: 110000, percent: 97.3 },
-      { key: 'meta_score', source: 'metacritic', description: 'critic score', count: 40000, percent: 35.4 },
+      { key: 'steam_appid', type: 'integer', source: 'steam', description: 'Steam appid', count: 110000, percent: 97.3 },
+      { key: 'metacritic_score', type: 'integer', source: 'metacritic', description: 'critic score', count: 40000, percent: 35.4 },
     ],
     sources: [
       {
@@ -86,20 +111,26 @@ test('renderReadme: includes the totals table with every metric, no excluded-row
 test('renderReadme: coverage table has a row with a percentage for every key, in FIELD_DEFS order', () => {
   const stats = sampleStats();
   const md = renderReadme(stats, { generatedAt: new Date() });
-  const sidLine = md.split('\n').find((l) => l.includes('`sid`'));
-  assert.ok(sidLine, 'sid row must be present');
+  const sidLine = md.split('\n').find((l) => l.includes('`steam_appid`'));
+  assert.ok(sidLine, 'steam_appid row must be present');
   assert.match(sidLine, /97\.0%|97\.3%/); // percent formatted to 1 decimal
   assert.match(sidLine, /110,000/);
   assert.match(sidLine, /steam/);
+  assert.match(sidLine, /integer/); // Type column
 
-  const metaLine = md.split('\n').find((l) => l.includes('`meta_score`'));
+  const metaLine = md.split('\n').find((l) => l.includes('`metacritic_score`'));
   assert.ok(metaLine);
   assert.match(metaLine, /35\.4%/);
 
   // Row order in the rendered table follows the order given in stats.coverage.
-  const sidIndex = md.indexOf('`sid`');
-  const metaIndex = md.indexOf('`meta_score`');
+  const sidIndex = md.indexOf('`steam_appid`');
+  const metaIndex = md.indexOf('`metacritic_score`');
   assert.ok(sidIndex < metaIndex);
+});
+
+test('renderReadme: coverage table header includes a Type column', () => {
+  const md = renderReadme(sampleStats());
+  assert.match(md, /\| Key \| Type \| Source \| Coverage \| Description \|/);
 });
 
 test('renderReadme: source status table only lists live sources', () => {
@@ -199,10 +230,10 @@ function makeFakeStatsDb() {
         both_stores: 3,
       }];
     }
-    if (sql.includes('AS `sid`')) {
+    if (sql.includes('AS `steam_appid`')) {
       // Field coverage: total + one SUM column per FIELD_DEFS entry.
       const row = { total: 94 };
-      for (const f of FIELD_DEFS) row[f.key] = f.key === 'sid' ? 90 : 10;
+      for (const f of FIELD_DEFS) row[f.key] = f.key === 'steam_appid' ? 90 : 10;
       return [row];
     }
     if (sql.includes('GROUP BY source, status')) {
@@ -240,8 +271,9 @@ test('collectStats: assembles totals, coverage (with %), sources (with remaining
   assert.equal(stats.totals.gamesInCatalog, 100);
   assert.equal(stats.totals.bothStores, 3);
 
-  const sidCoverage = stats.coverage.find((c) => c.key === 'sid');
+  const sidCoverage = stats.coverage.find((c) => c.key === 'steam_appid');
   assert.equal(sidCoverage.count, 90);
+  assert.equal(sidCoverage.type, 'integer');
   assert.equal(sidCoverage.percent, Math.round((90 / 94) * 1000) / 10);
 
   const steamSource = stats.sources.find((s) => s.source === 'steam');
@@ -289,7 +321,7 @@ test('collectStats: excludes opencritic from the links query (OpenCritic dropped
 test('collectStats: field coverage query no longer joins the frozen legacy_steamdb source_records snapshot', async () => {
   const db = makeFakeStatsDb();
   await collectStats(db);
-  const coverageCall = db.calls.find((c) => c.sql.includes('AS `sid`'));
+  const coverageCall = db.calls.find((c) => c.sql.includes('AS `steam_appid`'));
   assert.ok(coverageCall);
   assert.doesNotMatch(coverageCall.sql, /legacy_steamdb/);
   assert.doesNotMatch(coverageCall.sql, /source_records/);
@@ -315,8 +347,32 @@ test('FIELD_DEFS: no removed key (dropped-legacy-only, frozen snapshots, duplica
     'grnk_score',
     'price_cis_usd', 'price_final_cis_usd', 'discount_cis_usd',
     'price_rub', 'price_final_rub', 'discount_rub',
+    // 2026-09-20 final schema pass: store_uscore duplicated steam_reviews_percent; the rest of the old
+    // cryptic keys were renamed, checked in the next test.
+    'store_uscore',
   ];
   for (const key of removed) assert.ok(!keys.includes(key), `${key} must not be in FIELD_DEFS`);
+});
+
+test('FIELD_DEFS: no old cryptic key name survives the rename', () => {
+  const keys = FIELD_DEFS.map((f) => f.key);
+  const renamedAway = [
+    'sid', 'store_url', 'full_price', 'current_price', 'discount', 'published_store',
+    'stsp_owners', 'gfq_url', 'gfq_difficulty', 'gfq_rating', 'hltb_single', 'hltb_complete',
+    'meta_url', 'meta_score', 'meta_uscore', 'igdb_uscore', 'ggp',
+  ];
+  for (const key of renamedAway) assert.ok(!keys.includes(key), `${key} must not be in FIELD_DEFS (renamed)`);
+});
+
+test('FIELD_DEFS: every key has a type from the fixed vocabulary', () => {
+  const allowedTypes = new Set(['integer', 'number', 'string', 'array of strings', 'date', 'datetime']);
+  for (const f of FIELD_DEFS) {
+    assert.ok(allowedTypes.has(f.type), `FIELD_DEFS[${f.key}].type "${f.type}" is not an allowed type`);
+  }
+});
+
+test('FIELD_DEFS: keys/order are exactly export.js mapRow()\'s own key order', () => {
+  assert.deepEqual(FIELD_DEFS.map((f) => f.key), EXPECTED_EXPORT_KEY_ORDER);
 });
 
 test('FIELD_DEFS: descriptions do not mention internal table/column names', () => {
@@ -326,4 +382,21 @@ test('FIELD_DEFS: descriptions do not mention internal table/column names', () =
       assert.ok(!f.description.includes(name), `FIELD_DEFS[${f.key}].description mentions internal name "${name}"`);
     }
   }
+});
+
+// --- Example section --------------------------------------------------------------------------------
+
+test('renderReadme: includes a pretty-printed Example section when stats.example is set', () => {
+  const stats = sampleStats();
+  stats.example = { id: 1, kind: 'steam', name: 'Portal 2', tags: ['Puzzle', 'Co-op'] };
+  const md = renderReadme(stats, { generatedAt: new Date() });
+  assert.match(md, /## Example/);
+  assert.match(md, /```json/);
+  assert.match(md, /"name": "Portal 2"/);
+  assert.match(md, /"tags": \[\n\s*"Puzzle",\n\s*"Co-op"\n\s*\]/);
+});
+
+test('renderReadme: omits the Example section entirely when stats.example is absent', () => {
+  const md = renderReadme(sampleStats(), { generatedAt: new Date() });
+  assert.doesNotMatch(md, /## Example/);
 });

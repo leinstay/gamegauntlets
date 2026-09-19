@@ -14,77 +14,84 @@
 // The README is a terse, factual dataset README (2026-09-19, owner review): no explanation of how the
 // site or its scheduler work internally, no internal table/column names, one short defining sentence
 // per table only where a column genuinely needs it ("Coverage", "Remaining").
+//
+// Final schema pass (2026-09-20, owner's relaunch review): FIELD_DEFS keys/order now mirror
+// src/pipeline/export.js's mapRow() one to one after that file's own rename/dedup pass (store_uscore
+// dropped as a duplicate of steam_reviews_percent; every other cryptic legacy key renamed to a
+// self-explanatory, source-prefixed name; list fields are now arrays, not comma strings). Each entry
+// also carries a `type` (integer/number/string/array of strings/date/datetime — used for the schema
+// table's new "Type" column) and states the field's unit directly in its description where one applies
+// (USD cents, decimal hours, 0..100, 0..5, ...).
 
 import { config } from '../config.js';
 
 // --- field coverage -------------------------------------------------------------------------------
 //
 // One row per key `mapRow()` (src/pipeline/export.js) puts in the dump, in the exact order it appears
-// there (identity, store data, per-source blocks, derived, updated_at). `sql` is a boolean SQL
-// expression, TRUE exactly when the row would carry a non-null value for this key in the actual export
-// (mirrors mapRow's own null rules field by field) — summed by FIELD_COVERAGE_QUERY below in one pass
-// over the exported rows, joins reused from src/pipeline/export.js's EXPORT_QUERY (same aliases:
-// gl_steam/gl_gog/gl_gfq/gl_hltb/gl_meta/gl_igdb). A handful of list columns (developers/publishers/...)
-// approximate "non-null after pipeToComma()" as "column set and not empty" — pipeToComma additionally
-// treats an empty-list marker ('||') as null, which SQL doesn't see cheaply; close enough for a
-// coverage report, not used for anything else.
+// there (identity, steam, gog, release, store data, per-source blocks, derived, updated_at). `sql` is a
+// boolean SQL expression, TRUE exactly when the row would carry a non-null value for this key in the
+// actual export (mirrors mapRow's own null rules field by field) — summed by FIELD_COVERAGE_QUERY below
+// in one pass over the exported rows, joins reused from src/pipeline/export.js's EXPORT_QUERY (same
+// aliases: gl_steam/gl_gog/gl_gfq/gl_hltb/gl_meta/gl_igdb). A handful of list columns
+// (developers/publishers/...) approximate "non-empty array after pipeToArray()" as "column set and not
+// empty" — pipeToArray additionally treats an empty-list marker ('||') as `[]`, which SQL doesn't see
+// cheaply; close enough for a coverage report, not used for anything else.
 //
 // `source` is always one of the plain site names (steam, gog, steamspy, gamefaqs, hltb, metacritic,
 // igdb, gamerankings) or `gamegauntlets` for a field the catalog itself computes/normalizes rather than
 // one lifted as-is from a single external site.
 export const FIELD_DEFS = [
-  { key: 'id', source: 'gamegauntlets', description: 'catalog id, stable across updates', sql: '1' },
-  { key: 'kind', source: 'gamegauntlets', description: "'steam' or 'gog_exclusive'", sql: '1' },
-  { key: 'sid', source: 'steam', description: 'Steam appid', sql: 'g.steam_appid IS NOT NULL' },
-  { key: 'gog_id', source: 'gog', description: 'GOG catalog id', sql: 'g.gog_id IS NOT NULL' },
-  { key: 'name', source: 'gamegauntlets', description: 'game title', sql: 'g.name IS NOT NULL' },
-  { key: 'image', source: 'gamegauntlets', description: 'header image URL', sql: 'g.image IS NOT NULL' },
-  { key: 'description', source: 'gamegauntlets', description: 'English store description (raw HTML)', sql: 'g.description_en IS NOT NULL' },
-  { key: 'store_url', source: 'steam', description: 'Steam store page URL', sql: 'gl_steam.url IS NOT NULL' },
-  { key: 'gog_url', source: 'gog', description: 'GOG store page URL', sql: 'gl_gog.url IS NOT NULL' },
-  { key: 'full_price', source: 'gamegauntlets', description: 'USD list price, cents', sql: 'g.price_usd IS NOT NULL' },
-  { key: 'current_price', source: 'gamegauntlets', description: 'USD price after discount, cents', sql: 'g.price_final_usd IS NOT NULL' },
-  { key: 'discount', source: 'gamegauntlets', description: 'discount percent, 0..100', sql: 'g.discount_usd IS NOT NULL' },
-  { key: 'platforms', source: 'gamegauntlets', description: 'comma list of WIN/MAC/LNX', sql: 'g.platforms IS NOT NULL' },
-  { key: 'developers', source: 'gamegauntlets', description: 'comma list', sql: "g.developers IS NOT NULL AND g.developers <> ''" },
-  { key: 'publishers', source: 'gamegauntlets', description: 'comma list', sql: "g.publishers IS NOT NULL AND g.publishers <> ''" },
-  { key: 'languages', source: 'gamegauntlets', description: 'comma list', sql: "g.languages IS NOT NULL AND g.languages <> ''" },
-  { key: 'voiceovers', source: 'gamegauntlets', description: 'comma list', sql: "g.voiceovers IS NOT NULL AND g.voiceovers <> ''" },
-  { key: 'categories', source: 'gamegauntlets', description: 'comma list', sql: "g.categories IS NOT NULL AND g.categories <> ''" },
-  { key: 'genres', source: 'gamegauntlets', description: 'comma list', sql: "g.genres IS NOT NULL AND g.genres <> ''" },
-  { key: 'tags', source: 'gamegauntlets', description: 'comma list', sql: "g.tags IS NOT NULL AND g.tags <> ''" },
-  { key: 'achievements', source: 'steam', description: 'achievement count', sql: 'g.achievements IS NOT NULL' },
-  { key: 'release_date', source: 'gamegauntlets', description: 'cross-source consensus release date', sql: 'g.release_date IS NOT NULL' },
-  { key: 'release_precision', source: 'gamegauntlets', description: 'day/month/quarter/year/unknown', sql: "g.release_precision IS NOT NULL AND g.release_precision <> 'unknown'" },
-  { key: 'early_access_date', source: 'steam', description: 'date the game entered Early Access, if it did', sql: 'g.early_access_date IS NOT NULL' },
-  { key: 'published_store', source: 'gamegauntlets', description: 'store listing date (may be a re-listing, not the true release date)', sql: 'g.store_release_date IS NOT NULL' },
-  { key: 'store_uscore', source: 'steam', description: 'all-review score, 0..100', sql: 'g.score_steam IS NOT NULL' },
-  { key: 'steam_reviews_percent', source: 'steam', description: 'all-time positive review share, 0..100', sql: 'g.score_steam IS NOT NULL' },
-  { key: 'steam_reviews_count', source: 'steam', description: 'all-time review count', sql: 'g.score_steam_votes IS NOT NULL' },
-  { key: 'steam_reviews_label', source: 'steam', description: 'Steam\'s own label ("Very Positive", ...), null under 10 votes', sql: 'g.score_steam IS NOT NULL AND g.score_steam_votes IS NOT NULL AND g.score_steam_votes >= 10' },
-  { key: 'steam_recent_percent', source: 'steam', description: 'last ~30 days positive review share, 0..100', sql: 'g.score_steam_recent IS NOT NULL' },
-  { key: 'steam_recent_count', source: 'steam', description: 'last ~30 days review count', sql: 'g.score_steam_recent_votes IS NOT NULL' },
-  { key: 'steam_recent_label', source: 'steam', description: 'recent-reviews label, null under 10 votes', sql: 'g.score_steam_recent IS NOT NULL AND g.score_steam_recent_votes IS NOT NULL AND g.score_steam_recent_votes >= 10' },
-  { key: 'stsp_owners', source: 'steamspy', description: 'owners estimate, lower bound', sql: 'g.owners_estimate IS NOT NULL' },
-  { key: 'gfq_url', source: 'gamefaqs', description: 'GameFAQs product page URL', sql: 'gl_gfq.url IS NOT NULL' },
-  { key: 'gfq_difficulty', source: 'gamefaqs', description: 'GameFAQs difficulty label', sql: 'g.difficulty IS NOT NULL' },
-  { key: 'gfq_rating', source: 'gamefaqs', description: 'GameFAQs rating, 0..5', sql: 'g.score_gamefaqs IS NOT NULL' },
-  { key: 'hltb_url', source: 'hltb', description: 'HowLongToBeat page URL', sql: 'gl_hltb.url IS NOT NULL' },
-  { key: 'hltb_single', source: 'hltb', description: 'main story hours', sql: 'g.time_main IS NOT NULL' },
-  { key: 'hltb_complete', source: 'hltb', description: 'completionist hours', sql: 'g.time_complete IS NOT NULL' },
-  { key: 'meta_url', source: 'metacritic', description: 'Metacritic page URL', sql: 'gl_meta.url IS NOT NULL' },
-  { key: 'meta_score', source: 'metacritic', description: 'critic score, 0..100', sql: "g.score_critics IS NOT NULL AND g.score_critics_source = 'metacritic'" },
-  { key: 'meta_uscore', source: 'metacritic', description: 'user score, 0..100', sql: 'g.score_users_metacritic IS NOT NULL' },
-  { key: 'metacritic_reviews', source: 'metacritic', description: 'critic review count', sql: "g.score_critics_count IS NOT NULL AND g.score_critics_source = 'metacritic'" },
-  { key: 'igdb_url', source: 'igdb', description: 'IGDB page URL', sql: 'gl_igdb.url IS NOT NULL' },
-  { key: 'igdb_score', source: 'igdb', description: 'IGDB critic score, 0..100', sql: 'g.score_igdb IS NOT NULL' },
-  { key: 'igdb_uscore', source: 'igdb', description: 'IGDB user score, 0..100', sql: 'g.score_igdb_users IS NOT NULL' },
-  { key: 'gamerankings_score', source: 'gamerankings', description: 'critic score, 0..100', sql: 'g.score_gamerankings IS NOT NULL' },
-  { key: 'gg_score', source: 'gamegauntlets', description: "Game Gauntlets' own composite score", sql: 'g.gg_score IS NOT NULL' },
-  { key: 'ggp', source: 'gamegauntlets', description: 'Game Gauntlets priority score (wheel weighting)', sql: 'g.ggp IS NOT NULL' },
-  { key: 'average_playtime_hours', source: 'gamegauntlets', description: 'resolved average playtime, hours', sql: 'g.time_average IS NOT NULL' },
-  { key: 'average_playtime_source', source: 'gamegauntlets', description: 'which source produced average_playtime_hours', sql: 'g.time_average_source IS NOT NULL' },
-  { key: 'updated_at', source: 'gamegauntlets', description: 'last time this row changed', sql: '1' },
+  { key: 'id', source: 'gamegauntlets', type: 'integer', description: 'catalog id, stable across updates', sql: '1' },
+  { key: 'kind', source: 'gamegauntlets', type: 'string', description: "'steam' or 'gog_exclusive'", sql: '1' },
+  { key: 'name', source: 'gamegauntlets', type: 'string', description: 'game title', sql: 'g.name IS NOT NULL' },
+  { key: 'image', source: 'gamegauntlets', type: 'string', description: 'header image URL', sql: 'g.image IS NOT NULL' },
+  { key: 'description', source: 'gamegauntlets', type: 'string', description: 'English store description (raw HTML)', sql: 'g.description_en IS NOT NULL' },
+  { key: 'steam_appid', source: 'steam', type: 'integer', description: 'Steam appid', sql: 'g.steam_appid IS NOT NULL' },
+  { key: 'steam_url', source: 'steam', type: 'string', description: 'Steam store page URL', sql: 'gl_steam.url IS NOT NULL' },
+  { key: 'gog_id', source: 'gog', type: 'integer', description: 'GOG catalog id', sql: 'g.gog_id IS NOT NULL' },
+  { key: 'gog_url', source: 'gog', type: 'string', description: 'GOG store page URL', sql: 'gl_gog.url IS NOT NULL' },
+  { key: 'release_date', source: 'gamegauntlets', type: 'date', description: 'cross-source consensus release date', sql: 'g.release_date IS NOT NULL' },
+  { key: 'release_precision', source: 'gamegauntlets', type: 'string', description: 'day/month/quarter/year/unknown', sql: "g.release_precision IS NOT NULL AND g.release_precision <> 'unknown'" },
+  { key: 'early_access_date', source: 'steam', type: 'date', description: 'date the game entered Early Access, if it did', sql: 'g.early_access_date IS NOT NULL' },
+  { key: 'store_release_date', source: 'gamegauntlets', type: 'date', description: 'store listing date (may be a re-listing, not the true release date)', sql: 'g.store_release_date IS NOT NULL' },
+  { key: 'price_usd', source: 'gamegauntlets', type: 'integer', description: 'USD list price, cents', sql: 'g.price_usd IS NOT NULL' },
+  { key: 'price_final_usd', source: 'gamegauntlets', type: 'integer', description: 'USD price after discount, cents', sql: 'g.price_final_usd IS NOT NULL' },
+  { key: 'discount_percent', source: 'gamegauntlets', type: 'integer', description: 'discount percent, 0..100', sql: 'g.discount_usd IS NOT NULL' },
+  { key: 'platforms', source: 'gamegauntlets', type: 'array of strings', description: 'WIN/MAC/LNX', sql: 'g.platforms IS NOT NULL' },
+  { key: 'developers', source: 'gamegauntlets', type: 'array of strings', description: 'developer names', sql: "g.developers IS NOT NULL AND g.developers <> ''" },
+  { key: 'publishers', source: 'gamegauntlets', type: 'array of strings', description: 'publisher names', sql: "g.publishers IS NOT NULL AND g.publishers <> ''" },
+  { key: 'languages', source: 'gamegauntlets', type: 'array of strings', description: 'interface language names', sql: "g.languages IS NOT NULL AND g.languages <> ''" },
+  { key: 'voiceovers', source: 'gamegauntlets', type: 'array of strings', description: 'voiceover language names', sql: "g.voiceovers IS NOT NULL AND g.voiceovers <> ''" },
+  { key: 'categories', source: 'gamegauntlets', type: 'array of strings', description: 'store category tags', sql: "g.categories IS NOT NULL AND g.categories <> ''" },
+  { key: 'genres', source: 'gamegauntlets', type: 'array of strings', description: 'genre tags', sql: "g.genres IS NOT NULL AND g.genres <> ''" },
+  { key: 'tags', source: 'gamegauntlets', type: 'array of strings', description: 'community tags', sql: "g.tags IS NOT NULL AND g.tags <> ''" },
+  { key: 'achievements', source: 'steam', type: 'integer', description: 'achievement count', sql: 'g.achievements IS NOT NULL' },
+  { key: 'steam_reviews_percent', source: 'steam', type: 'integer', description: 'all-time positive review share, 0..100', sql: 'g.score_steam IS NOT NULL' },
+  { key: 'steam_reviews_count', source: 'steam', type: 'integer', description: 'all-time review count', sql: 'g.score_steam_votes IS NOT NULL' },
+  { key: 'steam_reviews_label', source: 'steam', type: 'string', description: 'Steam\'s own label ("Very Positive", ...), null under 10 votes', sql: 'g.score_steam IS NOT NULL AND g.score_steam_votes IS NOT NULL AND g.score_steam_votes >= 10' },
+  { key: 'steam_recent_percent', source: 'steam', type: 'integer', description: 'last ~30 days positive review share, 0..100', sql: 'g.score_steam_recent IS NOT NULL' },
+  { key: 'steam_recent_count', source: 'steam', type: 'integer', description: 'last ~30 days review count', sql: 'g.score_steam_recent_votes IS NOT NULL' },
+  { key: 'steam_recent_label', source: 'steam', type: 'string', description: 'recent-reviews label, null under 10 votes', sql: 'g.score_steam_recent IS NOT NULL AND g.score_steam_recent_votes IS NOT NULL AND g.score_steam_recent_votes >= 10' },
+  { key: 'steamspy_owners', source: 'steamspy', type: 'integer', description: 'owners estimate, lower bound', sql: 'g.owners_estimate IS NOT NULL' },
+  { key: 'average_playtime_hours', source: 'gamegauntlets', type: 'number', description: 'resolved average playtime, decimal hours', sql: 'g.time_average IS NOT NULL' },
+  { key: 'average_playtime_source', source: 'gamegauntlets', type: 'string', description: 'which source produced average_playtime_hours', sql: 'g.time_average_source IS NOT NULL' },
+  { key: 'hltb_url', source: 'hltb', type: 'string', description: 'HowLongToBeat page URL', sql: 'gl_hltb.url IS NOT NULL' },
+  { key: 'hltb_main_hours', source: 'hltb', type: 'number', description: 'main story hours, decimal', sql: 'g.time_main IS NOT NULL' },
+  { key: 'hltb_complete_hours', source: 'hltb', type: 'number', description: 'completionist hours, decimal', sql: 'g.time_complete IS NOT NULL' },
+  { key: 'gamefaqs_url', source: 'gamefaqs', type: 'string', description: 'GameFAQs product page URL', sql: 'gl_gfq.url IS NOT NULL' },
+  { key: 'gamefaqs_difficulty', source: 'gamefaqs', type: 'string', description: 'GameFAQs difficulty label', sql: 'g.difficulty IS NOT NULL' },
+  { key: 'gamefaqs_rating', source: 'gamefaqs', type: 'number', description: 'GameFAQs rating, 0..5', sql: 'g.score_gamefaqs IS NOT NULL' },
+  { key: 'metacritic_url', source: 'metacritic', type: 'string', description: 'Metacritic page URL', sql: 'gl_meta.url IS NOT NULL' },
+  { key: 'metacritic_score', source: 'metacritic', type: 'integer', description: 'critic score, 0..100', sql: "g.score_critics IS NOT NULL AND g.score_critics_source = 'metacritic'" },
+  { key: 'metacritic_reviews', source: 'metacritic', type: 'integer', description: 'critic review count', sql: "g.score_critics_count IS NOT NULL AND g.score_critics_source = 'metacritic'" },
+  { key: 'metacritic_user_score', source: 'metacritic', type: 'integer', description: 'user score, 0..100', sql: 'g.score_users_metacritic IS NOT NULL' },
+  { key: 'igdb_url', source: 'igdb', type: 'string', description: 'IGDB page URL', sql: 'gl_igdb.url IS NOT NULL' },
+  { key: 'igdb_score', source: 'igdb', type: 'integer', description: 'IGDB critic score, 0..100', sql: 'g.score_igdb IS NOT NULL' },
+  { key: 'igdb_user_score', source: 'igdb', type: 'integer', description: 'IGDB user score, 0..100', sql: 'g.score_igdb_users IS NOT NULL' },
+  { key: 'gamerankings_score', source: 'gamerankings', type: 'integer', description: 'critic score, 0..100', sql: 'g.score_gamerankings IS NOT NULL' },
+  { key: 'gg_score', source: 'gamegauntlets', type: 'integer', description: "Game Gauntlets' own composite score", sql: 'g.gg_score IS NOT NULL' },
+  { key: 'gg_points', source: 'gamegauntlets', type: 'integer', description: 'Game Gauntlets priority score (wheel weighting)', sql: 'g.ggp IS NOT NULL' },
+  { key: 'updated_at', source: 'gamegauntlets', type: 'datetime', description: 'last time this row changed', sql: '1' },
 ];
 
 // Same FROM/JOIN shape as src/pipeline/export.js's EXPORT_QUERY (without the id-chunking bind params —
@@ -186,6 +193,7 @@ export async function collectStats(db) {
     const count = toInt(coverageRow?.[f.key]);
     return {
       key: f.key,
+      type: f.type,
       source: f.source,
       description: f.description,
       count,
@@ -272,10 +280,19 @@ function renderTotals(totals) {
   ].join('\n');
 }
 
+// Display text for the schema table's "Type" column — one of the fixed vocabulary FIELD_DEFS.type
+// uses (integer, number, string, array of strings) plus the two date-ish types spelled out with their
+// exact wire format, since "date" alone doesn't say whether that's `YYYY-MM-DD` or a full timestamp.
+function typeLabel(type) {
+  if (type === 'date') return 'date (`YYYY-MM-DD`)';
+  if (type === 'datetime') return 'datetime (ISO 8601)';
+  return type;
+}
+
 function renderCoverage(coverage) {
-  const lines = ['| Key | Source | Coverage | Description |', '|---|---|---|---|'];
+  const lines = ['| Key | Type | Source | Coverage | Description |', '|---|---|---|---|---|'];
   for (const row of coverage) {
-    lines.push(`| \`${row.key}\` | ${row.source} | ${pct(row.percent)} (${fmt(row.count)}) | ${row.description} |`);
+    lines.push(`| \`${row.key}\` | ${typeLabel(row.type)} | ${row.source} | ${pct(row.percent)} (${fmt(row.count)}) | ${row.description} |`);
   }
   return lines.join('\n');
 }
@@ -308,14 +325,22 @@ function renderFiles(files) {
   return lines.join('\n');
 }
 
+// `example` is the first exported row (src/pipeline/export.js's runExport() `firstRow`, passed through
+// by src/pipeline/export-push.js) — omitted entirely (both heading and body) when there is none, rather
+// than rendering an empty/placeholder section.
+function renderExample(example) {
+  if (!example) return '';
+  return `\n## Example\n\n\`\`\`json\n${JSON.stringify(example, null, 2)}\n\`\`\`\n`;
+}
+
 /**
- * `stats` (from collectStats(), plus `stats.files` added by the caller — see file header) + `{
- * generatedAt }` (a Date or ISO string; defaults to "now") -> the full README.md text. Pure, no I/O —
- * deterministic for a given `stats`/`generatedAt` (stable key/row ordering throughout, see FIELD_DEFS/
- * SOURCE_ORDER above), so a nightly diff only ever reflects a real change in the data.
+ * `stats` (from collectStats(), plus `stats.files`/`stats.example` added by the caller — see file
+ * header) + `{ generatedAt }` (a Date or ISO string; defaults to "now") -> the full README.md text.
+ * Pure, no I/O — deterministic for a given `stats`/`generatedAt` (stable key/row ordering throughout,
+ * see FIELD_DEFS/SOURCE_ORDER above), so a nightly diff only ever reflects a real change in the data.
  */
 export function renderReadme(stats, { generatedAt = new Date() } = {}) {
-  const { totals, coverage, sources, links, files } = stats;
+  const { totals, coverage, sources, links, files, example } = stats;
   const asOf = generatedAt instanceof Date ? generatedAt.toISOString() : String(generatedAt);
 
   return `# Steam Game Database
@@ -337,10 +362,11 @@ ${renderTotals(totals)}
 
 ## Schema
 
-"Coverage" is the share of exported games that currently have a value for that key.
+"Coverage" is the share of exported games that currently have a value for that key. Any key may be
+\`null\` when the value is unknown.
 
 ${renderCoverage(coverage)}
-
+${renderExample(example)}
 ## Source status
 
 "Remaining" is games with no data from that source yet, or whose last fetch is older than the source's own refresh interval.

@@ -13,6 +13,15 @@
 // gating, list conversion, numeric coercion, key order) are covered with small hand-built rows below,
 // same style as the synthetic-row tests already used for the rules with no real fixture to exercise
 // them.
+//
+// 2026-09-20 final schema pass: every cryptic legacy key was renamed to a self-explanatory,
+// source-prefixed name (sid -> steam_appid, store_url -> steam_url, full_price -> price_usd,
+// current_price -> price_final_usd, discount -> discount_percent, published_store ->
+// store_release_date, stsp_owners -> steamspy_owners, gfq_* -> gamefaqs_*, hltb_single ->
+// hltb_main_hours, hltb_complete -> hltb_complete_hours, meta_* -> metacritic_*, igdb_uscore ->
+// igdb_user_score, ggp -> gg_points), the duplicate `store_uscore` (== steam_reviews_percent) is gone,
+// and every list field (developers/publishers/languages/voiceovers/categories/genres/tags/platforms)
+// is now an array of strings instead of a comma-joined string.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -31,23 +40,23 @@ import {
 } from '../src/pipeline/export.js';
 import { steamReviewLabel } from '../src/lib/steam-review-label.js';
 
-// The exact key order mapRow() writes to steamdb.json (identity, store data, per-source blocks,
-// derived, updated_at last) — see that file's own comment for the reasoning, mirrored in
-// src/pipeline/export-readme.js's FIELD_DEFS.
+// The exact key order mapRow() writes to steamdb.json (identity, steam, gog, release, store data,
+// per-source blocks, derived, updated_at last) — see that file's own comment for the reasoning,
+// mirrored in src/pipeline/export-readme.js's FIELD_DEFS.
 const EXPECTED_KEY_ORDER = [
-  'id', 'kind', 'sid', 'gog_id', 'name', 'image', 'description', 'store_url', 'gog_url',
-  'full_price', 'current_price', 'discount', 'platforms', 'developers', 'publishers', 'languages',
-  'voiceovers', 'categories', 'genres', 'tags', 'achievements', 'release_date', 'release_precision',
-  'early_access_date', 'published_store',
-  'store_uscore', 'steam_reviews_percent', 'steam_reviews_count', 'steam_reviews_label',
+  'id', 'kind', 'name', 'image', 'description', 'steam_appid', 'steam_url', 'gog_id', 'gog_url',
+  'release_date', 'release_precision', 'early_access_date', 'store_release_date',
+  'price_usd', 'price_final_usd', 'discount_percent', 'platforms', 'developers', 'publishers',
+  'languages', 'voiceovers', 'categories', 'genres', 'tags', 'achievements',
+  'steam_reviews_percent', 'steam_reviews_count', 'steam_reviews_label',
   'steam_recent_percent', 'steam_recent_count', 'steam_recent_label',
-  'stsp_owners',
-  'gfq_url', 'gfq_difficulty', 'gfq_rating',
-  'hltb_url', 'hltb_single', 'hltb_complete',
-  'meta_url', 'meta_score', 'meta_uscore', 'metacritic_reviews',
-  'igdb_url', 'igdb_score', 'igdb_uscore',
+  'steamspy_owners', 'average_playtime_hours', 'average_playtime_source',
+  'hltb_url', 'hltb_main_hours', 'hltb_complete_hours',
+  'gamefaqs_url', 'gamefaqs_difficulty', 'gamefaqs_rating',
+  'metacritic_url', 'metacritic_score', 'metacritic_reviews', 'metacritic_user_score',
+  'igdb_url', 'igdb_score', 'igdb_user_score',
   'gamerankings_score',
-  'gg_score', 'ggp', 'average_playtime_hours', 'average_playtime_source',
+  'gg_score', 'gg_points',
   'updated_at',
 ];
 
@@ -67,8 +76,23 @@ test('mapRow: no removed key (dropped-legacy-only, frozen snapshots, duplicate g
     'grnk_score',
     'price_cis_usd', 'price_final_cis_usd', 'discount_cis_usd',
     'price_rub', 'price_final_rub', 'discount_rub',
+    // 2026-09-20 final schema pass: store_uscore was a byte-for-byte duplicate of
+    // steam_reviews_percent (both g.score_steam); every other old cryptic key (sid, store_url,
+    // full_price, current_price, discount, published_store, stsp_owners, gfq_*, hltb_single,
+    // hltb_complete, meta_*, igdb_uscore, ggp) was renamed, not removed — checked separately below.
+    'store_uscore',
   ];
   for (const key of removed) assert.ok(!(key in mapped), `${key} must not be exported`);
+});
+
+test('mapRow: no old cryptic key name survives the rename', () => {
+  const mapped = mapRow({ id: 1 });
+  const renamedAway = [
+    'sid', 'store_url', 'full_price', 'current_price', 'discount', 'published_store',
+    'stsp_owners', 'gfq_url', 'gfq_difficulty', 'gfq_rating', 'hltb_single', 'hltb_complete',
+    'meta_url', 'meta_score', 'meta_uscore', 'igdb_uscore', 'ggp',
+  ];
+  for (const key of renamedAway) assert.ok(!(key in mapped), `${key} must not be exported (renamed)`);
 });
 
 test('mapRow: every field is null (not undefined) for a bare row with only an id', () => {
@@ -95,16 +119,16 @@ test('mapRow: identity fields pass through their source columns', () => {
   const mapped = mapRow(row);
   assert.equal(mapped.id, 7);
   assert.equal(mapped.kind, 'steam');
-  assert.equal(mapped.sid, 50130);
+  assert.equal(mapped.steam_appid, 50130);
   assert.equal(mapped.gog_id, null);
   assert.equal(mapped.name, 'Mafia II');
   assert.equal(mapped.image, 'https://example.com/header.jpg');
   assert.equal(mapped.description, 'desc');
-  assert.equal(mapped.store_url, 'https://store.steampowered.com/app/50130');
+  assert.equal(mapped.steam_url, 'https://store.steampowered.com/app/50130');
   assert.equal(mapped.gog_url, null);
 });
 
-test('mapRow: meta_score is null when score_critics came from OpenCritic, not Metacritic', () => {
+test('mapRow: metacritic_score is null when score_critics came from OpenCritic, not Metacritic', () => {
   const row = {
     id: 1,
     score_critics: 88,
@@ -113,22 +137,21 @@ test('mapRow: meta_score is null when score_critics came from OpenCritic, not Me
     score_critics_count: 500,
   };
   const mapped = mapRow(row);
-  assert.equal(mapped.meta_score, null);
-  assert.equal(mapped.meta_uscore, 81);
-  assert.equal(mapped.metacritic_reviews, null, 'metacritic_reviews is gated the same way meta_score is');
+  assert.equal(mapped.metacritic_score, null);
+  assert.equal(mapped.metacritic_user_score, 81);
+  assert.equal(mapped.metacritic_reviews, null, 'metacritic_reviews is gated the same way metacritic_score is');
 });
 
 test('mapRow: metacritic_reviews passes through score_critics_count when the source is metacritic', () => {
   const row = { id: 1, score_critics: 77, score_critics_source: 'metacritic', score_critics_count: 1234 };
   const mapped = mapRow(row);
-  assert.equal(mapped.meta_score, 77);
+  assert.equal(mapped.metacritic_score, 77);
   assert.equal(mapped.metacritic_reviews, 1234);
 });
 
 test('mapRow: steam review percent/count/label track score_steam(_votes) via steamReviewLabel', () => {
   const row = { id: 1, score_steam: 97, score_steam_votes: 50000 };
   const mapped = mapRow(row);
-  assert.equal(mapped.store_uscore, 97);
   assert.equal(mapped.steam_reviews_percent, 97);
   assert.equal(mapped.steam_reviews_count, 50000);
   assert.equal(mapped.steam_reviews_label, steamReviewLabel(97, 50000));
@@ -158,7 +181,7 @@ test('mapRow: average_playtime_hours/source pass through time_average/time_avera
   assert.equal(mapped.average_playtime_source, 'steam_reviews');
 });
 
-test('mapRow: kind/gog_id/gog_url/release_date/gg_score/ggp pass through the games/game_links columns', () => {
+test('mapRow: kind/gog_id/gog_url/release_date/gg_score/gg_points pass through the games/game_links columns', () => {
   const row = {
     id: 1,
     kind: 'gog_exclusive',
@@ -179,8 +202,8 @@ test('mapRow: kind/gog_id/gog_url/release_date/gg_score/ggp pass through the gam
   assert.equal(mapped.release_precision, 'day');
   assert.equal(mapped.early_access_date, '2014-01-01');
   assert.equal(mapped.gg_score, 82);
-  assert.equal(mapped.ggp, 40);
-  assert.equal(mapped.updated_at, '2026-09-19 03:00:00');
+  assert.equal(mapped.gg_points, 40);
+  assert.equal(mapped.updated_at, '2026-09-19T03:00:00Z');
 });
 
 test('mapRow: gamerankings_score passes through score_gamerankings as-is', () => {
@@ -190,31 +213,39 @@ test('mapRow: gamerankings_score passes through score_gamerankings as-is', () =>
 
 // --- list conversion ------------------------------------------------
 
-test('mapRow: pipe-wrapped list columns convert to comma strings', () => {
+test('mapRow: pipe-wrapped list columns convert to arrays of strings', () => {
   const row = { id: 1, genres: '|Action|RPG|', tags: '|Open World|Story Rich|' };
   const mapped = mapRow(row);
-  assert.equal(mapped.genres, 'Action,RPG');
-  assert.equal(mapped.tags, 'Open World,Story Rich');
+  assert.deepEqual(mapped.genres, ['Action', 'RPG']);
+  assert.deepEqual(mapped.tags, ['Open World', 'Story Rich']);
 });
 
-test('mapRow: null/empty list columns convert to null, not an empty string', () => {
-  assert.equal(mapRow({ id: 1, genres: null }).genres, null);
-  assert.equal(mapRow({ id: 1, genres: '||' }).genres, null);
-  assert.equal(mapRow({ id: 1, genres: '' }).genres, null);
+test('mapRow: null/empty list columns convert to [], not null or an empty string', () => {
+  assert.deepEqual(mapRow({ id: 1, genres: null }).genres, []);
+  assert.deepEqual(mapRow({ id: 1, genres: '||' }).genres, []);
+  assert.deepEqual(mapRow({ id: 1, genres: '' }).genres, []);
 });
 
-test('mapRow: platforms passes through as-is (SET column, already a comma string, not pipe-wrapped)', () => {
-  assert.equal(mapRow({ id: 1, platforms: 'WIN,MAC' }).platforms, 'WIN,MAC');
-  assert.equal(mapRow({ id: 1, platforms: null }).platforms, null);
+test('mapRow: every list field is an array, empty when the source column has no data', () => {
+  const mapped = mapRow({ id: 1 });
+  for (const key of ['platforms', 'developers', 'publishers', 'languages', 'voiceovers', 'categories', 'genres', 'tags']) {
+    assert.deepEqual(mapped[key], [], `${key} should be [] for a bare row`);
+  }
+});
+
+test('mapRow: platforms (SET column, a comma string, not pipe-wrapped) converts to an array of strings', () => {
+  assert.deepEqual(mapRow({ id: 1, platforms: 'WIN,MAC' }).platforms, ['WIN', 'MAC']);
+  assert.deepEqual(mapRow({ id: 1, platforms: null }).platforms, []);
+  assert.deepEqual(mapRow({ id: 1, platforms: '' }).platforms, []);
 });
 
 test('mapRow: DECIMAL score/time columns (returned as strings by mysql2) are coerced to numbers', () => {
   const row = { id: 1, score_gamefaqs: '3.76', time_main: '12.0', time_complete: '28.5', steam_appid: '50130' };
   const mapped = mapRow(row);
-  assert.equal(mapped.gfq_rating, 3.76);
-  assert.equal(mapped.hltb_single, 12);
-  assert.equal(mapped.hltb_complete, 28.5);
-  assert.equal(mapped.sid, 50130);
+  assert.equal(mapped.gamefaqs_rating, 3.76);
+  assert.equal(mapped.hltb_main_hours, 12);
+  assert.equal(mapped.hltb_complete_hours, 28.5);
+  assert.equal(mapped.steam_appid, 50130);
 });
 
 // --- buildExportQuery / streamRows (one dump, both kinds, id-ordered chunks) ---------
@@ -337,6 +368,7 @@ test('runExport: writes steamdb.json, steamdb.min.json and steamdb.min.json.gz w
     assert.deepEqual(min, expected);
     assert.deepEqual(gunzipped, expected);
     assert.ok('kind' in pretty[0], 'rows carry kind');
+    assert.deepEqual(result.firstRow, expected[0], 'firstRow is the first mapped row, for the README Example section');
 
     // Pretty file is actually pretty-printed (not just valid JSON).
     const prettyText = fs.readFileSync(result.prettyPath, 'utf8');
@@ -369,6 +401,7 @@ test('runExport: an empty result set still writes a valid empty JSON array', asy
     assert.equal(result.count, 0);
     assert.deepEqual(JSON.parse(fs.readFileSync(result.minPath, 'utf8')), []);
     assert.deepEqual(JSON.parse(fs.readFileSync(result.prettyPath, 'utf8')), []);
+    assert.equal(result.firstRow, undefined, 'no rows -> no firstRow');
   });
 });
 
@@ -415,7 +448,7 @@ test('runExport: mixes steam and gog_exclusive rows in one dump, ordered by id, 
     const min = JSON.parse(fs.readFileSync(result.minPath, 'utf8'));
     assert.deepEqual(min.map((r) => r.name), ['Steam Game', 'GOG Only Game', 'Another Steam Game']);
     assert.deepEqual(min.map((r) => r.kind), ['steam', 'gog_exclusive', 'steam']);
-    assert.equal(min[1].sid, null, 'steam-only keys are null on a GOG-exclusive row');
+    assert.equal(min[1].steam_appid, null, 'steam-only keys are null on a GOG-exclusive row');
     assert.equal(min[1].gog_id, 999);
   });
 });
