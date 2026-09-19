@@ -1,0 +1,110 @@
+{
+  "_meta": {
+    "units": { "hours": ["hour", "hours", "hours"], "games": ["game", "games", "games"] },
+    "error": "Error X_X"
+  },
+  "load": [
+    { "text": "Good morning, Senpai ˘o˘", "mood": "happy", "when": { "hourFrom": 7, "hourTo": 13 }, "weight": 5 },
+    { "text": "Hello, it's good to see you ~", "mood": "happy", "when": { "hourFrom": 13, "hourTo": 17 }, "weight": 5 },
+    { "text": "Oh, it's already evening, it's good to have you here ~♥~", "mood": "happy", "when": { "hourFrom": 17, "hourTo": 23 }, "weight": 5 },
+    { "text": "Good night, you can't sleep? ᴗ˳ᴗ", "mood": "normal", "when": { "hourFrom": 23, "hourTo": 7 }, "weight": 5 },
+    { "text": "I'm Nap Nap and I'll be commenting everything that happens here!", "mood": "happy", "weight": 1 },
+    { "text": "Welcome back! I kept the wheel warm for you ♡", "mood": "happy", "when": { "returning": true }, "weight": 2 }
+  ],
+  "idle": [
+    { "text": "Still there? Spin the wheel already, I'm getting bored (´∀｀)", "mood": "normal" },
+    { "text": "Tick-tock~ a random game isn't going to pick itself ヽ(•∀•)ﾉ", "mood": "happy" },
+    { "text": "Zzz... oh, you're still here ～(｀▽´)～", "mood": "normal", "when": { "hourFrom": 23, "hourTo": 7 } },
+    { "text": "I could hum the loading music one more time, if you're not going to move.", "mood": "enjoy" }
+  ],
+  "click:head": [
+    "Aren't you ashamed?!",
+    "Don't touch me, you dirty weeb!",
+    "Pervert!!!",
+    "Tie it up ༼ つ ͠° ͟ ͟ʖ ͡° ༽つ",
+    "They're on their way to pick you up (╬ Ò﹏Ó)"
+  ],
+  "click:body": [
+    "Aren't you ashamed?!",
+    "Don't touch me, you dirty weeb!",
+    "Pervert!!!",
+    "Tie it up ༼ つ ͠° ͟ ͟ʖ ͡° ༽つ",
+    "They're on their way to pick you up (╬ Ò﹏Ó)"
+  ],
+  "spin:start": [
+    { "text": "You're definitely gonna get something good! Or just something... ＾◡＾'", "mood": "happy" },
+    { "text": "Oh-ho-ho, I love surprises ˃ˑ̫ ˂", "mood": "enjoy" },
+    { "text": "Wait! No, come on... Stop, though!", "mood": "unhappy" },
+    { "text": "Hit it! ＾∇＾", "mood": "happy" },
+    { "text": "Wow, I think I see a game from Alavar, or maybe I don't see it...", "mood": "normal" },
+    { "text": "Hope it doesn't fall out {game} ಠ_ಠ", "mood": "unhappy" },
+    { "text": "I'm the HPG commander and {game} is my favorite game in Steam!", "mood": "kira" },
+    { "text": "Let's just refresh the page and we'll try again, I won't tell anyone ;p", "mood": "normal" }
+  ],
+  "spin:retry": [
+    { "text": "You trying to find something definitive? ;3", "mood": "normal", "when": { "respin": 3 } },
+    { "text": "Careful, or you'll break the wheel ×﹏×", "mood": "unhappy", "when": { "respin": 3 } }
+  ],
+  "spin:middle": [
+    { "text": "Wow! You're gonna have to play {game} for {hours}! >_<", "mood": "normal" },
+    { "text": "In this list there are {goodCount} with a high score. That's good, isn't it? O.O", "mood": "happy" }
+  ],
+  "spin:end": [
+    { "text": "Not bad! {developers} doesn't make bad games. Except for this one, this one's so-so ⌒‿‿⌒", "mood": "normal" },
+    { "text": "Uh, sorry it's not Fallout 76... I heard it's a popular game ￢‿￢", "mood": "unhappy" },
+    { "text": "Oh, you could have gotten {otherGame} instead... (✿◠‿◠)", "mood": "enjoy" },
+    { "text": "Authoritatively declare {game} better than quartz! ＾ω＾", "mood": "kira" },
+    { "text": "The graphics in this game look very familiar... (҂⌣̀_⌣́)", "mood": "normal", "when": { "tag": "Anime" } },
+    { "text": "AYAYA Clap", "mood": "happy", "when": { "tag": "Anime" } },
+    { "text": "Oh, I hope you have a virtual reality helmet... (｡•́︿•̀｡)", "mood": "unhappy", "when": { "tag": "VR" } },
+    { "text": "It's a good game for lonely nights ( ´ ∀ `)ノ～ ♡", "mood": "kira", "when": { "tag": "Nudity" } },
+    { "text": "{score} out of 100? Not bad at all for {genre} ヽ(≡∀≡)ﾉ", "mood": "happy", "when": { "scoreMin": 80 } },
+    { "text": "Yikes, {score}/100... well, at least it's short ({hours}) (｡•́︿•̀｡)", "mood": "unhappy", "when": { "scoreMax": 40 } },
+    { "text": "A {year} game, huh. A little dusty, but charm doesn't expire ˙ᵕ˙", "mood": "normal", "when": { "yearMax": 2005 } },
+    { "text": "Free? Even better, more Marbles money for snacks (◕‿◕)", "mood": "happy", "when": { "priceMax": 0 } }
+  ],
+  "empty": [
+    { "text": "Hmm, nothing matches those filters. Try loosening them up a bit? (｡•́︿•̀｡)", "mood": "unhappy" },
+    { "text": "Empty-handed! Maybe fewer restrictions next time ヽ(-_-;)ノ", "mood": "unhappy" }
+  ],
+  "privacy": [
+    { "text": "Your Steam library is private, so I can't peek at it ヽ(°〇°)ノ", "mood": "unhappy" },
+    { "text": "Make your Steam games list public if you want library-only spins to work (・ω・)", "mood": "normal" }
+  ],
+  "longSession": [
+    { "text": "You've been spinning for a while now — found something yet? （・ω・）", "mood": "normal" },
+    { "text": "Still hunting? Maybe it's time for a snack break, senpai （≡´∀`）", "mood": "happy" }
+  ],
+  "settings:open": [
+    { "text": "Ooh, tweaking the filters? Don't be too picky now~ （≡´∀`）", "mood": "happy" },
+    { "text": "Let me know if you need help understanding an option (｡•ᴗ•｡)", "mood": "normal" }
+  ],
+  "hover:randomGame": [
+    "If you don't want to wait, here's a random game for you (but it doesn't include filters!) ٩(◦`꒳´◦)۶"
+  ],
+  "hover:marbles": [
+    "I'll save you a file of 100 games that you can use in Marbles on Stream ୧(﹒︠ᴗ﹒︡)୨"
+  ],
+  "hover:ggPoints": [
+    "Go through the games, get points for them and improve your gamer level (⁎˃ᆺ˂)"
+  ],
+  "hover:profile": [
+    "In the future, it will be possible to create lists of all the games you've played (｡･ω･｡)"
+  ],
+  "hover:search": [
+    "Here you can see your favorite game data (ง ˙ω˙)ว "
+  ],
+  "hover:gabestore": [
+    "Uncle Gabe's shop has cheaper games, and buying games from him gives a plus in karma ヽ(〃･ω･)ﾉ"
+  ],
+  "hover:donations": [
+    "If you like the site, HPG or SGG, join the Nap Nap militia on Patreon ヽ(*⌒∇⌒*)ﾉ",
+    "Even a little help is a great motivation to support the project permanently ٩(-౪-٩)"
+  ],
+  "hover:spin": [
+    "You're definitely gonna get something good! Or just something... ＾◡＾'",
+    "Oh-ho-ho, I love surprises ˃ˑ̫ ˂",
+    "Wait! No, come on... Stop, though!",
+    "Hit it! ＾∇＾"
+  ]
+}

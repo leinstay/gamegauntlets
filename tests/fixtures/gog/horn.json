@@ -1,0 +1,613 @@
+{
+  "en": {
+    "inDevelopment": {
+      "active": false
+    },
+    "copyrights": "<a href=\"https://h3hota.com/\">https://h3hota.com/</a>",
+    "isUsingDosBox": false,
+    "technologies": [],
+    "releaseStatus": "default",
+    "description": "<p class=\"module\" style=\"box-shadow:0 1px 5px rgb( 255, 203, 32 );\">\r\nWhile HotA officially supports only English and Russian, support for other languages is generously provided by independent translators. HotA Crew accepts no responsibility for, and will not consider claims regarding unofficially localized versions of the game.<br>\r\n<br>\r\nUnofficial translations may experience delays following a ...</p>",
+    "size": 686,
+    "overview": "<p class=\"module\" style=\"box-shadow:0 1px 5px rgb( 255, 203, 32 );\">\r\nWhile HotA officially supports only English and Russian, support for other languages is generously provided by independent translators. HotA Crew accepts no responsibility for, and will not consider claims regarding unofficially l...</p>",
+    "featuresDescription": "",
+    "_links": {
+      "self": {
+        "href": "https://api.gog.com/v2/games/1718139055?locale=en-US"
+      },
+      "store": {
+        "href": "https://www.gog.com/en/game/heroes_of_might_and_magic_iii_horn_of_the_abyss"
+      },
+      "support": {
+        "href": "https://www.gog.com/support/heroes_of_might_and_magic_iii_horn_of_the_abyss"
+      },
+      "forum": {
+        "href": "https://www.gog.com/forum/heroes_of_might_and_magic_iii_horn_of_the_abyss"
+      },
+      "icon": {
+        "href": "https://images.gog-statics.com/04ca57c951a38c3eb09506d5eb28d2d8fa8cec40830e7d7183b47b9b557de103.png"
+      },
+      "iconSquare": {
+        "href": "https://images.gog-statics.com/ec4af66bfae855a099e19b81a479d0375851c96bdeb8254a98ae0ef35db38ce3.png"
+      },
+      "logo": {
+        "href": "https://images.gog-statics.com/85b63c7b19bb2241cb6926b78b6b4d74219cd8400e0edef3140b99ebca6aba2f.png"
+      },
+      "boxArtImage": {
+        "href": "https://images.gog-statics.com/d26b2ce6e97995cf6e3a183214f84bea5385230876176facfca097378adac2fa.jpg"
+      },
+      "backgroundImage": {
+        "href": "https://images.gog-statics.com/1d58e9ee7c755f51d15b1fde008c1c83709ae7884215088c77619a2877dc2107.jpg"
+      },
+      "galaxyBackgroundImage": {
+        "href": "https://images.gog-statics.com/8df9808a56fb9fee0ca3edf7cad8b38c037c772a16fe0c8293d68d878b43a78e.jpg"
+      },
+      "modifiesGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1207658787?locale=en-US",
+          "id": 1207658787,
+          "releaseStatus": "default",
+          "isSecret": false,
+          "rule": "and"
+        }
+      ]
+    },
+    "_embedded": {
+      "product": {
+        "isAvailableForSale": true,
+        "isVisibleInCatalog": true,
+        "isPreorder": false,
+        "isVisibleInAccount": true,
+        "id": 1718139055,
+        "title": "Heroes of Might and Magic III: Horn of the Abyss",
+        "isInstallable": true,
+        "globalReleaseDate": "2011-12-31T00:00:00+01:00",
+        "hasProductCard": true,
+        "gogReleaseDate": "2025-06-08T21:30:00+02:00",
+        "category": "GAME",
+        "hasPatrons": false,
+        "hasHowLongToBeatInformation": true,
+        "hasDreamlistStories": true,
+        "hasOpenCriticInformation": true,
+        "hasFaqInformation": true,
+        "isSecret": false,
+        "_links": {
+          "image": {
+            "href": "https://images.gog-statics.com/5fd9f047968f4f82f85c8c52d6bb57956acc17d03ade0ce049f425e465a30d6f_{formatter}.png",
+            "templated": true,
+            "formatters": [
+              "800",
+              "1600",
+              "glx_logo",
+              "glx_logo_2x",
+              "product_630",
+              "product_630_2x"
+            ]
+          },
+          "checkout": {
+            "href": "https://www.gog.com/en/checkout/manual/1718139055"
+          },
+          "prices": {
+            "href": "https://api.gog.com/products/1718139055/prices?countryCode={country}",
+            "templated": true
+          }
+        }
+      },
+      "productType": "GAME",
+      "localizations": [
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "es",
+              "name": "Spanish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        }
+      ],
+      "publisher": {
+        "name": "HotA Crew",
+        "searchIndex": "hota-crew"
+      },
+      "publishers": [
+        {
+          "name": "HotA Crew",
+          "searchIndex": "hota-crew"
+        }
+      ],
+      "developers": [
+        {
+          "name": "HotA Crew",
+          "searchIndex": "hota-crew"
+        }
+      ],
+      "supportedOperatingSystems": [
+        {
+          "operatingSystem": {
+            "name": "windows",
+            "versions": "Windows"
+          },
+          "systemRequirements": [
+            {
+              "type": "minimum",
+              "description": "",
+              "requirements": [
+                {
+                  "id": "system",
+                  "name": "System:",
+                  "description": "Windows (10, 11)"
+                },
+                {
+                  "id": "processor",
+                  "name": "Processor:",
+                  "description": "1.8 GHz"
+                },
+                {
+                  "id": "memory",
+                  "name": "Memory:",
+                  "description": "2 GB RAM"
+                },
+                {
+                  "id": "graphics",
+                  "name": "Graphics:",
+                  "description": "3D graphics card compatible with DirectX 9.0c"
+                },
+                {
+                  "id": "directx",
+                  "name": "DirectX:",
+                  "description": "DirectX 9.0c"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tags": [
+        {
+          "id": 56,
+          "name": "Strategy",
+          "level": 1,
+          "slug": "strategy"
+        },
+        {
+          "id": 63,
+          "name": "Turn-based",
+          "level": 2,
+          "slug": "turnbased"
+        },
+        {
+          "id": 71,
+          "name": "Fantasy",
+          "level": 3,
+          "slug": "fantasy"
+        }
+      ],
+      "features": [
+        {
+          "name": "Cloud saves",
+          "id": "cloud_saves"
+        },
+        {
+          "name": "Multi-player",
+          "id": "multi"
+        },
+        {
+          "name": "Single-player",
+          "id": "single"
+        }
+      ],
+      "globalWishlist": {
+        "globalWishlistId": "51152966130427796"
+      }
+    }
+  },
+  "ru": {
+    "inDevelopment": {
+      "active": false
+    },
+    "copyrights": "<a href=\"https://h3hota.com/\">https://h3hota.com/</a>",
+    "isUsingDosBox": false,
+    "technologies": [],
+    "releaseStatus": "default",
+    "description": "<p class=\"module\" style=\"box-shadow:0 1px 5px rgb( 255, 203, 32 );\">\r\nWhile HotA officially supports only English and Russian, support for other languages is generously provided by independent translators. HotA Crew accepts no responsibility for, and will not consider claims regarding unofficially localized versions of the game.<br>\r\n<br>\r\nUnofficial translations may experience delays following a ...</p>",
+    "size": 686,
+    "overview": "<p class=\"module\" style=\"box-shadow:0 1px 5px rgb( 255, 203, 32 );\">\r\nWhile HotA officially supports only English and Russian, support for other languages is generously provided by independent translators. HotA Crew accepts no responsibility for, and will not consider claims regarding unofficially l...</p>",
+    "featuresDescription": "",
+    "_links": {
+      "self": {
+        "href": "https://api.gog.com/v2/games/1718139055?locale=ru-RU"
+      },
+      "store": {
+        "href": "https://www.gog.com/ru/game/heroes_of_might_and_magic_iii_horn_of_the_abyss"
+      },
+      "support": {
+        "href": "https://www.gog.com/support/heroes_of_might_and_magic_iii_horn_of_the_abyss"
+      },
+      "forum": {
+        "href": "https://www.gog.com/forum/heroes_of_might_and_magic_iii_horn_of_the_abyss"
+      },
+      "icon": {
+        "href": "https://images.gog-statics.com/04ca57c951a38c3eb09506d5eb28d2d8fa8cec40830e7d7183b47b9b557de103.png"
+      },
+      "iconSquare": {
+        "href": "https://images.gog-statics.com/ec4af66bfae855a099e19b81a479d0375851c96bdeb8254a98ae0ef35db38ce3.png"
+      },
+      "logo": {
+        "href": "https://images.gog-statics.com/85b63c7b19bb2241cb6926b78b6b4d74219cd8400e0edef3140b99ebca6aba2f.png"
+      },
+      "boxArtImage": {
+        "href": "https://images.gog-statics.com/d26b2ce6e97995cf6e3a183214f84bea5385230876176facfca097378adac2fa.jpg"
+      },
+      "backgroundImage": {
+        "href": "https://images.gog-statics.com/1d58e9ee7c755f51d15b1fde008c1c83709ae7884215088c77619a2877dc2107.jpg"
+      },
+      "galaxyBackgroundImage": {
+        "href": "https://images.gog-statics.com/8df9808a56fb9fee0ca3edf7cad8b38c037c772a16fe0c8293d68d878b43a78e.jpg"
+      },
+      "modifiesGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1207658787?locale=ru-RU",
+          "id": 1207658787,
+          "releaseStatus": "default",
+          "isSecret": false,
+          "rule": "and"
+        }
+      ]
+    },
+    "_embedded": {
+      "product": {
+        "isAvailableForSale": true,
+        "isVisibleInCatalog": true,
+        "isPreorder": false,
+        "isVisibleInAccount": true,
+        "id": 1718139055,
+        "title": "Heroes of Might and Magic III: Horn of the Abyss",
+        "isInstallable": true,
+        "globalReleaseDate": "2011-12-31T00:00:00+01:00",
+        "hasProductCard": true,
+        "gogReleaseDate": "2025-06-08T21:30:00+02:00",
+        "category": "GAME",
+        "hasPatrons": false,
+        "hasHowLongToBeatInformation": true,
+        "hasDreamlistStories": true,
+        "hasOpenCriticInformation": true,
+        "hasFaqInformation": true,
+        "isSecret": false,
+        "_links": {
+          "image": {
+            "href": "https://images.gog-statics.com/5fd9f047968f4f82f85c8c52d6bb57956acc17d03ade0ce049f425e465a30d6f_{formatter}.png",
+            "templated": true,
+            "formatters": [
+              "800",
+              "1600",
+              "glx_logo",
+              "glx_logo_2x",
+              "product_630",
+              "product_630_2x"
+            ]
+          },
+          "checkout": {
+            "href": "https://www.gog.com/ru/checkout/manual/1718139055"
+          },
+          "prices": {
+            "href": "https://api.gog.com/products/1718139055/prices?countryCode={country}",
+            "templated": true
+          }
+        }
+      },
+      "productType": "GAME",
+      "localizations": [
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "es",
+              "name": "Spanish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        }
+      ],
+      "publisher": {
+        "name": "HotA Crew",
+        "searchIndex": "hota-crew"
+      },
+      "publishers": [
+        {
+          "name": "HotA Crew",
+          "searchIndex": "hota-crew"
+        }
+      ],
+      "developers": [
+        {
+          "name": "HotA Crew",
+          "searchIndex": "hota-crew"
+        }
+      ],
+      "supportedOperatingSystems": [
+        {
+          "operatingSystem": {
+            "name": "windows",
+            "versions": "Windows"
+          },
+          "systemRequirements": [
+            {
+              "type": "minimum",
+              "description": "",
+              "requirements": [
+                {
+                  "id": "system",
+                  "name": "Система:",
+                  "description": "Windows (10, 11)"
+                },
+                {
+                  "id": "processor",
+                  "name": "Процессор: ",
+                  "description": "1.8 GHz"
+                },
+                {
+                  "id": "memory",
+                  "name": "Память:",
+                  "description": "2 GB RAM"
+                },
+                {
+                  "id": "graphics",
+                  "name": "Графика:",
+                  "description": "3D graphics card compatible with DirectX 9.0c"
+                },
+                {
+                  "id": "directx",
+                  "name": "DirectX：",
+                  "description": "DirectX 9.0c"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tags": [
+        {
+          "id": 56,
+          "name": "Стратегия",
+          "level": 1,
+          "slug": "strategy"
+        },
+        {
+          "id": 63,
+          "name": "Пошаговая",
+          "level": 2,
+          "slug": "turnbased"
+        },
+        {
+          "id": 71,
+          "name": "Фэнтези",
+          "level": 3,
+          "slug": "fantasy"
+        }
+      ],
+      "features": [
+        {
+          "name": "Облачные сохранения",
+          "id": "cloud_saves"
+        },
+        {
+          "name": "сетевая игра",
+          "id": "multi"
+        },
+        {
+          "name": "Одиночная игра",
+          "id": "single"
+        }
+      ],
+      "globalWishlist": {
+        "globalWishlistId": "51152966130427796"
+      }
+    }
+  },
+  "pricesUsd": {
+    "_links": {
+      "self": {
+        "href": "/api/products/1718139055/prices?countryCode=US"
+      },
+      "product": {
+        "href": "https://api.gog.com/products/1718139055"
+      }
+    },
+    "_embedded": {
+      "prices": [
+        {
+          "currency": {
+            "code": "USD"
+          },
+          "basePrice": "0 USD",
+          "finalPrice": "0 USD",
+          "bonusWalletFunds": "0 USD"
+        }
+      ]
+    }
+  },
+  "pricesRub": {
+    "_links": {
+      "self": {
+        "href": "/api/products/1718139055/prices?countryCode=RU"
+      },
+      "product": {
+        "href": "https://api.gog.com/products/1718139055"
+      }
+    },
+    "_embedded": {
+      "prices": [
+        {
+          "currency": {
+            "code": "RUB"
+          },
+          "basePrice": "0 RUB",
+          "finalPrice": "0 RUB",
+          "bonusWalletFunds": "0 RUB"
+        },
+        {
+          "currency": {
+            "code": "USD"
+          },
+          "basePrice": "0 USD",
+          "finalPrice": "0 USD",
+          "bonusWalletFunds": "0 USD"
+        }
+      ]
+    }
+  },
+  "catalog": {
+    "id": "1718139055",
+    "slug": "heroes_of_might_and_magic_iii_horn_of_the_abyss",
+    "title": "Heroes of Might and Magic III: Horn of the Abyss",
+    "productType": "game",
+    "releaseDate": "2011.12.31",
+    "developers": [
+      "HotA Crew"
+    ],
+    "operatingSystems": [
+      "windows"
+    ],
+    "price": {
+      "final": "$0.00",
+      "base": "$0.00",
+      "discount": null
+    },
+    "coverHorizontal": "https://images.gog-statics.com/d26b2ce6e97995cf6e3a183214f84bea5385230876176facfca097378adac2fa.jpg"
+  }
+}

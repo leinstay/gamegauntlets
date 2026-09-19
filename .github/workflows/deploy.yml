@@ -1,0 +1,78 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Self-hosted runner on the production server itself; no inbound SSH needed. Target: /opt/gg
+    runs-on: [self-hosted, gg-prod]
+    timeout-minutes: 20
+    env:
+      APP_DIR: /opt/gg
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test
+        run: |
+          if [ -f package.json ]; then
+            npm ci --no-audit --no-fund
+            npm test
+          fi
+
+      - name: Sync to /opt/gg
+        run: |
+          set -e
+          rsync -rlpt --delete --omit-dir-times \
+            --filter='P /.env' \
+            --filter='P /config.local.json' \
+            --filter='P /node_modules/' \
+            --filter='P /var/' \
+            --filter='P /public/msc/*' \
+            --filter='- /.git/' \
+            --filter='- /.github/' \
+            --filter='- /node_modules/' \
+            --filter='- /tests/' \
+            ./ "$APP_DIR/"
+          # Cache busting: replace ?v=dev with the commit hash in HTML
+          if [ -d "$APP_DIR/public" ]; then
+            find "$APP_DIR/public" -name '*.html' -exec sed -i "s/?v=dev/?v=${GITHUB_SHA::8}/g" {} +
+          fi
+
+      - name: Install, restart
+        run: |
+          set -e
+          cd "$APP_DIR"
+          if [ -f package.json ]; then
+            npm ci --omit=dev --no-audit --no-fund
+          fi
+          for svc in api worker; do
+            if [ -f "src/$svc.js" ]; then
+              sudo /usr/bin/systemctl restart "gg-$svc"
+              # the worker drains in-flight jobs on SIGTERM, so give it time to come back
+              for i in $(seq 1 30); do
+                state=$(sudo /usr/bin/systemctl is-active "gg-$svc" || true)
+                [ "$state" = "active" ] && break
+                sleep 2
+              done
+              echo "gg-$svc: $state"; [ "$state" = "active" ]
+            fi
+          done
+
+      - name: Smoke test
+        run: |
+          set -e
+          if [ -f "$APP_DIR/public/index.html" ]; then
+            code=$(curl -sk -o /dev/null -w '%{http_code}' --resolve gamegauntlets.com:443:127.0.0.1 https://gamegauntlets.com/)
+            echo "/ -> $code"; [ "$code" = "200" ]
+          fi
+          if [ -f "$APP_DIR/src/api.js" ]; then
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3100/api/session)
+            echo "api /api/session -> $code"; [ "$code" = "200" ]
+          fi

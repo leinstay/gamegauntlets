@@ -1,0 +1,120 @@
+/*
+ * Pio (Neptune) mascot styling.
+ * Ported from the legacy Pio 2.4 plugin's legacy/pio/static/pio.css (Dreamer-Paul, GPL-2.0), which fixed the
+ * widget to the bottom of the viewport, hid it under 1024px, and used a fading speech bubble above the canvas.
+ * Class names below are the ones public/js/pio/pio.js builds (pio-container/-canvas/-dialog/-toggle/-hidden).
+ */
+
+.pio-container {
+  position: fixed;
+  right: 0.5em;
+  bottom: 0;
+  z-index: 52;
+  width: 300px;
+  height: 300px;
+  color: #666;
+  user-select: none;
+  pointer-events: none; /* only the canvas and toggle re-enable pointer events below */
+}
+
+.pio-container.pio-hidden {
+  display: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .pio-container {
+    display: none !important;
+  }
+}
+
+.pio-canvas {
+  display: block;
+  width: 300px;
+  height: 300px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.pio-toggle {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  width: 1.8em;
+  height: 1.8em;
+  padding: 0;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 1em;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity 0.3s;
+}
+.pio-container:hover .pio-toggle {
+  opacity: 1;
+}
+
+.pio-dialog {
+  position: absolute;
+  top: 0.5em;
+  left: 1em;
+  right: 1em;
+  z-index: -1;
+  font-size: 0.85em;
+  line-height: 1.35;
+  background: #fff;
+  padding: 0.75em 1em;
+  border-radius: 1em;
+  color: #333;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  visibility: hidden;
+  opacity: 0;
+  word-break: break-word;
+  white-space: pre-wrap;
+  pointer-events: none;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+.pio-dialog.pio-dialog-active {
+  opacity: 1;
+  visibility: visible;
+}
+.pio-dialog.pio-typing span::after {
+  content: '\258A';
+  display: inline-block;
+  margin-left: 1px;
+  animation: pio-caret-blink 0.8s steps(1) infinite;
+}
+
+@keyframes pio-caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .pio-container {
+    display: none !important;
+  }
+}
+
+/*
+ * Wheel-page override (T-frontend-port deviation): the legacy widget was mounted inline in the DOM
+ * (legacy/ajax/pages/wheel.php's own `<div class="pio-container" style="margin-left:-80px;
+ * margin-bottom:30px">...</div>` under the wheel canvas) and relied on `position: fixed; bottom: 0`
+ * with no left/right offset to stay pinned to the *viewport bottom* while still following its DOM
+ * column horizontally. The rewritten pio.js widget defaults to a fully independent bottom-right
+ * floating corner (`right: 0.5em`) for standalone use elsewhere. When the container lives inside the
+ * wheel column (`.column .pio-container`, higher specificity than the bare rule above) this restores
+ * the legacy in-flow placement instead: bottom of the column, nudged left of the wheel centre via the
+ * fragment's own inline `margin-left`.
+ */
+.column .pio-container {
+  /* legacy: fixed to the viewport bottom, x taken from its static position in the wheel column */
+  position: fixed;
+  right: auto;
+  bottom: 0;
+}
+

@@ -1,0 +1,5 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target" : { "namespace": "android_app", "package_name": "com.hepega.twa.sgg",
+               "sha256_cert_fingerprints": ["EF:4B:2D:10:B6:1D:B8:2C:EA:76:EF:77:4F:82:83:3A:00:EF:14:E8:B0:4D:40:48:A6:8F:70:89:58:5E:F5:46","21:82:16:73:65:09:E7:41:E2:70:02:55:B0:DF:0A:6D:41:7B:D9:9E:21:8A:BF:26:3B:13:E4:97:D1:84:49:7A"] }
+}]

@@ -1,0 +1,285 @@
+[
+  {
+    "id": 1942,
+    "aggregated_rating": 91.73076923076923,
+    "aggregated_rating_count": 26,
+    "external_games": [
+      {
+        "id": 2067884,
+        "uid": "1207664643",
+        "external_game_source": 5
+      },
+      {
+        "id": 78478,
+        "uid": "1207664663",
+        "external_game_source": 5
+      },
+      {
+        "id": 189745,
+        "uid": "UCprFOIVpCqQLUMsWBNwt0PQ",
+        "external_game_source": 10
+      },
+      {
+        "id": 246257,
+        "uid": "115977",
+        "external_game_source": 14
+      },
+      {
+        "id": 119254,
+        "uid": "41484",
+        "external_game_source": 3
+      },
+      {
+        "id": 2176359,
+        "uid": "204794",
+        "external_game_source": 36
+      },
+      {
+        "id": 211029,
+        "uid": "BR765873CQJD",
+        "external_game_source": 11
+      },
+      {
+        "id": 11306,
+        "uid": "292030",
+        "external_game_source": 1
+      },
+      {
+        "id": 1928370,
+        "uid": "B07SH3D6HT",
+        "external_game_source": 20
+      },
+      {
+        "id": 1937739,
+        "uid": "B00KNZNVLM",
+        "external_game_source": 20
+      },
+      {
+        "id": 1931970,
+        "uid": "B00WTI3SGO",
+        "external_game_source": 20
+      },
+      {
+        "id": 1934807,
+        "uid": "B00WTI2HV6",
+        "external_game_source": 20
+      },
+      {
+        "id": 1935171,
+        "uid": "B00T3SPV36",
+        "external_game_source": 20
+      }
+    ],
+    "first_release_date": 1431993600,
+    "genres": [
+      {
+        "id": 12,
+        "name": "Role-playing (RPG)"
+      },
+      {
+        "id": 31,
+        "name": "Adventure"
+      }
+    ],
+    "involved_companies": [
+      {
+        "id": 17436,
+        "company": {
+          "id": 50,
+          "name": "WB Games"
+        },
+        "developer": false,
+        "publisher": true
+      },
+      {
+        "id": 17769,
+        "company": {
+          "id": 3119,
+          "name": "cdp.pl"
+        },
+        "developer": false,
+        "publisher": true
+      },
+      {
+        "id": 17771,
+        "company": {
+          "id": 1217,
+          "name": "Spike Chunsoft"
+        },
+        "developer": false,
+        "publisher": true
+      },
+      {
+        "id": 17768,
+        "company": {
+          "id": 248,
+          "name": "Bandai Namco Entertainment"
+        },
+        "developer": false,
+        "publisher": true
+      },
+      {
+        "id": 42142,
+        "company": {
+          "id": 908,
+          "name": "CD Projekt RED"
+        },
+        "developer": true,
+        "publisher": false
+      },
+      {
+        "id": 64293,
+        "company": {
+          "id": 5696,
+          "name": "D3T Limited"
+        },
+        "developer": false,
+        "publisher": false
+      },
+      {
+        "id": 196544,
+        "company": {
+          "id": 946,
+          "name": "Saber Interactive"
+        },
+        "developer": false,
+        "publisher": false
+      }
+    ],
+    "name": "The Witcher 3: Wild Hunt",
+    "rating": 93.78305671671066,
+    "rating_count": 5465,
+    "release_dates": [
+      {
+        "id": 23744,
+        "date": 1431993600,
+        "platform": 49
+      },
+      {
+        "id": 23743,
+        "date": 1431993600,
+        "platform": 6
+      },
+      {
+        "id": 226672,
+        "date": 1611792000,
+        "platform": 130
+      },
+      {
+        "id": 431187,
+        "date": 1670976000,
+        "platform": 169
+      },
+      {
+        "id": 23745,
+        "date": 1431993600,
+        "platform": 48
+      },
+      {
+        "id": 430627,
+        "date": 1670976000,
+        "platform": 167
+      }
+    ],
+    "slug": "the-witcher-3-wild-hunt",
+    "themes": [
+      {
+        "id": 1,
+        "name": "Action"
+      },
+      {
+        "id": 17,
+        "name": "Fantasy"
+      },
+      {
+        "id": 38,
+        "name": "Open world"
+      }
+    ],
+    "total_rating": 92.75691297373994,
+    "total_rating_count": 5491,
+    "url": "https://www.igdb.com/games/the-witcher-3-wild-hunt",
+    "websites": [
+      {
+        "id": 19103,
+        "url": "https://www.facebook.com/CDPROJEKTRED",
+        "type": 4
+      },
+      {
+        "id": 141346,
+        "url": "https://www.epicgames.com/store/en-US/product/the-witcher-3-wild-hunt/home",
+        "type": 16
+      },
+      {
+        "id": 793706,
+        "url": "https://www.xbox.com/en-us/games/store/the-witcher-3-wild-hunt/BR765873CQJD",
+        "type": 22
+      },
+      {
+        "id": 793707,
+        "url": "https://store.playstation.com/en-us/concept/204794",
+        "type": 23
+      },
+      {
+        "id": 793708,
+        "url": "https://www.nintendo.com/games/detail/the-witcher-3-wild-hunt-switch/",
+        "type": 24
+      },
+      {
+        "id": 19102,
+        "url": "https://en.wikipedia.org/wiki/The_Witcher_3:_Wild_Hunt",
+        "type": 3
+      },
+      {
+        "id": 19107,
+        "url": "https://store.steampowered.com/app/292030",
+        "type": 13
+      },
+      {
+        "id": 66471,
+        "url": "http://www.thewitcher.com",
+        "type": 1
+      },
+      {
+        "id": 119948,
+        "url": "https://www.gog.com/game/the_witcher_3_wild_hunt",
+        "type": 17
+      },
+      {
+        "id": 19101,
+        "url": "http://witcher.wikia.com/wiki/The_Witcher_3:_Wild_Hunt",
+        "type": 2
+      },
+      {
+        "id": 19104,
+        "url": "https://twitter.com/witchergame",
+        "type": 5
+      },
+      {
+        "id": 78076,
+        "url": "https://www.reddit.com/r/witcher",
+        "type": 14
+      },
+      {
+        "id": 19105,
+        "url": "https://www.instagram.com/cdpred",
+        "type": 8
+      },
+      {
+        "id": 19106,
+        "url": "https://www.youtube.com/user/WitcherGame",
+        "type": 9
+      },
+      {
+        "id": 512145,
+        "url": "https://www.twitch.tv/directory/game/The%20Witcher%203:%20Wild%20Hunt",
+        "type": 6
+      },
+      {
+        "id": 670803,
+        "url": "https://discord.gg/thewitcher",
+        "type": 18
+      }
+    ]
+  }
+]

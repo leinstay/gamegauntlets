@@ -1,0 +1,318 @@
+{
+  "head" : {
+    "vars" : [ "item", "steamId", "gogId_", "igdbId_", "hltbId_", "metacriticId_", "opencriticId_", "mobyId_", "mobyIdOld_", "gamefaqsId_", "wikiEnTitle_", "wikiRuTitle_", "pubDates", "developers", "publishers" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q163628"
+      },
+      "steamId" : {
+        "type" : "literal",
+        "value" : "10"
+      },
+      "igdbId_" : {
+        "type" : "literal",
+        "value" : "counter-strike"
+      },
+      "hltbId_" : {
+        "type" : "literal",
+        "value" : "1953"
+      },
+      "mobyId_" : {
+        "type" : "literal",
+        "value" : "165613"
+      },
+      "gamefaqsId_" : {
+        "type" : "literal",
+        "value" : "429818"
+      },
+      "wikiEnTitle_" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Counter-Strike (video game)"
+      },
+      "wikiRuTitle_" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Counter-Strike"
+      },
+      "pubDates" : {
+        "type" : "literal",
+        "value" : "1999-06-19T00:00:00Z|11||2000-11-14T00:00:00Z|11||2013-01-25T00:00:00Z|11||2000-11-09T00:00:00Z|11"
+      },
+      "developers" : {
+        "type" : "literal",
+        "value" : ""
+      },
+      "publishers" : {
+        "type" : "literal",
+        "value" : "Nexon"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q4267401"
+      },
+      "steamId" : {
+        "type" : "literal",
+        "value" : "292030"
+      },
+      "igdbId_" : {
+        "type" : "literal",
+        "value" : "the-witcher-3-wild-hunt"
+      },
+      "hltbId_" : {
+        "type" : "literal",
+        "value" : "10270"
+      },
+      "mobyId_" : {
+        "type" : "literal",
+        "value" : "73001"
+      },
+      "gamefaqsId_" : {
+        "type" : "literal",
+        "value" : "699808"
+      },
+      "wikiEnTitle_" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "The Witcher 3: Wild Hunt"
+      },
+      "wikiRuTitle_" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Ведьмак 3: Дикая Охота"
+      },
+      "pubDates" : {
+        "type" : "literal",
+        "value" : "2015-10-15T00:00:00Z|11||2021-01-28T00:00:00Z|11||2021-01-01T00:00:00Z|9||2015-05-19T00:00:00Z|11"
+      },
+      "developers" : {
+        "type" : "literal",
+        "value" : "CD Projekt RED"
+      },
+      "publishers" : {
+        "type" : "literal",
+        "value" : "Namco|cdp.pl|CD Projekt RED|Warner Bros. Games"
+      },
+      "gogId_" : {
+        "type" : "literal",
+        "value" : "game/the_witcher_3_wild_hunt_expansion_pass"
+      },
+      "opencriticId_" : {
+        "type" : "literal",
+        "value" : "463"
+      },
+      "mobyIdOld_" : {
+        "type" : "literal",
+        "value" : "witcher-3-wild-hunt"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q274897"
+      },
+      "steamId" : {
+        "type" : "literal",
+        "value" : "400"
+      },
+      "igdbId_" : {
+        "type" : "literal",
+        "value" : "portal"
+      },
+      "hltbId_" : {
+        "type" : "literal",
+        "value" : "7230"
+      },
+      "mobyId_" : {
+        "type" : "literal",
+        "value" : "30616"
+      },
+      "gamefaqsId_" : {
+        "type" : "literal",
+        "value" : "996517"
+      },
+      "wikiEnTitle_" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Portal (video game)"
+      },
+      "wikiRuTitle_" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Portal"
+      },
+      "pubDates" : {
+        "type" : "literal",
+        "value" : "2013-05-02T00:00:00Z|11||2007-11-23T00:00:00Z|11||2010-05-12T00:00:00Z|11||2007-12-11T00:00:00Z|11||2007-10-10T00:00:00Z|11||2007-11-22T00:00:00Z|11"
+      },
+      "developers" : {
+        "type" : "literal",
+        "value" : ""
+      },
+      "publishers" : {
+        "type" : "literal",
+        "value" : ""
+      },
+      "mobyIdOld_" : {
+        "type" : "literal",
+        "value" : "portal_"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q279446"
+      },
+      "steamId" : {
+        "type" : "literal",
+        "value" : "620"
+      },
+      "igdbId_" : {
+        "type" : "literal",
+        "value" : "portal-2"
+      },
+      "hltbId_" : {
+        "type" : "literal",
+        "value" : "7231"
+      },
+      "mobyId_" : {
+        "type" : "literal",
+        "value" : "53417"
+      },
+      "gamefaqsId_" : {
+        "type" : "literal",
+        "value" : "997849"
+      },
+      "wikiEnTitle_" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Portal 2"
+      },
+      "wikiRuTitle_" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Portal 2"
+      },
+      "pubDates" : {
+        "type" : "literal",
+        "value" : "2011-04-18T00:00:00Z|11||2011-04-19T00:00:00Z|11||2014-02-26T00:00:00Z|11"
+      },
+      "developers" : {
+        "type" : "literal",
+        "value" : ""
+      },
+      "publishers" : {
+        "type" : "literal",
+        "value" : ""
+      },
+      "mobyIdOld_" : {
+        "type" : "literal",
+        "value" : "portal-2-sixense-motionpack"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q279744"
+      },
+      "steamId" : {
+        "type" : "literal",
+        "value" : "70"
+      },
+      "igdbId_" : {
+        "type" : "literal",
+        "value" : "half-life"
+      },
+      "hltbId_" : {
+        "type" : "literal",
+        "value" : "4247"
+      },
+      "mobyId_" : {
+        "type" : "literal",
+        "value" : "155"
+      },
+      "gamefaqsId_" : {
+        "type" : "literal",
+        "value" : "43362"
+      },
+      "wikiEnTitle_" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Half-Life (video game)"
+      },
+      "wikiRuTitle_" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Half-Life"
+      },
+      "pubDates" : {
+        "type" : "literal",
+        "value" : "2013-02-14T00:00:00Z|11||2001-11-11T00:00:00Z|11||1998-11-19T00:00:00Z|11"
+      },
+      "developers" : {
+        "type" : "literal",
+        "value" : ""
+      },
+      "publishers" : {
+        "type" : "literal",
+        "value" : ""
+      },
+      "mobyIdOld_" : {
+        "type" : "literal",
+        "value" : "half-life"
+      }
+    }, {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q382108"
+      },
+      "steamId" : {
+        "type" : "literal",
+        "value" : "440"
+      },
+      "igdbId_" : {
+        "type" : "literal",
+        "value" : "team-fortress-2"
+      },
+      "hltbId_" : {
+        "type" : "literal",
+        "value" : "9632"
+      },
+      "mobyId_" : {
+        "type" : "literal",
+        "value" : "30655"
+      },
+      "gamefaqsId_" : {
+        "type" : "literal",
+        "value" : "437678"
+      },
+      "wikiEnTitle_" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "Team Fortress 2"
+      },
+      "wikiRuTitle_" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Team Fortress 2"
+      },
+      "pubDates" : {
+        "type" : "literal",
+        "value" : "2008-04-08T00:00:00Z|11||2013-02-14T00:00:00Z|11||2007-11-23T00:00:00Z|11||2010-06-10T00:00:00Z|11||2007-10-18T00:00:00Z|11||2007-10-19T00:00:00Z|11||2008-04-11T00:00:00Z|11||2008-04-04T00:00:00Z|11||2008-04-24T00:00:00Z|11||2007-12-11T00:00:00Z|11||2007-10-10T00:00:00Z|11||2007-11-22T00:00:00Z|11"
+      },
+      "developers" : {
+        "type" : "literal",
+        "value" : ""
+      },
+      "publishers" : {
+        "type" : "literal",
+        "value" : ""
+      },
+      "mobyIdOld_" : {
+        "type" : "literal",
+        "value" : "team-fortress-2"
+      }
+    } ]
+  }
+}

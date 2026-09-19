@@ -1,0 +1,48 @@
+[
+  {
+    "id": 302314,
+    "external_games": [
+      {
+        "id": 2917478,
+        "category": 1,
+        "uid": "2931370",
+        "external_game_source": 1
+      },
+      {
+        "id": 2917710,
+        "uid": "563575460",
+        "external_game_source": 14
+      }
+    ],
+    "first_release_date": 1753920000,
+    "genres": [
+      {
+        "id": 31,
+        "name": "Adventure"
+      }
+    ],
+    "name": "Nomu",
+    "release_dates": [
+      {
+        "id": 779552,
+        "date": 1753920000,
+        "platform": 6
+      }
+    ],
+    "slug": "nomu",
+    "themes": [
+      {
+        "id": 1,
+        "name": "Action"
+      }
+    ],
+    "url": "https://www.igdb.com/games/nomu",
+    "websites": [
+      {
+        "id": 639127,
+        "url": "https://store.steampowered.com/app/2931370",
+        "type": 13
+      }
+    ]
+  }
+]

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <!--
+             _   _  _____ ______  _____  _____   ___    _____  _____  ___  ___  ___
+            | | | ||  ___|| ___ \|  ___||  __ \ / _ \  |_   _||  ___|/ _ \ |  \/  |
+            | |_| || |__  | |_/ /| |__  | |  \// /_\ \   | |  | |__ / /_\ \| .  . |
+            |  _  ||  __| |  __/ |  __| | | __ |  _  |   | |  |  __||  _  || |\/| |
+            | | | || |___ | |    | |___ | |_\ \| | | |   | |  | |___| | | || |  | |
+            \_| |_/\____/ \_|    \____/  \____/\_| |_/   \_/  \____/\_| |_/\_|  |_/
+
+            Hello!
+
+            Interested in how this site works?
+            Need API access?
+            Want to advertise here?
+            Contact me: leinstay@gmail.com
+
+                                    - - -
+
+            Game Gauntlets :: Random Game Picker - Copyright Hepega Team
+            You may not redistribute this file.
+
+        -->
+
+    <!-- gg-boot.js / gg-i18n.js / gg-api.js read this for cache-busting JS-injected requests
+         (pages/*.html, i18n/*.json). The deploy step rewrites the literal "?v=dev" tokens across
+         *.html (this one included) to the release commit hash; this snippet mirrors that same value
+         for script-driven fetches so both stay in sync without a build step. -->
+    <script>window.GG = { version: "?v=dev".slice(3) };</script>
+
+    <script>
+        (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', "GTM-MMRRFPC");
+    </script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-798693948"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', "AW-798693948");
+    </script>
+
+    <meta name="theme-color" content="#606060" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="always">
+    <meta content="C0B34CB76E1FF27155DAE04364E0A45D" name="msvalidate.01" />
+    <meta content="bQpvh0XD1Myh_wMvLEJRGttiNVxz8Qe5ueqXKf1gq8o" name="google-site-verification" />
+    <meta content="a5fKJjsty-MQgStQUux9heGIclqwQSm5Eqw5lEv82hc" name="google-site-verification" />
+    <meta content="84b4242d1bd8a927" name="yandex-verification" />
+    <meta content="abeb44c9351f372612973b0da44b4e9a" name="p:domain_verify" />
+    <meta name="application-name" content="Game Gauntlets :: Random Game Picker">
+    <meta name="msapplication-tooltip" content="Welcome to Game Gauntlets. Filter all Steam and GOG games by playtime, score, reviews using our random game picker and data from Steam Spy, GameFAQs, HLTB and Metacritic.">
+    <meta name="msapplication-navbutton-color" content="#3b3b3b">
+    <meta property="og:title" content="Game Gauntlets" />
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="GG" />
+    <meta property="og:description" content="Welcome to Game Gauntlets. Filter all Steam and GOG games by playtime, score, reviews using our random game picker and data from Steam Spy, GameFAQs, HLTB and Metacritic.">
+    <meta property="og:url" content="https://gamegauntlets.com/" />
+    <meta property="og:image" content="https://gamegauntlets.com/img/preview.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta itemprop="image" content="https://gamegauntlets.com/img/preview.jpg" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@leinstay">
+    <meta name="twitter:creator" content="@leinstay">
+    <meta name="twitter:title" content="Game Gauntlets :: Random Game Picker">
+    <meta name="twitter:description" content="Welcome to Game Gauntlets. Filter all Steam and GOG games by playtime, score, reviews using our random game picker and data from Steam Spy, GameFAQs, HLTB and Metacritic.">
+    <meta name="twitter:image" content="https://gamegauntlets.com/img/preview.jpg" />
+    <meta name="twitter:image:src" content="https://gamegauntlets.com/img/preview.jpg" />
+
+    <title>Game Gauntlets :: Random Game Picker</title>
+
+    <meta name="description" content="Welcome to Game Gauntlets. Filter all Steam and GOG games by playtime, score, reviews using our random game picker and data from Steam Spy, GameFAQs, HLTB and Metacritic.">
+    <meta name="robots" content="noodp,noydir" />
+    <meta name="author" content="Hepega Team">
+    <meta name="copyright" content="Hepega Team">
+
+    <link rel="manifest" href="/manifest.json?v=dev">
+
+    <link rel="image_src" href="https://gamegauntlets.com/img/preview.jpg" />
+    <link rel="canonical" href="https://gamegauntlets.com/" />
+    <link rel="alternate" href="https://gamegauntlets.com/" hreflang="x-default" />
+    <link rel="alternate" href="https://gamegauntlets.com/?en" hreflang="en-us" />
+    <link rel="alternate" href="https://gamegauntlets.com/?ru" hreflang="ru-ru" />
+    <link rel="alternate" href="https://gamegauntlets.com/?de" hreflang="de-de" />
+    <link rel="alternate" href="https://gamegauntlets.com/?fr" hreflang="fr-fr" />
+
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/vnd.microsoft.icon">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+
+    <link rel="preload" href="/css/fonts/GOTHIC.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+    <link rel="preload" href="/css/fonts/ScreamReal.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+    <link rel="preload" href="/css/fonts/Effloresce-BoldItalic.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="css/icons.css?v=dev">
+    <link rel="stylesheet" href="css/plugins/ion.rangeSlider.css?v=dev">
+    <link rel="stylesheet" href="css/plugins/ion.rangeSlider.skinNice.css?v=dev">
+    <!-- semantic.css is the site's ORIGINAL Semantic UI 2.4 stylesheet (it IS the legacy look); only the JS is
+         Fomantic UI 2.9. calendar.min.css is Fomantic's calendar component (its module replaced the old plugin). -->
+    <link rel="stylesheet" href="css/plugins/semantic.css?v=dev" />
+    <link rel="stylesheet" href="css/plugins/calendar.min.css?v=dev" />
+
+    <link rel="stylesheet" href="css/main.css?v=dev" />
+    <link rel="stylesheet" href="css/responsive.css?v=dev" />
+    <!-- compat.css restores the handful of Semantic-2.4-era renderings (see file header) that Fomantic
+         UI 2.9's otherwise-compatible CSS changed; keep it last so it always wins the cascade. -->
+    <link rel="stylesheet" href="css/compat.css?v=dev" />
+
+    <link rel='stylesheet' href='pio/pio.css?v=dev' />
+
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "VideoObject",
+            "name": "Game Gauntlets",
+            "description": "Welcome to Game Gauntlets. Filter all Steam and GOG games by playtime, score, reviews using our random game picker and data from Steam Spy, GameFAQs, HLTB and Metacritic.",
+            "thumbnailUrl": "https://gamegauntlets.com/img/preview.jpg",
+            "uploadDate": "2018-06-28T08:00:00+08:00",
+            "duration": "PT1M05S",
+            "publisher": {
+                "@type": "Organization",
+                "name": "Hepega Team",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://gamegauntlets.com/img/icon.png",
+                    "width": 50,
+                    "height": 50
+                }
+            },
+            "contentUrl": "https://gamegauntlets.com/img/sgg.mp4",
+            "embedUrl": "https://www.youtube.com/embed/v1bjtqSkkbA",
+            "interactionCount": "2347"
+        }
+    </script>
+</head>
+
+<body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MMRRFPC" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <div id="header" class="overlay">
+        <div>
+            <nav class="header-nav">
+                <ul style="display: flex;">
+                    <li>
+                        <a title="SGG Wheel" data-i18n-title="SGG Wheel" onmousedown="return false" href="#wheel" class="wheel-link skel-layers-ignoreHref">
+                            <span class="icon"><span class="fas fa-gamepad" aria-hidden="true" style="display: initial;"></span>
+                                <h2 class="seo" data-i18n="SGG Wheel">SGG Wheel</h2>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a title="Settings" data-i18n-title="Settings" onmousedown="return false" href="#settings" class="settings-link skel-layers-ignoreHref">
+                            <span class="icon"><span class="fas fa-cog" aria-hidden="true" style="display: initial;"></span>
+                                <h2 class="seo" data-i18n="Settings">Settings</h2>
+                            </span>
+                        </a>
+                    </li>
+                    <li id="nav-admin" style="display:none;">
+                        <a title="Admin" onmousedown="return false" href="/admin.html" class="skel-layers-ignoreHref">
+                            <span class="icon"><i class="fab fa-accessible-icon fa-spin" aria-hidden="true" style="margin-right: 7px;"></i>
+                                <h2 class="seo">Admin</h2>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div style="position: absolute; z-index: 99999; top: 5px; right: 20px; font-weight: bold;"></div>
+    <div id="content-bg"></div>
+
+    <div id="content-wrapper">
+        <div id="main">
+            <div id="content" class="ui container"></div>
+        </div>
+    </div>
+
+    <div id="content-loading" class="ui dimmer">
+        <div class="ui large text loader">
+            <div class="ui black label" style="font-size: 17px;" data-i18n="Loading...">Loading...</div>
+        </div>
+    </div>
+
+        <div id="footer">
+            <div class="ui container grid">
+                <div class="six wide column" id="footer-credits" style="padding-right: 0px;">
+                    <div class="ui horizontal">
+                        <span data-i18n="Made by">Made by</span> : Hepega Team (<a rel="noreferrer noopener" title="Leinstay" href="https://vk.com/leinstay" target="_blank">
+                            <h2 class="seo">Leinstay</h2>
+                        </a> &
+                        <a rel="noreferrer noopener" title="Demo_Nik" href="https://t.me/Demo_Nik" target="_blank">
+                            <h2 class="seo">Demo_Nik</h2>
+                        </a>) |
+                        <a rel="noreferrer noopener" title="GG Support" href="mailto:leinstay@gmail.com?subject=GG%20Support" target="_top" data-i18n="Contact Us">Contact Us</a> © <span id="frostmouse" style="cursor: pointer;">2016</span>
+                        <br><span data-i18n="Powered by">Powered by</span> :
+                        <a rel="noreferrer noopener" title="Steam" href="https://steampowered.com" target="_blank">
+                            <h2 class="seo">Steam</h2>
+                        </a> |
+                        <a rel="noreferrer noopener" title="GOG" href="https://www.gog.com/" target="_blank">
+                            <h2 class="seo">GOG</h2>
+                        </a> |
+                        <a rel="noreferrer noopener" title="Steam Spy" href="http://steamspy.com" target="_blank">
+                            <h2 class="seo">Steam Spy</h2>
+                        </a> |
+                        <a rel="noreferrer noopener" title="GameFAQs" href="http://www.gamefaqs.com" target="_blank">
+                            <h2 class="seo">GameFAQs</h2>
+                        </a> |
+                        <a rel="noreferrer noopener" title="Metacritic" href="http://www.metacritic.com/" target="_blank">
+                            <h2 class="seo">Metacritic</h2>
+                        </a> |
+                        <a rel="noreferrer noopener" title="IGDB" href="https://www.igdb.com/" target="_blank">
+                            <h2 class="seo">IGDB</h2>
+                        </a> |
+                        <a rel="noreferrer noopener" title="HowLongToBeat" href="http://howlongtobeat.com/" target="_blank">
+                            <h2 class="seo">HLTB</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="four wide column" style="padding-left: 0px; padding-right: 0px;">
+                    <!-- min-height keeps the legacy 44px footer (the 34px store badges that stood in this row made this row 37.6px tall) -->
+                    <div class="ui horizontal" style="min-height: 37.6px;">
+                        <div style="text-align: center;">
+                            <div class="ui mini blue inverted statistic">
+                                <div class="label" data-i18n="Wheel was used">Wheel was used</div>
+                            </div>
+                            <br>
+                            <div class="ui mini blue horizontal inverted statistic" style="padding-top: 2px;">
+                                <div class="value" id="roll-count">0</div>
+                                <div class="label" style="font-size: 14px !important; margin-left: 5px; margin-top: 1px;" data-i18n="times">times</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="six wide column" id="footer-links" style="padding-left: 0px; text-align: right;">
+                    <div class="ui horizontal">
+                        <span data-i18n="Site code">Site code</span> :
+                        <a rel="noreferrer noopener" title="Game Gauntlets on GitHub" href="https://github.com/leinstay/gamegauntlets" target="_blank">
+                            <h2 class="seo">GitHub</h2>
+                        </a>
+                        <br><span data-i18n="Database">Database</span> :
+                        <a rel="noreferrer noopener" title="Game database on GitHub" href="https://github.com/leinstay/steamdb" target="_blank">
+                            <h2 class="seo">GitHub</h2>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+<script src="js/plugins/jquery.js?v=dev"></script>
+<!-- jquery-color replaces jQuery UI (250KB) here: the only jQuery-UI feature this site used was the
+     backgroundColor animation on #spin_button ($.fn.animate({backgroundColor:...})); everything else
+     (draggable/sortable/datepicker/dialog/etc.) was unused. -->
+<script src="js/plugins/jquery.color.js?v=dev"></script>
+<script src="js/plugins/semantic/semantic.js?v=dev"></script>
+
+<script>
+    jQuery.event.special.touchstart = {
+        setup: function(a, b, c) {
+            b.includes("noPreventDefault") ? this.addEventListener("touchstart", c, {
+                passive: !1
+            }) : this.addEventListener("touchstart", c, {
+                passive: !0
+            })
+        }
+    };
+</script>
+
+<script src="js/plugins/soundmanager.js?v=dev"></script>
+<script src="js/plugins/rangeslider.js?v=dev"></script>
+<script src="js/plugins/wheel.js?v=dev"></script>
+
+<script src="js/gg-i18n.js?v=dev"></script>
+<script src="js/gg-api.js?v=dev"></script>
+
+<script src="vendor/live2d/live2d.min.js?v=dev"></script>
+<script src="vendor/pixi/pixi.min.js?v=dev"></script>
+<script src="vendor/pixi-live2d-display/cubism2.min.js?v=dev"></script>
+<script type="module" src="js/pio/pio-global.js?v=dev"></script>
+
+<script src="js/gg-boot.js?v=dev"></script>
+
+</html>

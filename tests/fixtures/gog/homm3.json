@@ -1,0 +1,695 @@
+{
+  "en": {
+    "inDevelopment": {
+      "active": false
+    },
+    "copyrights": "© 1999 Ubisoft Entertainment. All Rights Reserved. Heroes of Might and Magic, Heroes, Ubisoft, Ubi.com and the Ubisoft logo are trademarks of Ubisoft Entertainment in the U.S. and/or other countries.",
+    "isUsingDosBox": false,
+    "technologies": [],
+    "releaseStatus": "default",
+    "description": "<video muted preload=\"auto\" loop autoplay=\"autoplay\" style=\"margin: auto;display:block;width:100%\">\n  <source src=\"https://items.gog.com/heroes_of_might_and_magic_3_complete_edition/mp4/homm3_map2.mp4\" type=\"video/mp4\"></video>\n<br>\n<b>Includes Heroes of Might & Magic III and its expansions: Armageddon's Blade and The Shadow of Death</b>\n<br><br>\nMurder, treachery, resurrection, savage battles and...</p>",
+    "size": 960,
+    "overview": "<video muted preload=\"auto\" loop autoplay=\"autoplay\" style=\"margin: auto;display:block;width:100%\">\n  <source src=\"https://items.gog.com/heroes_of_might_and_magic_3_complete_edition/mp4/homm3_map2.mp4\" type=\"video/mp4\"></video>\n<br>\n<b>Includes Heroes of Might & Magic III and its expansions: Armaged...</p>",
+    "featuresDescription": "",
+    "additionalRequirements": "French audio is only available in Restoration of Erathia.",
+    "_links": {
+      "self": {
+        "href": "https://api.gog.com/v2/games/1207658787?locale=en-US"
+      },
+      "store": {
+        "href": "https://www.gog.com/en/game/heroes_of_might_and_magic_3_complete_edition"
+      },
+      "support": {
+        "href": "https://www.gog.com/support/heroes_of_might_and_magic_3_complete_edition"
+      },
+      "forum": {
+        "href": "https://www.gog.com/forum/heroes_of_might_and_magic_series"
+      },
+      "icon": {
+        "href": "https://images.gog-statics.com/73f8409f8fc85f0873d994f3401e42d74ff9a3f43fb86b06119db44b4f0e557a.png"
+      },
+      "logo": {
+        "href": "https://images.gog-statics.com/6d04ac88628e9622eb4859e0cabfdc891d41de7922d3422edf0d75356f04fe90.png"
+      },
+      "boxArtImage": {
+        "href": "https://images.gog-statics.com/869b56a1048405d97f48358ea537af2c08c9d8cd508f8e4a82883bf8eafad361.jpg"
+      },
+      "backgroundImage": {
+        "href": "https://images.gog-statics.com/cd47dd7a5938c4db4f9cd161746a362ec72c07a0f9bd253d423ad5af5f87a988.jpg"
+      },
+      "galaxyBackgroundImage": {
+        "href": "https://images.gog-statics.com/f3094325cda8f48dfce92557b3f105e7b6df6d359478ab976fce10e71a55600f.jpg"
+      },
+      "isIncludedInGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1207665493?locale=en-US",
+          "id": 1207665493,
+          "releaseStatus": "unavailable",
+          "isSecret": false
+        },
+        {
+          "href": "https://api.gog.com/v2/games/1629231393?locale=en-US",
+          "id": 1629231393,
+          "releaseStatus": "default",
+          "isSecret": true
+        }
+      ],
+      "isModifiedByGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1718139055?locale=en-US",
+          "id": 1718139055,
+          "releaseStatus": "default",
+          "isSecret": false,
+          "rule": "and"
+        }
+      ]
+    },
+    "_embedded": {
+      "product": {
+        "isAvailableForSale": true,
+        "isVisibleInCatalog": true,
+        "isPreorder": false,
+        "isVisibleInAccount": true,
+        "id": 1207658787,
+        "title": "Heroes of Might and Magic® 3: Complete",
+        "isInstallable": true,
+        "globalReleaseDate": "1999-06-01T00:00:00+02:00",
+        "hasProductCard": true,
+        "category": "GAME",
+        "hasPatrons": true,
+        "hasHowLongToBeatInformation": true,
+        "hasDreamlistStories": true,
+        "hasOpenCriticInformation": true,
+        "hasFaqInformation": true,
+        "isSecret": false,
+        "_links": {
+          "image": {
+            "href": "https://images.gog-statics.com/a18a7017bdca7bdd14fb003a46522e320051d3e9c1fb939559a4517d90f86170_{formatter}.png",
+            "templated": true,
+            "formatters": [
+              "800",
+              "1600",
+              "glx_logo",
+              "glx_logo_2x",
+              "product_630",
+              "product_630_2x"
+            ]
+          },
+          "checkout": {
+            "href": "https://www.gog.com/en/checkout/manual/1207658787"
+          },
+          "prices": {
+            "href": "https://api.gog.com/products/1207658787/prices?countryCode={country}",
+            "templated": true
+          }
+        }
+      },
+      "productType": "GAME",
+      "localizations": [
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        }
+      ],
+      "publisher": {
+        "name": "Ubisoft",
+        "searchIndex": "ubisoft"
+      },
+      "publishers": [
+        {
+          "name": "Ubisoft",
+          "searchIndex": "ubisoft"
+        }
+      ],
+      "developers": [
+        {
+          "name": "New World Computing, Inc.",
+          "searchIndex": "new-world-computing-inc"
+        }
+      ],
+      "supportedOperatingSystems": [
+        {
+          "operatingSystem": {
+            "name": "windows",
+            "versions": "Windows"
+          },
+          "systemRequirements": [
+            {
+              "type": "minimum",
+              "description": "Windows XP or Windows Vista, 1 GHz Processor (1.4 GHz recommended), 256MB RAM (512 recommended), 3D graphics card compatible with DirectX 7 (compatible with DirectX 9 recommended), Mouse, Keyboard",
+              "requirements": [
+                {
+                  "id": "system",
+                  "name": "System:",
+                  "description": "Windows (10, 11)"
+                },
+                {
+                  "id": "processor",
+                  "name": "Processor:",
+                  "description": "1.8 GHz"
+                },
+                {
+                  "id": "memory",
+                  "name": "Memory:",
+                  "description": "2 GB RAM"
+                },
+                {
+                  "id": "graphics",
+                  "name": "Graphics:",
+                  "description": "3D graphics card compatible with DirectX 9.0c"
+                },
+                {
+                  "id": "directx",
+                  "name": "DirectX:",
+                  "description": "DirectX 9.0c"
+                },
+                {
+                  "id": "other",
+                  "name": "Other:",
+                  "description": "Multi LAN and Hotseat only"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tags": [
+        {
+          "id": 56,
+          "name": "Strategy",
+          "level": 1,
+          "slug": "strategy"
+        },
+        {
+          "id": 63,
+          "name": "Turn-based",
+          "level": 2,
+          "slug": "turnbased"
+        },
+        {
+          "id": 71,
+          "name": "Fantasy",
+          "level": 3,
+          "slug": "fantasy"
+        }
+      ],
+      "brRating": {
+        "ageRating": 12,
+        "contentDescriptors": [
+          {
+            "descriptor": "Violência\r"
+          }
+        ]
+      },
+      "features": [
+        {
+          "name": "Cloud saves",
+          "id": "cloud_saves"
+        },
+        {
+          "name": "Co-op",
+          "id": "coop"
+        },
+        {
+          "name": "Multi-player",
+          "id": "multi"
+        },
+        {
+          "name": "Single-player",
+          "id": "single"
+        }
+      ],
+      "series": {
+        "id": 42,
+        "name": "Heroes of Might & Magic"
+      }
+    }
+  },
+  "ru": {
+    "inDevelopment": {
+      "active": false
+    },
+    "copyrights": "© 1999 Ubisoft Entertainment. All Rights Reserved. Heroes of Might and Magic, Heroes, Ubisoft, Ubi.com and the Ubisoft logo are trademarks of Ubisoft Entertainment in the U.S. and/or other countries.",
+    "isUsingDosBox": false,
+    "technologies": [],
+    "releaseStatus": "default",
+    "description": "<video muted preload=\"auto\" loop autoplay=\"autoplay\" style=\"margin: auto;display:block;width:100%\">\n  <source src=\"https://items.gog.com/heroes_of_might_and_magic_3_complete_edition/mp4/homm3_map2.mp4\" type=\"video/mp4\"></video>\n<br>\n<br><b>В издание входит оригинальная версия Heroes of Might & Magic III и дополнения Armageddon's Blade («Клинок Армагеддона») и The Shadow of Death («Тень смерти»)</b...</p>",
+    "size": 960,
+    "overview": "<video muted preload=\"auto\" loop autoplay=\"autoplay\" style=\"margin: auto;display:block;width:100%\">\n  <source src=\"https://items.gog.com/heroes_of_might_and_magic_3_complete_edition/mp4/homm3_map2.mp4\" type=\"video/mp4\"></video>\n<br>\n<br><b>В издание входит оригинальная версия Heroes of Might & Magic...</p>",
+    "featuresDescription": "",
+    "additionalRequirements": "French audio is only available in Restoration of Erathia.",
+    "_links": {
+      "self": {
+        "href": "https://api.gog.com/v2/games/1207658787?locale=ru-RU"
+      },
+      "store": {
+        "href": "https://www.gog.com/ru/game/heroes_of_might_and_magic_3_complete_edition"
+      },
+      "support": {
+        "href": "https://www.gog.com/support/heroes_of_might_and_magic_3_complete_edition"
+      },
+      "forum": {
+        "href": "https://www.gog.com/forum/heroes_of_might_and_magic_series"
+      },
+      "icon": {
+        "href": "https://images.gog-statics.com/73f8409f8fc85f0873d994f3401e42d74ff9a3f43fb86b06119db44b4f0e557a.png"
+      },
+      "logo": {
+        "href": "https://images.gog-statics.com/6d04ac88628e9622eb4859e0cabfdc891d41de7922d3422edf0d75356f04fe90.png"
+      },
+      "boxArtImage": {
+        "href": "https://images.gog-statics.com/869b56a1048405d97f48358ea537af2c08c9d8cd508f8e4a82883bf8eafad361.jpg"
+      },
+      "backgroundImage": {
+        "href": "https://images.gog-statics.com/cd47dd7a5938c4db4f9cd161746a362ec72c07a0f9bd253d423ad5af5f87a988.jpg"
+      },
+      "galaxyBackgroundImage": {
+        "href": "https://images.gog-statics.com/f3094325cda8f48dfce92557b3f105e7b6df6d359478ab976fce10e71a55600f.jpg"
+      },
+      "isIncludedInGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1207665493?locale=ru-RU",
+          "id": 1207665493,
+          "releaseStatus": "unavailable",
+          "isSecret": false
+        },
+        {
+          "href": "https://api.gog.com/v2/games/1629231393?locale=ru-RU",
+          "id": 1629231393,
+          "releaseStatus": "default",
+          "isSecret": true
+        }
+      ],
+      "isModifiedByGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1718139055?locale=ru-RU",
+          "id": 1718139055,
+          "releaseStatus": "default",
+          "isSecret": false,
+          "rule": "and"
+        }
+      ]
+    },
+    "_embedded": {
+      "product": {
+        "isAvailableForSale": true,
+        "isVisibleInCatalog": true,
+        "isPreorder": false,
+        "isVisibleInAccount": true,
+        "id": 1207658787,
+        "title": "Heroes of Might and Magic® 3: Complete",
+        "isInstallable": true,
+        "globalReleaseDate": "1999-06-01T00:00:00+02:00",
+        "hasProductCard": true,
+        "category": "GAME",
+        "hasPatrons": true,
+        "hasHowLongToBeatInformation": true,
+        "hasDreamlistStories": true,
+        "hasOpenCriticInformation": true,
+        "hasFaqInformation": true,
+        "isSecret": false,
+        "_links": {
+          "image": {
+            "href": "https://images.gog-statics.com/a18a7017bdca7bdd14fb003a46522e320051d3e9c1fb939559a4517d90f86170_{formatter}.png",
+            "templated": true,
+            "formatters": [
+              "800",
+              "1600",
+              "glx_logo",
+              "glx_logo_2x",
+              "product_630",
+              "product_630_2x"
+            ]
+          },
+          "checkout": {
+            "href": "https://www.gog.com/ru/checkout/manual/1207658787"
+          },
+          "prices": {
+            "href": "https://api.gog.com/products/1207658787/prices?countryCode={country}",
+            "templated": true
+          }
+        }
+      },
+      "productType": "GAME",
+      "localizations": [
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        }
+      ],
+      "publisher": {
+        "name": "Ubisoft",
+        "searchIndex": "ubisoft"
+      },
+      "publishers": [
+        {
+          "name": "Ubisoft",
+          "searchIndex": "ubisoft"
+        }
+      ],
+      "developers": [
+        {
+          "name": "New World Computing, Inc.",
+          "searchIndex": "new-world-computing-inc"
+        }
+      ],
+      "supportedOperatingSystems": [
+        {
+          "operatingSystem": {
+            "name": "windows",
+            "versions": "Windows"
+          },
+          "systemRequirements": [
+            {
+              "type": "minimum",
+              "description": "Windows XP or Windows Vista, 1 GHz Processor (1.4 GHz recommended), 256MB RAM (512 recommended), 3D graphics card compatible with DirectX 7 (compatible with DirectX 9 recommended), Mouse, Keyboard",
+              "requirements": [
+                {
+                  "id": "system",
+                  "name": "Система:",
+                  "description": "Windows (10, 11)"
+                },
+                {
+                  "id": "processor",
+                  "name": "Процессор: ",
+                  "description": "1.8 GHz"
+                },
+                {
+                  "id": "memory",
+                  "name": "Память:",
+                  "description": "2 GB RAM"
+                },
+                {
+                  "id": "graphics",
+                  "name": "Графика:",
+                  "description": "3D graphics card compatible with DirectX 9.0c"
+                },
+                {
+                  "id": "directx",
+                  "name": "DirectX：",
+                  "description": "DirectX 9.0c"
+                },
+                {
+                  "id": "other",
+                  "name": "Другое:",
+                  "description": "Multi LAN and Hotseat only"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tags": [
+        {
+          "id": 56,
+          "name": "Стратегия",
+          "level": 1,
+          "slug": "strategy"
+        },
+        {
+          "id": 63,
+          "name": "Пошаговая",
+          "level": 2,
+          "slug": "turnbased"
+        },
+        {
+          "id": 71,
+          "name": "Фэнтези",
+          "level": 3,
+          "slug": "fantasy"
+        }
+      ],
+      "brRating": {
+        "ageRating": 12,
+        "contentDescriptors": [
+          {
+            "descriptor": "Violência\r"
+          }
+        ]
+      },
+      "features": [
+        {
+          "name": "Облачные сохранения",
+          "id": "cloud_saves"
+        },
+        {
+          "name": "Кооперативный режим",
+          "id": "coop"
+        },
+        {
+          "name": "сетевая игра",
+          "id": "multi"
+        },
+        {
+          "name": "Одиночная игра",
+          "id": "single"
+        }
+      ],
+      "series": {
+        "id": 42,
+        "name": "Heroes of Might & Magic"
+      }
+    }
+  },
+  "pricesUsd": {
+    "_links": {
+      "self": {
+        "href": "/api/products/1207658787/prices?countryCode=US"
+      },
+      "product": {
+        "href": "https://api.gog.com/products/1207658787"
+      }
+    },
+    "_embedded": {
+      "prices": [
+        {
+          "currency": {
+            "code": "USD"
+          },
+          "basePrice": "999 USD",
+          "finalPrice": "499 USD",
+          "bonusWalletFunds": "0 USD"
+        }
+      ]
+    }
+  },
+  "pricesRub": {
+    "_links": {
+      "self": {
+        "href": "/api/products/1207658787/prices?countryCode=RU"
+      },
+      "product": {
+        "href": "https://api.gog.com/products/1207658787"
+      }
+    },
+    "_embedded": {
+      "prices": [
+        {
+          "currency": {
+            "code": "RUB"
+          },
+          "basePrice": "89099 RUB",
+          "finalPrice": "44499 RUB",
+          "bonusWalletFunds": "0 RUB"
+        },
+        {
+          "currency": {
+            "code": "USD"
+          },
+          "basePrice": "999 USD",
+          "finalPrice": "499 USD",
+          "bonusWalletFunds": "0 USD"
+        }
+      ]
+    }
+  },
+  "catalog": {
+    "id": "1207658787",
+    "slug": "heroes_of_might_and_magic_3_complete_edition",
+    "title": "Heroes of Might and Magic® 3: Complete",
+    "productType": "game",
+    "releaseDate": "2015.03.31",
+    "developers": [
+      "New World Computing",
+      "3DO",
+      "Might and Magic"
+    ],
+    "operatingSystems": [
+      "windows"
+    ],
+    "price": {
+      "final": "$4.99",
+      "base": "$9.99",
+      "discount": "-50%"
+    },
+    "coverHorizontal": "https://images.gog-statics.com/869b56a1048405d97f48358ea537af2c08c9d8cd508f8e4a82883bf8eafad361.jpg"
+  }
+}

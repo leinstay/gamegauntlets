@@ -1,0 +1,110 @@
+{
+  "_meta": {
+    "units": { "hours": ["heure", "heures", "heures"], "games": ["jeu", "jeux", "jeux"] },
+    "error": "Erreur X_X"
+  },
+  "load": [
+    { "text": "Bonjour, Senpai ˘o˘", "mood": "happy", "when": { "hourFrom": 7, "hourTo": 13 }, "weight": 5 },
+    { "text": "Bonjour, c'est bon de vous voir ~", "mood": "happy", "when": { "hourFrom": 13, "hourTo": 17 }, "weight": 5 },
+    { "text": "Oh, c'est déjà le soir, c'est bon de vous avoir ici ~♥~", "mood": "happy", "when": { "hourFrom": 17, "hourTo": 23 }, "weight": 5 },
+    { "text": "Bonne nuit, tu ne peux pas dormir ? ᴗ˳ᴗ", "mood": "normal", "when": { "hourFrom": 23, "hourTo": 7 }, "weight": 5 },
+    { "text": "Je suis Nap Nap et je vais commenter tout ce qui se passe ici :3", "mood": "happy", "weight": 1 },
+    { "text": "Bon retour ! La roue est déjà bien chaude ♡", "mood": "happy", "when": { "returning": true }, "weight": 2 }
+  ],
+  "idle": [
+    { "text": "Tu es encore là ? Fais tourner la roue, je m'ennuie (´∀｀)", "mood": "normal" },
+    { "text": "Tic-tac~ un jeu aléatoire ne va pas se choisir tout seul ヽ(•∀•)ﾉ", "mood": "happy" },
+    { "text": "Zzz... oh, tu es encore là ～(｀▽´)～", "mood": "normal", "when": { "hourFrom": 23, "hourTo": 7 } },
+    { "text": "Je pourrais fredonner encore la musique de chargement, si tu ne bouges pas.", "mood": "enjoy" }
+  ],
+  "click:head": [
+    "Vous n'avez pas honte ? !",
+    "Ne me touche pas, sale weeb !",
+    "Pervers !!!",
+    "Attachez-le ༼ つ ͠° ͟ ͟ʖ ͡° ༽つ",
+    "Ils sont en route pour venir vous chercher (╬ Ò﹏Ó)"
+  ],
+  "click:body": [
+    "Vous n'avez pas honte ? !",
+    "Ne me touche pas, sale weeb !",
+    "Pervers !!!",
+    "Attachez-le ༼ つ ͠° ͟ ͟ʖ ͡° ༽つ",
+    "Ils sont en route pour venir vous chercher (╬ Ò﹏Ó)"
+  ],
+  "spin:start": [
+    { "text": "Vous allez obtenir quelque chose de bien ! Ou juste quelque chose... ＾◡＾'", "mood": "happy" },
+    { "text": "Oh-ho-ho, j'adore les surprises ˃ˑ̫ ˂", "mood": "enjoy" },
+    { "text": "Attendez ! Non, allez... Mais arrêtez !", "mood": "unhappy" },
+    { "text": "Vas-y ! ＾∇＾", "mood": "happy" },
+    { "text": "Wow, je crois que je vois un jeu d'Alavar, ou peut-être que je ne le vois pas...", "mood": "normal" },
+    { "text": "Espérons que ce ne sera pas {game} ಠ_ಠ", "mood": "unhappy" },
+    { "text": "Je suis le commandant du HPG et {game} est mon jeu préféré sur Steam !", "mood": "kira" },
+    { "text": "Rafraîchissons simplement la page et on va réessayer, je ne le dirai à personne ;p", "mood": "normal" }
+  ],
+  "spin:retry": [
+    { "text": "Vous essayez de trouver quelque chose de précis ? ;3", "mood": "normal", "when": { "respin": 3 } },
+    { "text": "Attention, ou vous allez casser la roue ×﹏×", "mood": "unhappy", "when": { "respin": 3 } }
+  ],
+  "spin:middle": [
+    { "text": "Ouah ! Il va falloir jouer à {game} pendant {hours} ! >_<", "mood": "normal" },
+    { "text": "Dans cette liste, {goodCount} ont un score élevé. C'est bien, non ? O.O", "mood": "happy" }
+  ],
+  "spin:end": [
+    { "text": "Pas mal ! {developers} ne fait pas de mauvais jeux. Sauf celui-ci, celui-là est moyen ⌒‿‿⌒", "mood": "normal" },
+    { "text": "Euh, désolée, ce n'est pas Fallout 76... J'ai entendu dire que c'est un jeu populaire ￢‿￢", "mood": "unhappy" },
+    { "text": "Oh, ça aurait pu être {otherGame} à la place... (✿◠‿◠)", "mood": "enjoy" },
+    { "text": "Je déclare avec autorité que {game} est meilleur que le quartz ! ＾ω＾", "mood": "kira" },
+    { "text": "Les graphismes de ce jeu me semblent très familiers... (҂⌣̀_⌣́)", "mood": "normal", "when": { "tag": "Anime" } },
+    { "text": "AYAYA Clap", "mood": "happy", "when": { "tag": "Anime" } },
+    { "text": "Oh, j'espère que tu as un casque de réalité virtuelle... (｡•́︿•̀｡)", "mood": "unhappy", "when": { "tag": "VR" } },
+    { "text": "C'est un bon jeu pour les nuits solitaires ( ´ ∀ `)ノ～ ♡", "mood": "kira", "when": { "tag": "Nudity" } },
+    { "text": "{score} sur 100 ? Pas mal du tout pour un {genre} ヽ(≡∀≡)ﾉ", "mood": "happy", "when": { "scoreMin": 80 } },
+    { "text": "Aïe, {score}/100... au moins c'est court ({hours}) (｡•́︿•̀｡)", "mood": "unhappy", "when": { "scoreMax": 40 } },
+    { "text": "Un jeu de {year}, tiens donc. Un peu poussiéreux, mais le charme ne s'use pas ˙ᵕ˙", "mood": "normal", "when": { "yearMax": 2005 } },
+    { "text": "Gratuit ? Encore plus d'argent pour les snacks de Marbles (◕‿◕)", "mood": "happy", "when": { "priceMax": 0 } }
+  ],
+  "empty": [
+    { "text": "Hmm, rien ne correspond à ces filtres. On les assouplit un peu ? (｡•́︿•̀｡)", "mood": "unhappy" },
+    { "text": "Liste vide ! Essaie avec moins de restrictions la prochaine fois ヽ(-_-;)ノ", "mood": "unhappy" }
+  ],
+  "privacy": [
+    { "text": "Ta bibliothèque Steam est privée, je ne peux pas y jeter un œil ヽ(°〇°)ノ", "mood": "unhappy" },
+    { "text": "Rends ta liste de jeux Steam publique pour que le filtre « bibliothèque uniquement » fonctionne (・ω・)", "mood": "normal" }
+  ],
+  "longSession": [
+    { "text": "Ça fait un moment que tu tournes la roue — tu as trouvé quelque chose ? （・ω・）", "mood": "normal" },
+    { "text": "Toujours en train de chercher ? Peut-être une pause snack, senpai （≡´∀`）", "mood": "happy" }
+  ],
+  "settings:open": [
+    { "text": "Oh, tu règles les filtres ? Ne sois pas trop exigeant~ （≡´∀`）", "mood": "happy" },
+    { "text": "Dis-moi si tu as besoin d'aide pour comprendre une option (｡•ᴗ•｡)", "mood": "normal" }
+  ],
+  "hover:randomGame": [
+    "Si vous ne voulez pas attendre, voici un jeu aléatoire pour vous, mais les filtres ne comptent pas ٩(◦`꒳´◦)۶"
+  ],
+  "hover:marbles": [
+    "Je vous sauvegarde un fichier de 100 jeux que vous pouvez utiliser dans Marbles on Stream ୧(﹒︠ᴗ﹒︡)୨"
+  ],
+  "hover:ggPoints": [
+    "Passez en revue les jeux, obtenez des points pour eux et améliorez votre niveau de jeu (⁎˃ᆺ˂)"
+  ],
+  "hover:profile": [
+    "À l'avenir, il sera possible de créer des listes de tous les jeux auxquels vous avez joué (｡･ω･｡)"
+  ],
+  "hover:search": [
+    "Vous pouvez consulter ici les données de vos jeux préférés (ง ˙ω˙)ว "
+  ],
+  "hover:gabestore": [
+    "La boutique de l'oncle Gabe propose des jeux moins chers, et lui en acheter donne un plus au karma ヽ(〃･ω･)ﾉ"
+  ],
+  "hover:donations": [
+    "Si vous aimez le site, HPG ou SGG, rejoignez la milice de Nap Nap sur Patreon ヽ(*⌒∇⌒*)ﾉ",
+    "Même un peu d'aide est une grande motivation pour soutenir le projet durablement ٩(-౪-٩)"
+  ],
+  "hover:spin": [
+    "Vous allez obtenir quelque chose de bien ! Ou juste quelque chose... ＾◡＾'",
+    "Oh-ho-ho, j'adore les surprises ˃ˑ̫ ˂",
+    "Attendez ! Non, allez... Mais arrêtez !",
+    "Hit it! ＾∇＾"
+  ]
+}

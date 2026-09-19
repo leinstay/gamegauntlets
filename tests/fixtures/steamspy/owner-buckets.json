@@ -1,0 +1,91 @@
+[
+  {
+    "owners": "0 .. 20,000",
+    "midpoint": 10000,
+    "appid": 269530,
+    "name": "Voice of Pripyat",
+    "real": true
+  },
+  {
+    "owners": "20,000 .. 50,000",
+    "midpoint": 35000,
+    "real": false,
+    "note": "synthetic - format matches every real example below, this exact boundary pair was not observed live"
+  },
+  {
+    "owners": "50,000 .. 100,000",
+    "midpoint": 75000,
+    "real": false,
+    "note": "synthetic - format matches every real example below, this exact boundary pair was not observed live"
+  },
+  {
+    "owners": "100,000 .. 200,000",
+    "midpoint": 150000,
+    "appid": 1300,
+    "name": "SiN Episodes: Emergence",
+    "real": true
+  },
+  {
+    "owners": "200,000 .. 500,000",
+    "midpoint": 350000,
+    "appid": 1309,
+    "name": "SiN Episodes: Emergence",
+    "real": true
+  },
+  {
+    "owners": "500,000 .. 1,000,000",
+    "midpoint": 750000,
+    "appid": 1200,
+    "name": "Red Orchestra: Ostfront 41-45",
+    "real": true
+  },
+  {
+    "owners": "1,000,000 .. 2,000,000",
+    "midpoint": 1500000,
+    "appid": 130,
+    "name": "Half-Life: Blue Shift",
+    "real": true
+  },
+  {
+    "owners": "2,000,000 .. 5,000,000",
+    "midpoint": 3500000,
+    "appid": 50,
+    "name": "Half-Life: Opposing Force",
+    "real": true
+  },
+  {
+    "owners": "5,000,000 .. 10,000,000",
+    "midpoint": 7500000,
+    "appid": 30,
+    "name": "Day of Defeat",
+    "real": true
+  },
+  {
+    "owners": "10,000,000 .. 20,000,000",
+    "midpoint": 15000000,
+    "appid": 10,
+    "name": "Counter-Strike",
+    "real": true
+  },
+  {
+    "owners": "20,000,000 .. 50,000,000",
+    "midpoint": 35000000,
+    "appid": 340,
+    "name": "Half-Life 2: Lost Coast",
+    "real": true
+  },
+  {
+    "owners": "50,000,000 .. 100,000,000",
+    "midpoint": 75000000,
+    "appid": 440,
+    "name": "Team Fortress 2",
+    "real": true
+  },
+  {
+    "owners": "100,000,000 .. 200,000,000",
+    "midpoint": 150000000,
+    "appid": 730,
+    "name": "Counter-Strike: Global Offensive",
+    "real": true
+  }
+]

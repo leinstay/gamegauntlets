@@ -1,0 +1,208 @@
+{
+  "appid": "369150",
+  "en": {
+    "type": "dlc",
+    "name": "Cities: Skylines - After Dark",
+    "steam_appid": 369150,
+    "required_age": 0,
+    "is_free": false,
+    "detailed_description": "<h2 class=\"bb_tag\" >Create a Nocturnal Metropolis</h2>Turn your city into a haven for night owls with a host of new policies added in After Dark. Keep commercial zones open 24/7 and let your city’s nightlife thrive! Don’t let your citizens get too rowdy though, enforce a policy to keep leisure areas closed during the early hours of the morning to reduce noise pollution.<br><br><br><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/e9c0895699fc03bf78afe2a4a93d88b2.poster.avif?t=1764774524\" width=616 height=80 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/e9c0895699fc03bf78afe2a4a93d88b2.webm?t=1764774524\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/e9c0895699fc03bf78afe2a4a93d88b2.mp4?t=1764774524\" type=\"video/mp4\"></video></span><h2 class=\"bb_tag\" >Leisure specialization:</h2>Commercial areas can specialize in leisure activities. Leisure areas are especially active during the night, but work like regular commercial areas during the day.<br><br><br><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/890e2dedc0f22914d8f1f94a7d436b7a.poster.avif?t=1764774524\" width=616 height=80 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/890e2dedc0f22914d8f1f94a7d436b7a.webm?t=1764774524\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/890e2dedc0f22914d8f1f94a7d436b7a.mp4?t=1764774524\" type=\"video/mp4\"></video></span><h2 class=\"bb_tag\" >Tourist Specialization:</h2>Commercial areas such as bars and restaurants, small marina and fishing tours on the shoreline can specialize in beach activities<br><br><br><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/568853f71c4c44d352a169441109d7dc.poster.avif?t=1764774524\" width=616 height=80 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/568853f71c4c44d352a169441109d7dc.webm?t=1764774524\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/568853f71c4c44d352a169441109d7dc.mp4?t=1764774524\" type=\"video/mp4\"></video></span><h2 class=\"bb_tag\" >Expanded City Services:</h2><ul class=\"bb_ul\"><li>Criminals will now be taken to Prison from Police buildings. <br></li><li>Taxi service will help citizens and tourists travel around the city. <br></li><li>Cargo hubs are harbors that accept cargo trains straight to the terminal. <br></li><li>International airport is a huge airport, allowing much more traffic than the previous airport and has a metro station attached to it. <br></li><li>Bus terminal allows citizens to transfer to other bus lines in the terminal building.</li></ul>",
+    "about_the_game": "<h2 class=\"bb_tag\" >Create a Nocturnal Metropolis</h2>Turn your city into a haven for night owls with a host of new policies added in After Dark. Keep commercial zones open 24/7 and let your city’s nightlife thrive! Don’t let your citizens get too rowdy though, enforce a policy to keep leisure areas closed during the early hours of the morning to reduce noise pollution.<br><br><br><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/e9c0895699fc03bf78afe2a4a93d88b2.poster.avif?t=1764774524\" width=616 height=80 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/e9c0895699fc03bf78afe2a4a93d88b2.webm?t=1764774524\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/e9c0895699fc03bf78afe2a4a93d88b2.mp4?t=1764774524\" type=\"video/mp4\"></video></span><h2 class=\"bb_tag\" >Leisure specialization:</h2>Commercial areas can specialize in leisure activities. Leisure areas are especially active during the night, but work like regular commercial areas during the day.<br><br><br><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/890e2dedc0f22914d8f1f94a7d436b7a.poster.avif?t=1764774524\" width=616 height=80 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/890e2dedc0f22914d8f1f94a7d436b7a.webm?t=1764774524\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/890e2dedc0f22914d8f1f94a7d436b7a.mp4?t=1764774524\" type=\"video/mp4\"></video></span><h2 class=\"bb_tag\" >Tourist Specialization:</h2>Commercial areas such as bars and restaurants, small marina and fishing tours on the shoreline can specialize in beach activities<br><br><br><span class=\"bb_img_ctn\"><video class=\"bb_img\" autoplay muted loop playsinline poster=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/568853f71c4c44d352a169441109d7dc.poster.avif?t=1764774524\" width=616 height=80 ><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/568853f71c4c44d352a169441109d7dc.webm?t=1764774524\" type=\"video/webm; codecs=vp9\"><source src=\"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/extras/568853f71c4c44d352a169441109d7dc.mp4?t=1764774524\" type=\"video/mp4\"></video></span><h2 class=\"bb_tag\" >Expanded City Services:</h2><ul class=\"bb_ul\"><li>Criminals will now be taken to Prison from Police buildings. <br></li><li>Taxi service will help citizens and tourists travel around the city. <br></li><li>Cargo hubs are harbors that accept cargo trains straight to the terminal. <br></li><li>International airport is a huge airport, allowing much more traffic than the previous airport and has a metro station attached to it. <br></li><li>Bus terminal allows citizens to transfer to other bus lines in the terminal building.</li></ul>",
+    "short_description": "Night time is fun time! After Dark is the first expansion to the hugely popular classic city simulation Cities: Skylines. The game expands on the repertoire of features and customizations designed to enhance the thrill as well as maintain the challenge of the city building experience.",
+    "fullgame": {
+      "appid": "255710",
+      "name": "Cities: Skylines"
+    },
+    "supported_languages": "English, French, German, Spanish - Spain, Polish, Portuguese - Brazil, Russian",
+    "header_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/header.jpg?t=1764774524",
+    "capsule_image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/capsule_231x87.jpg?t=1764774524",
+    "capsule_imagev5": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/capsule_184x69.jpg?t=1764774524",
+    "website": "http://www.citiesskylines.com/",
+    "pc_requirements": {
+      "minimum": "<strong>Minimum:</strong><br><ul class=\"bb_ul\"><li><strong>OS *:</strong> Windows® 7 64 Bit  |  Windows® 8.1 64 Bit  |  Windows® 10 Home 64 Bit<br></li><li><strong>Processor:</strong> Intel® Core™ I7 930  |  AMD® FX 6350<br></li><li><strong>Memory:</strong> 8 GB RAM<br></li><li><strong>Graphics:</strong> Nvidia® GeForce™ GTS 450 (1 GB) |  AMD® R7 250 (2 GB)  |  Intel Iris Xe G7 (Tiger Lake)<br></li><li><strong>DirectX:</strong> Version 9.0<br></li><li><strong>Storage:</strong> 1 GB available space</li></ul>",
+      "recommended": "<strong>Recommended:</strong><br><ul class=\"bb_ul\"><li><strong>OS:</strong> Windows® 10 Home 64 bit<br></li><li><strong>Processor:</strong> Intel® Core™ I7 2700K  |   AMD® Ryzen 7 2700X<br></li><li><strong>Memory:</strong> 16 GB RAM<br></li><li><strong>Graphics:</strong> Nvidia® GeForce™ GTX 580 (1.5 GB)  |   AMD® Radeon™ RX 560 (4 GB)<br></li><li><strong>DirectX:</strong> Version 11<br></li><li><strong>Storage:</strong> 1 GB available space</li></ul>"
+    },
+    "mac_requirements": {
+      "minimum": "<strong>Minimum:</strong><br><ul class=\"bb_ul\"><li><strong>OS:</strong> OS X 10.11 (64-bit)<br></li><li><strong>Processor:</strong> Intel Core 2 Duo, 3.0GHz or AMD Athlon 64 X2 6400+, 3.2GHz<br></li><li><strong>Memory:</strong> 4 GB RAM<br></li><li><strong>Graphics:</strong> nVIDIA GeForce GTX 260, 512 MB or ATI Radeon HD 5670, 512 MB  (Does not support Intel Integrated Graphics Cards)<br></li><li><strong>Storage:</strong> 1 GB available space</li></ul>",
+      "recommended": "<strong>Recommended:</strong><br><ul class=\"bb_ul\"><li><strong>OS:</strong> OS X 10.11 (64-bit)<br></li><li><strong>Processor:</strong> Intel Core i5-3470, 3.20GHz or AMD FX-6300, 3.5Ghz<br></li><li><strong>Memory:</strong> 6 GB RAM<br></li><li><strong>Graphics:</strong> nVIDIA GeForce GTX 660, 2 GB or AMD Radeon HD 7870, 2 GB  (Does not support Intel Integrated Graphics Cards)<br></li><li><strong>Storage:</strong> 1 GB available space</li></ul>"
+    },
+    "linux_requirements": {
+      "minimum": "<strong>Minimum:</strong><br><ul class=\"bb_ul\"><li><strong>OS:</strong> Ubuntu 12.04 (64-bit)<br></li><li><strong>Processor:</strong> Intel Core 2 Duo, 3.0GHz or AMD Athlon 64 X2 6400+, 3.2GHz<br></li><li><strong>Memory:</strong> 4 GB RAM<br></li><li><strong>Graphics:</strong> nVIDIA GeForce GTX 260, 512 MB or ATI Radeon HD 5670, 512 MB  (Does not support Intel Integrated Graphics Cards)<br></li><li><strong>Storage:</strong> 1 GB available space</li></ul>",
+      "recommended": "<strong>Recommended:</strong><br><ul class=\"bb_ul\"><li><strong>OS:</strong> Ubuntu 14.10 (64-bit)<br></li><li><strong>Processor:</strong> Intel Core i5-3470, 3.20GHz or AMD FX-6300, 3.5Ghz<br></li><li><strong>Memory:</strong> 6 GB RAM<br></li><li><strong>Graphics:</strong> nVIDIA GeForce GTX 660, 2 GB or AMD Radeon HD 7870, 2 GB  (Does not support Intel Integrated Graphics Cards)<br></li><li><strong>Storage:</strong> 1 GB available space</li></ul>"
+    },
+    "developers": [
+      "Colossal Order"
+    ],
+    "publishers": [
+      "Paradox Interactive"
+    ],
+    "price_overview": {
+      "currency": "USD",
+      "initial": 1499,
+      "final": 1499,
+      "discount_percent": 0,
+      "initial_formatted": "",
+      "final_formatted": "$14.99"
+    },
+    "packages": [
+      67150
+    ],
+    "package_groups": [
+      {
+        "name": "default",
+        "title": "Buy Cities: Skylines - After Dark",
+        "description": "",
+        "selection_text": "Select a purchase option",
+        "save_text": "",
+        "display_type": 0,
+        "is_recurring_subscription": "false",
+        "subs": [
+          {
+            "packageid": 67150,
+            "percent_savings_text": " ",
+            "percent_savings": 0,
+            "option_text": "Cities: Skylines - After Dark - $14.99",
+            "option_description": "",
+            "can_get_free_license": "0",
+            "is_free_license": false,
+            "price_in_cents_with_discount": 1499
+          }
+        ]
+      }
+    ],
+    "platforms": {
+      "windows": true,
+      "mac": true,
+      "linux": true
+    },
+    "categories": [
+      {
+        "id": 2,
+        "description": "Single-player"
+      },
+      {
+        "id": 21,
+        "description": "Downloadable Content"
+      },
+      {
+        "id": 22,
+        "description": "Steam Achievements"
+      },
+      {
+        "id": 29,
+        "description": "Steam Trading Cards"
+      },
+      {
+        "id": 30,
+        "description": "Steam Workshop"
+      },
+      {
+        "id": 23,
+        "description": "Steam Cloud"
+      },
+      {
+        "id": 17,
+        "description": "Includes level editor"
+      },
+      {
+        "id": 62,
+        "description": "Family Sharing"
+      }
+    ],
+    "genres": [
+      {
+        "id": "28",
+        "description": "Simulation"
+      },
+      {
+        "id": "2",
+        "description": "Strategy"
+      }
+    ],
+    "screenshots": [
+      {
+        "id": 0,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_1f16b7ef001db4ba7b9ecdcb666a4874e3179209.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_1f16b7ef001db4ba7b9ecdcb666a4874e3179209.1920x1080.jpg?t=1764774524"
+      },
+      {
+        "id": 1,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_72909ae27788556ce8de708ad05c3c704ef4032b.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_72909ae27788556ce8de708ad05c3c704ef4032b.1920x1080.jpg?t=1764774524"
+      },
+      {
+        "id": 2,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_e4096e1e7c3e8e206eb8997d2c0d316dd19f4318.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_e4096e1e7c3e8e206eb8997d2c0d316dd19f4318.1920x1080.jpg?t=1764774524"
+      },
+      {
+        "id": 3,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_1fe285093e5a344dcfe190280970aacd0308b10f.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_1fe285093e5a344dcfe190280970aacd0308b10f.1920x1080.jpg?t=1764774524"
+      },
+      {
+        "id": 4,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_ac76ac7a8c398a0736e5df621f5538d7c45cf326.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_ac76ac7a8c398a0736e5df621f5538d7c45cf326.1920x1080.jpg?t=1764774524"
+      },
+      {
+        "id": 5,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_58b6f645d906baa169b9548a39f44fb435064b86.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_58b6f645d906baa169b9548a39f44fb435064b86.1920x1080.jpg?t=1764774524"
+      },
+      {
+        "id": 6,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_a8e28fbd9d5918c4bf8e259cc66290d26c1a8afc.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_a8e28fbd9d5918c4bf8e259cc66290d26c1a8afc.1920x1080.jpg?t=1764774524"
+      },
+      {
+        "id": 7,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_3626e6b790b0efead544e8c8f760b76125070180.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_3626e6b790b0efead544e8c8f760b76125070180.1920x1080.jpg?t=1764774524"
+      },
+      {
+        "id": 8,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_46a08093fd39f69a5cacc99720385b9d3d379ca8.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_46a08093fd39f69a5cacc99720385b9d3d379ca8.1920x1080.jpg?t=1764774524"
+      },
+      {
+        "id": 9,
+        "path_thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_0a4a461a46c09c698ac7fcf1c106376fbbc3ebea.600x338.jpg?t=1764774524",
+        "path_full": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/ss_0a4a461a46c09c698ac7fcf1c106376fbbc3ebea.1920x1080.jpg?t=1764774524"
+      }
+    ],
+    "movies": [
+      {
+        "id": 256656715,
+        "name": "Cities: Skylines - After Dark Release Trailer",
+        "thumbnail": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/256656715/movie.293x165.jpg?t=1447378238",
+        "dash_av1": "https://video.akamai.steamstatic.com/store_trailers/369150/43623/f4237a8a84f7cf13a3b820c60047d3c1fe34d1cb/1750518417/dash_av1.mpd?t=1447378238",
+        "dash_h264": "https://video.akamai.steamstatic.com/store_trailers/369150/43623/f4237a8a84f7cf13a3b820c60047d3c1fe34d1cb/1750518417/dash_h264.mpd?t=1447378238",
+        "hls_h264": "https://video.akamai.steamstatic.com/store_trailers/369150/43623/f4237a8a84f7cf13a3b820c60047d3c1fe34d1cb/1750518417/hls_264_master.m3u8?t=1447378238",
+        "highlight": true
+      }
+    ],
+    "recommendations": {
+      "total": 678
+    },
+    "release_date": {
+      "coming_soon": false,
+      "date": "Sep 24, 2015"
+    },
+    "support_info": {
+      "url": "https://paradox.zendesk.com/home",
+      "email": "support@paradoxplaza.com"
+    },
+    "background": "https://store.akamai.steamstatic.com/images/storepagebackground/app/369150?t=1764774524",
+    "background_raw": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/369150/page_bg_raw.jpg?t=1764774524",
+    "content_descriptors": {
+      "ids": [],
+      "notes": null
+    },
+    "ratings": null
+  },
+  "ru": null,
+  "az": null,
+  "reviews": null,
+  "fetchedAt": "2026-09-19T00:00:00.000Z"
+}

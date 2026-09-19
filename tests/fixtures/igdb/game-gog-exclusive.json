@@ -1,0 +1,104 @@
+[
+  {
+    "id": 21656,
+    "aggregated_rating": 62,
+    "aggregated_rating_count": 1,
+    "external_games": [
+      {
+        "id": 238653,
+        "uid": "1023231340",
+        "external_game_source": 13
+      },
+      {
+        "id": 76546,
+        "uid": "1207664483",
+        "external_game_source": 5
+      }
+    ],
+    "first_release_date": 1399507200,
+    "genres": [
+      {
+        "id": 13,
+        "name": "Simulator"
+      },
+      {
+        "id": 15,
+        "name": "Strategy"
+      },
+      {
+        "id": 32,
+        "name": "Indie"
+      }
+    ],
+    "involved_companies": [
+      {
+        "id": 69242,
+        "company": {
+          "id": 10415,
+          "name": "SomaSim"
+        },
+        "developer": true,
+        "publisher": true
+      }
+    ],
+    "name": "1849: Gold Edition",
+    "release_dates": [
+      {
+        "id": 352892,
+        "date": 1438300800,
+        "platform": 39
+      },
+      {
+        "id": 157683,
+        "date": 1399507200,
+        "platform": 6
+      },
+      {
+        "id": 157684,
+        "date": 1399507200,
+        "platform": 14
+      }
+    ],
+    "slug": "1849-gold-edition",
+    "themes": [
+      {
+        "id": 22,
+        "name": "Historical"
+      },
+      {
+        "id": 34,
+        "name": "Educational"
+      }
+    ],
+    "total_rating": 62,
+    "total_rating_count": 1,
+    "url": "https://www.igdb.com/games/1849-gold-edition",
+    "websites": [
+      {
+        "id": 119111,
+        "url": "https://www.gog.com/game/1849_the_gold_rush",
+        "type": 17
+      },
+      {
+        "id": 87998,
+        "url": "https://store.steampowered.com/app/290970/1849",
+        "type": 13
+      },
+      {
+        "id": 87997,
+        "url": "http://www.somasim.com/1849/",
+        "type": 1
+      },
+      {
+        "id": 275501,
+        "url": "http://itunes.apple.com/us/app/id1016041206#?platform=iphone",
+        "type": 10
+      },
+      {
+        "id": 275502,
+        "url": "http://itunes.apple.com/us/app/id1016041206#?platform=ipad",
+        "type": 11
+      }
+    ]
+  }
+]

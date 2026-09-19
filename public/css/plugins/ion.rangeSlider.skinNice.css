@@ -1,0 +1,26 @@
+/*
+ * The site's original "Nice" sprite skin (ion.rangeSlider 2.2) adapted to the 2.5 markup, pixel-for-pixel:
+ *   - 2.5's base CSS forces Arial 12px on .irs — legacy inherited the page font, so that is undone;
+ *   - .irs-slider is now .irs-handle;
+ *   - the 3-piece track (.irs-line-left 11% / -mid 9%..91% / -right 11%) is gone: the caps are drawn with
+ *     ::before/::after and the middle strip is the element's own background clipped to 9%..91%;
+ *   - .irs-bar-edge (rounded start of a single-handle bar) is drawn as .irs-bar--single::before.
+ */
+.irs{font-family:inherit;font-size:inherit}
+.irs-from,.irs-max,.irs-min,.irs-single,.irs-to{font-size:10px;line-height:1.333;text-shadow:none}
+.irs-bar,.irs-bar--single::before,.irs-line,.irs-line::before,.irs-line::after,.irs-handle{background:url(sprite-skin-nice.png) repeat-x}
+.irs{height:40px}
+.irs-with-grid{height:60px}
+.irs-line{height:8px;top:25px;box-sizing:border-box;padding:0 9%;background-position:0 0;background-clip:content-box;overflow:visible}
+.irs-line::before,.irs-line::after{content:"";position:absolute;display:block;top:0;width:11%;height:8px}
+.irs-line::before{left:0;background-position:0 -30px}
+.irs-line::after{right:0;background-position:100% -30px}
+.irs-bar{height:8px;top:25px;background-position:0 -60px}
+.irs-bar--single::before{content:"";position:absolute;display:block;top:0;left:0;width:11px;height:8px;background-position:0 -90px}
+.irs-shadow{height:1px;top:34px;background:#000;opacity:.15}
+.irs-handle{width:22px;height:22px;top:17px;background-position:0 -120px}
+.irs-handle.state_hover,.irs-handle:hover{background-position:0 -150px}
+.irs-max,.irs-min{color:#999;top:0;padding:1px 3px;background:rgba(0,0,0,.1);border-radius:3px}
+.irs-from,.irs-single,.irs-to{color:#fff;padding:1px 5px;background:rgba(0,0,0,.3);border-radius:3px}
+.irs-grid-pol{background:#99a4ac}
+.irs-grid-text{color:#99a4ac}

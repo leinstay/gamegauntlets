@@ -1,0 +1,220 @@
+<div class="column centered sixteen wide" style="margin-top:16px; margin-bottom: 16px;">
+	<div class="ui inverted segments">
+		<div class="ui inverted compact segment" style="padding-top: 0px; padding-bottom: 0px; display: flex; justify-content: space-between; flex-wrap: wrap; align-content: center;">
+			<div class="settingsleft" data-i18n="Settings">Settings</div>
+			<div class="settingsright" style="height: 47px; justify-content: flex-end;">
+				<div class="ui vertical segment" style="padding: 6px; background-color: white; border-radius: 25px;" data-lang="ru">
+					<div class="ui slider checkbox" id="backupRegion" style="display: inline-flex;" data-html="Если эта функция включена - будут использоваться игры из <b>CIS региона.</b><br><i>Это поможет, если вы хотите, чтобы присутствовали игры, недоступные в Российском регионе. Цены будут так же изменены в соответствии с регионом.</i>">
+						<input type="checkbox" name="empty" value="true">
+						<label style="padding-right: 5px;">Использовать CIS регион</label>
+						<i class="question circular icon" style="font-size: 10px;padding: 0em !important;padding-top: .4em !important;margin-right: 0px;"></i>
+					</div>
+				</div>
+                <div class="ui dropdown right label labeled circular icon secondary button" id="changeLang">
+                    <i class="world icon"></i>
+                    <div class="text"></div>
+                    <div class="menu" style="left: auto; right: 0; margin-top: 5px;">
+                        <div class="header" style="text-align: center; font-size: 15px;">Change Language :</div>
+                        <div class="scrolling menu">
+                            <div class="item" data-value="en" data-text="English" data-english="English">
+                                <span class="description">English</span>
+                                English
+                            </div>
+                            <div class="item" data-value="ru" data-text="Русский" data-english="Russian">
+                                <span class="description">Русский</span>
+                                Russian
+                            </div>
+                            <div class="item" data-value="de" data-text="German" data-english="Deutsch">
+                                <span class="description">Deutsch</span>
+                                Deutsch
+                            </div>
+                            <div class="item" data-value="fr" data-text="Français" data-english="French">
+                                <span class="description">Français</span>
+                                French
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+		<div class="ui secondary segment">
+			<div class="three column stackable doubling centered ui grid">
+				<div class="column">
+					<h5 class="ui inverted top attached header">
+						<span data-i18n="Publishers">Publishers</span>
+						<div class="ui slider checkbox noswitch" id="publishers_switch"><input type="checkbox" value="true"></div>
+					</h5>
+					<div class="ui attached segment">
+						<select id="publishers" name="publishers[]" data-placeholder="Include" data-i18n-data-placeholder="Include" class="ui fluid search dropdown" multiple></select>
+						<select id="publishersno" name="publishersno[]" data-placeholder="Exclude" data-i18n-data-placeholder="Exclude" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<h5 class="ui inverted attached header">
+						<span data-i18n="Developers">Developers</span>
+						<div class="ui slider checkbox noswitch" id="developers_switch"><input type="checkbox" value="true"></div>
+					</h5>
+					<div class="ui attached segment">
+						<select id="developers" name="developers[]" data-placeholder="Include" data-i18n-data-placeholder="Include" class="ui fluid search dropdown" multiple></select>
+						<select id="developersno" name="developersno[]" data-placeholder="Exclude" data-i18n-data-placeholder="Exclude" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<h5 class="ui inverted attached header">
+						<span data-i18n="Categories">Categories</span>
+						<div class="ui slider checkbox noswitch" id="categories_switch"><input type="checkbox" value="true"></div>
+					</h5>
+					<div class="ui attached segment">
+						<select id="categories" name="categories[]" data-placeholder="Include" data-i18n-data-placeholder="Include" class="ui fluid search dropdown" multiple></select>
+						<select id="categoriesno" name="categoriesno[]" data-placeholder="Exclude" data-i18n-data-placeholder="Exclude" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<h5 class="ui inverted attached header">
+						<span data-i18n="Genres">Genres</span>
+						<div class="ui slider checkbox noswitch" id="genres_switch"><input type="checkbox" value="true"></div>
+					</h5>
+					<div class="ui bottom attached segment">
+						<select id="genres" name="genres[]" data-placeholder="Include" data-i18n-data-placeholder="Include" class="ui fluid search dropdown" multiple></select>
+						<select id="genresno" name="genresno[]" data-placeholder="Exclude" data-i18n-data-placeholder="Exclude" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<div class="ui buttons" style=" width: 100%;" data-lang="ru">
+						<button class="ui button setprice" data-min="0" data-max="100" style="padding: 5px; font-size: 10px;">0-100</button>
+						<button class="ui button setprice" data-min="101" data-max="250" style="padding: 5px; font-size: 10px;">101-250</button>
+						<button class="ui button setprice" data-min="251" data-max="400" style="padding: 5px; font-size: 10px;">251-400</button>
+						<button class="ui button setprice" data-min="401" data-max="600" style="padding: 5px; font-size: 10px;">401-600</button>
+						<button class="ui button setprice" data-min="601" data-max="800" style="padding: 5px; font-size: 10px;">601-800</button>
+						<button class="ui button setprice" data-min="801" data-max="5000" style="padding: 5px; font-size: 10px;">801+</button>
+					</div>
+					<div class="ui buttons" style=" width: 100%;" data-lang-not="ru">
+						<button class="ui button setprice" data-min="0" data-max="5" style="padding: 5px; font-size: 10px;">0-5</button>
+						<button class="ui button setprice" data-min="6" data-max="10" style="padding: 5px; font-size: 10px;">6-10</button>
+						<button class="ui button setprice" data-min="11" data-max="15" style="padding: 5px; font-size: 10px;">11-15</button>
+						<button class="ui button setprice" data-min="16" data-max="20" style="padding: 5px; font-size: 10px;">16-20</button>
+						<button class="ui button setprice" data-min="21" data-max="40" style="padding: 5px; font-size: 10px;">21-40</button>
+						<button class="ui button setprice" data-min="41" data-max="200" style="padding: 5px; font-size: 10px;">41+</button>
+					</div>
+					<div class="ui vertical segment" style="">
+						<input type="text" id="price" name="price" value="" />
+					</div>
+					<div class="ui vertical segment" style="">
+						<input type="text" id="length" name="length" value="" />
+					</div>
+					<div class="ui vertical segment" style="">
+						<input type="text" id="spin" name="spin" value="" />
+					</div>
+				</div>
+				<div class="column">
+					<h5 class="ui inverted top attached header">
+						<span data-i18n="Difficulty">Difficulty</span>
+						<div class="ui slider checkbox noswitch" id="gfq_difficulty_switch"><input type="checkbox" value="true"></div>
+					</h5>
+					<div class="ui attached segment">
+						<select id="gfq_difficulty" name="gfq_difficulty[]" data-placeholder="Include" data-i18n-data-placeholder="Include" class="ui fluid search dropdown" multiple></select>
+						<select id="gfq_difficultyno" name="gfq_difficultyno[]" data-placeholder="Exclude" data-i18n-data-placeholder="Exclude" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<h5 class="ui inverted attached header">
+						<span data-i18n="Languages">Languages</span>
+						<div class="ui slider checkbox noswitch" id="languages_switch"><input type="checkbox" value="true"></div>
+					</h5>
+					<div class="ui attached segment">
+						<select id="languages" name="languages[]" data-placeholder="Include" data-i18n-data-placeholder="Include" class="ui fluid search dropdown" multiple></select>
+						<select id="languagesno" name="languagesno[]" data-placeholder="Exclude" data-i18n-data-placeholder="Exclude" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<h5 class="ui inverted attached header">
+						<span data-i18n="Voiceovers">Voiceovers</span>
+						<div class="ui slider checkbox noswitch" id="voiceovers_switch"><input type="checkbox" value="true"></div>
+					</h5>
+					<div class="ui attached segment">
+						<select id="voiceovers" name="voiceovers[]" data-placeholder="Include" data-i18n-data-placeholder="Include" class="ui fluid search dropdown" multiple></select>
+						<select id="voiceoversno" name="voiceoversno[]" data-placeholder="" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<h5 class="ui inverted attached header">
+						<span data-i18n="Tags">Tags</span>
+						<div class="ui slider checkbox noswitch" id="tags_switch"><input type="checkbox" value="true"></div>
+					</h5>
+					<div class="ui bottom attached segment">
+						<select id="tags" name="tags[]" data-placeholder="Include" data-i18n-data-placeholder="Include" class="ui fluid search dropdown" multiple></select>
+						<select id="tagsno" name="tagsno[]" data-placeholder="Exclude" data-i18n-data-placeholder="Exclude" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<div class="ui buttons" style=" width: 100%;">
+						<button class="ui button setscore" data-min="0" data-max="24" style="padding: 5px; font-size: 10px;">0-24</button>
+						<button class="ui button setscore" data-min="25" data-max="49" style="padding: 5px; font-size: 10px;">25-49</button>
+						<button class="ui button setscore" data-min="50" data-max="74" style="padding: 5px; font-size: 10px;">50-74</button>
+						<button class="ui button setscore" data-min="75" data-max="100" style="padding: 5px; font-size: 10px;">75-100</button>
+					</div>
+					<div class="ui vertical segment" style="">
+						<input type="text" id="score" name="score" value="" />
+					</div>
+					<div class="ui vertical segment" style="">
+						<input type="text" id="segments" name="segments" value="" />
+					</div>
+					<div class="ui vertical segment" style="">
+						<input type="text" id="speed" name="speed" value="" />
+					</div>
+				</div>
+				<div class="column">
+					<h5 class="ui inverted top attached header">
+						<span data-i18n="Time period">Time period</span> (<span data-i18n="From">From</span>)
+					</h5>
+					<div class="ui attached segment">
+				        <div class="ui calendar" id="rangestart">
+							<div class="ui left right action icon input" style="width:100%">
+								<i class="left calendar icon"></i>
+								<input type="text" placeholder="From" data-i18n-placeholder="From">
+								<button class="ui icon button" style="padding: 7px;">
+									<i class="right remove icon" style="padding-bottom: 20px; font-size: 18px;"></i>
+								</button>
+							</div>
+				        </div>
+					</div>
+					<h5 class="ui inverted attached header">
+						<span data-i18n="Time period">Time period</span> (<span data-i18n="To">To</span>)
+					</h5>
+					<div class="ui attached segment">
+				        <div class="ui calendar" id="rangeend">
+				        	<div class="ui left right action icon input" style="width:100%">
+								<i class="left calendar icon"></i>
+								<input type="text" placeholder="To" data-i18n-placeholder="To">
+								<button class="ui icon button" style="padding: 7px;">
+									<i class="right remove icon" style="padding-bottom: 20px; font-size: 18px;"></i>
+								</button>
+							</div>
+				        </div>
+					</div>
+					<h5 class="ui inverted attached header" data-i18n="Wheel builder">Wheel builder</h5>
+					<div class="ui attached segment">
+						<select id="name" name="name[]" data-placeholder="Choose games" data-i18n-data-placeholder="Choose games" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<h5 class="ui inverted attached header" data-i18n="Game Presets">Game Presets</h5>
+					<div class="ui bottom attached segment">
+						<select id="presets" name="presets[]" data-placeholder="Choose games" data-i18n-data-placeholder="Choose games" class="ui fluid search dropdown" multiple></select>
+					</div>
+					<div class="ui vertical segment" style="padding: 10px; margin-bottom: 5px; margin-top: 5px;">
+						<div class="ui slider checkbox" id="steam" style="display: inline-flex;" data-html="To use this function, you must log in to your Steam account." data-i18n-data-html="To use this function, you must log in to your Steam account.">
+							<input type="checkbox" name="steam" value="true">
+							<label style="padding-right: 5px;" data-i18n="Pick games ONLY from your Steam library">Pick games ONLY from your Steam library</label>
+							<i class="question circular icon" style="font-size: 10px;padding: 0em !important;padding-top: .48em !important;padding-right: .15em !important;margin-right: 0px;"></i>
+						</div>
+					</div>
+					<div class="ui vertical segment" style="padding: 10px; margin-bottom: 5px; margin-top: 5px;">
+						<div class="ui slider checkbox" id="empty" style="display: inline-flex;" data-html="If this option is enabled, games with «???» instead of actual information may appear in the list." data-i18n-data-html="If this option is enabled, games with «???» instead of actual information may appear in the list.">
+							<input type="checkbox" name="empty" value="true">
+							<label style="padding-right: 5px;" data-i18n="Include games without information about game length and rankings">Include games without information about game length and rankings</label>
+							<i class="question circular icon" style="font-size: 10px;padding: 0em !important;padding-top: .48em !important;padding-right: .15em !important;margin-right: 0px;"></i>
+						</div>
+					</div>
+					<div class="ui vertical segment" style="padding: 10px; margin-bottom: 5px; margin-top: 5px;">
+						<div class="ui slider checkbox" id="music" style="display: inline-flex;">
+							<input type="checkbox" name="music" value="true">
+							<label style="padding-right: 5px;" data-i18n="Enable music during the roll">Enable music during the roll</label>
+						</div>
+					</div>
+					<div class="ui vertical segment" style="padding: 10px; margin-bottom: 5px; margin-top: 5px;">
+						<div class="ui slider checkbox" id="dynamic" style="display: inline-flex;">
+							<input type="checkbox">
+							<label style="padding-right: 5px;" data-i18n="Dynamic images inside the wheel">Dynamic images inside the wheel</label>
+						</div>
+					</div>
+					<div id="resetSettings" class="ui right floated button black" style="width: 100%; margin-top: 15px; padding-top: 10px; padding-bottom: 10px;" data-i18n="Reset Settings">Reset Settings</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="js/pgsettings.js?v=dev"></script>

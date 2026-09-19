@@ -1,0 +1,3 @@
+Background music for the wheel lives in this folder on the server only (not in the repository):
+chowd.mp3, theme1.mp3, theme3.mp3, theme4.mp3, theme6.mp3 — see public/js/pgwheel.js.
+The deploy keeps whatever audio files are already here.

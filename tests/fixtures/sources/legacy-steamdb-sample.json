@@ -1,0 +1,97 @@
+{
+  "fullRow": {
+    "id": 44990,
+    "sid": 391540,
+    "store_platform": "Steam",
+    "store_url": "https://store.steampowered.com/app/391540",
+    "store_promo_url": null,
+    "store_uscore": 92,
+    "gabe_url": null,
+    "image": "https://cdn.example/391540/header.jpg",
+    "name": "Undertale",
+    "description_en": "A game about a child who falls into an underground world.",
+    "description_ru": "Игра о ребёнке, который падает в подземный мир.",
+
+    "published_store": "2020-10-27",
+    "published_meta": "2020-10-27",
+    "published_stsp": null,
+    "published_hltb": "2020-10-27",
+    "published_igdb": "2020-10-28",
+
+    "price_en": 999,
+    "price_ru": 19500,
+    "price_final_en": 999,
+    "price_final_ru": 19500,
+    "discount_en": 0,
+    "discount_ru": 0,
+    "price_temp": null,
+    "price_final_temp": null,
+    "discount_temp": null,
+    "price_gabe_ru": null,
+    "discount_gabe_ru": null,
+
+    "platforms": "WIN,MAC,LNX",
+    "developers": "Toby Fox",
+    "publishers": "Toby Fox",
+    "languages": "English,French,Italian,German,Russian",
+    "voiceovers": "",
+    "categories": "Single-player,Steam Achievements",
+    "genres": "Casual,Strategy,Early Access",
+    "tags": "RPG,Indie,Comedy",
+    "achievements": 93,
+
+    "gfq_url": "https://gamefaqs.gamespot.com/undertale",
+    "gfq_difficulty": "Easy",
+    "gfq_rating": 4.5,
+    "gfq_length": null,
+
+    "stsp_owners": 10000,
+    "stsp_mdntime": null,
+
+    "hltb_url": "https://howlongtobeat.com/game/undertale",
+    "hltb_single": 6.5,
+    "hltb_complete": 15,
+
+    "meta_url": "https://www.metacritic.com/game/undertale",
+    "meta_score": 88,
+    "meta_uscore": 90,
+    "grnk_score": 85,
+
+    "igdb_url": "https://www.igdb.com/games/undertale",
+    "igdb_single": 8,
+    "igdb_complete": 20,
+    "igdb_score": 91,
+    "igdb_uscore": 93,
+    "igdb_popularity": null,
+
+    "timestamp": "2026-09-01 00:00:00"
+  },
+
+  "gogRow": {
+    "id": 77001,
+    "sid": 1207659091,
+    "store_platform": "GOG",
+    "store_uscore": null,
+    "published_store": "2019-05-14",
+    "published_meta": null,
+    "published_stsp": null,
+    "published_hltb": null,
+    "published_igdb": null,
+    "price_en": 0,
+    "price_final_en": 0,
+    "discount_en": 0,
+    "platforms": "WIN",
+    "genres": "Adventure"
+  },
+
+  "sparseRow": {
+    "id": 99999,
+    "sid": null,
+    "store_platform": "Steam",
+    "published_store": null,
+    "published_meta": null,
+    "published_stsp": null,
+    "published_hltb": null,
+    "published_igdb": null
+  }
+}

@@ -1,0 +1,397 @@
+<div class="ui vertical segment" style="border-bottom-width: 0px;">
+	<div class="ui equal width grid" style="z-index: 10; position: relative;">
+		<div class="column transition hidden" style="padding-left: 30px; min-width: 350px">
+			<div id="aboutg" class="ui piled segments" style="margin-top: .4em; margin-bottom:0em;">
+				<div class="ui compact segment">
+					<span id="tabout" style="color: black; font-size: 20px; font-weight: 600" data-i18n="About the game">About the game</span>
+					<button id="mrbls" style="display: none; margin: 0px; float: right; height: 25px; padding: 6px 10px; font-size: 12px; margin-left: 5px;" type="button" class="ui black button"><i class="fa fa-tasks"></i></button>
+					<button id="rndgm" style="margin: 0px; float: right; height: 25px; padding: 6px 10px; font-size: 12px;" type="button" class="ui black button"><span data-i18n="Random game" data-i18n-suffix=" ">Random game </span><i class="fas fa-random"></i></button>
+				</div>
+				<div class="ui secondary segment" id="detailsWrapper">
+					<div id="desk_full">
+						<p style="margin-bottom: 10px; margin-top: 10px; text-align: center;"><span style="font-size:30px !important; font-family: SwagFont; color: black" id="rname">Grimdark Survivors</span></p>
+						<div style="position: relative;">
+							<img onclick="" alt="Steam Random Game Picker" src="https://steamcdn-a.akamaihd.net/steam/apps/2192780/header.jpg" onload="this.style.opacity='1'" id="rimage" style="visibility: visible; position: inherit; width: 100%; max-height: 262px; object-fit: contain; background-repeat: no-repeat; background-position: center; background-size: cover; background-image: url('https://steamcdn-a.akamaihd.net/steam/apps/2192780/header.jpg'); border-radius: 5px; min-height: 10vw;" />
+							<div id="deskLabel" onclick="window.open('https://store.steampowered.com/app/2192780/Grimdark_Survivors/', '_blank')">
+								<div style="display: none;" store="indie" class="ui image tiny black label">
+									<img alt="INDIE" src="img/indie.png">INDIE
+								</div>
+								<div store="steam" class="ui image tiny black label">
+									<img alt="STEAM" src="img/steam.png">STEAM
+								</div>
+								<div style="display: none;" store="origin" class="ui image tiny orange label">
+									<img alt="ORIGIN" src="img/origin.png">ORIGIN
+								</div>
+								<div style="display: none;" store="uplay" class="ui image tiny blue label">
+									<img alt="UPLAY" src="img/uplay.png">UPLAY
+								</div>
+								<div style="display: none;" store="blizzard" class="ui image tiny black label">
+									<img alt="BattleNET" src="img/blizz.png">BNET
+								</div>
+								<div style="display: none;" store="gog" class="ui image tiny grey label">
+									<img alt="GOG" src="img/gog.png">GOG
+								</div>
+								<div style="display: none;" store="fix" class="ui image tiny grey label">
+									<img alt="SGG" src="img/gog.png">SGG
+								</div>
+							</div>
+						</div>
+						<img alt="SGG #0" src="/img/0.jpg" id="im1" style="display: none" />
+						<img alt="SGG #1" src="/img/1.jpg" id="im2" style="display: none" />
+						<img alt="SGG #2" src="/img/2.jpg" id="im3" style="display: none" />
+						<img alt="SGG #3" src="/img/3.jpg" id="im4" style="display: none" />
+						<img alt="SGG #4" src="/img/4.jpg" id="im5" style="display: none" />
+						<img alt="SGG #5" src="/img/5.jpg" id="im6" style="display: none" />
+						<img alt="SGG #6" src="/img/6.jpg" id="im7" style="display: none" />
+						<img alt="SGG #7" src="/img/7.jpg" id="im8" style="display: none" />
+						<img alt="SGG #8" src="/img/8.jpg" id="im9" style="display: none" />
+						<img alt="SGG #9" src="/img/9.jpg" id="im10" style="display: none" />
+						<img alt="SGG #10" src="/img/10.jpg" id="im11" style="display: none" />
+						<img alt="SGG #11" src="/img/11.jpg" id="im12" style="display: none" />
+						<img alt="SGG #12" src="/img/12.jpg" id="im13" style="display: none" />
+						<img alt="SGG #13" src="/img/13.jpg" id="im14" style="display: none" />
+						<img alt="SGG #14" src="/img/14.jpg" id="im15" style="display: none" />
+						<img alt="SGG #15" src="/img/15.jpg" id="im16" style="display: none" />
+
+						<div style="margin-top: 15px;">
+							<div class="game-char ui middle aligned selection divided animated list" style="min-height: 109px; height: 273px; overflow: auto; padding-right: 10px;">
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Release date" data-i18n-suffix=": ">Release date: </strong><span id="rdate" data-en="Q2 2024">2 квартал 2024</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="SGG Score" data-i18n-suffix=": ">SGG Score: </strong><span id="rrew">95</span><span class="rwords"> / 100</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Steam reviews" data-i18n-suffix=": ">Steam reviews: </strong><span id="rsteamall" data-en="Very Positive (2,757)">Очень положительные (2&nbsp;757)</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Recent reviews" data-i18n-suffix=": ">Recent reviews: </strong><span id="rsteamrecent" data-en="Very Positive (312)">Очень положительные (312)</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Difficulty" data-i18n-suffix=": ">Difficulty: </strong><span id="rdiff" data-en="Tough">Сложно</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Price" data-i18n-suffix=": ">Price: </strong><span id="rval" data-en="0$">0 ₽</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="SGG Points" data-i18n-suffix=": ">SGG Points: </strong><span class="ggptt" id="rggp">190</span><span class="rgppw ggptt"> ggp</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Publisher" data-i18n-suffix=": ">Publisher: </strong><span id="rpub">Hityara games</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Developer" data-i18n-suffix=": ">Developer: </strong><span id="rdev">Hityara games</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Category" data-i18n-suffix=": ">Category: </strong><span id="rcat" data-en="Single-player, Steam Achievements, Steam Cloud, Full Controller">Для одного игрока, Достижения Steam</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Genre" data-i18n-suffix=": ">Genre: </strong><span id="rgenre" data-en="Action, Casual, Indie, RPG">Экшены, Инди, Ролевые игры</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Tags" data-i18n-suffix=": ">Tags: </strong><span id="rtags" data-en="Bullet Hell, Action Roguelike, Top-Down, Top-Down Shooter, Warhammer 40K, Action, Combat, Roguelike, Post-apocalyptic, Roguelite, 2D, Singleplayer, Pixel Graphics, Dark Fantasy, Controller, Survival, Gun Customization, Character Customization, Class-Based, Inventory Management">Пулевой ад, Рогалик</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Platform" data-i18n-suffix=": ">Platform: </strong><span id="rplatfrom">WIN</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Languages" data-i18n-suffix=": ">Languages: </strong><span id="rlang" data-en="English, French, Italian, German, Spanish - Spain, Japanese, Korean, Polish, Traditional Chinese, Russian, Simplified Chinese, Spanish - Latin America, Portuguese - Brazil" style="text-transform: capitalize;">Английский, Русский</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Voiceovers" data-i18n-suffix=": ">Voiceovers: </strong><span id="rvoice" data-en="English, French, Italian, German, Spanish - Spain, Japanese, Korean, Polish, Traditional Chinese, Russian, Simplified Chinese, Spanish - Latin America, Portuguese - Brazil" style="text-transform: capitalize;">Английский, Русский</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Owners" data-i18n-suffix=": ">Owners: </strong><span id="rowner">0</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Time to beat" data-i18n-suffix=": ">Time to beat: </strong><span id="rgflength">0</span><span class="rwords" data-i18n="hour(s)" data-i18n-prefix=" "> hour(s)</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Time to beat" data-i18n-suffix=" (100%): ">Time to beat (100%): </strong><span id="rhlcomplete">0</span><span class="rwords" data-i18n="hour(s)" data-i18n-prefix=" "> hour(s)</span></p>
+								</div>
+								<div class="item">
+									<p><strong class="ui black horizontal label" data-i18n="Average playtime" data-i18n-suffix=": ">Average playtime: </strong><span id="rhlaverage">9999</span><span class="rwords" data-i18n="hour(s)" data-i18n-prefix=" "> hour(s)</span></p>
+								</div>
+							</div>
+						</div>
+
+						<div id="sourceButtons">
+							<div style="display: flex;">
+								<button id="rbtn" style="margin-top: 15px; margin-bottom: 5px; margin-right: auto; color:#fff; width: 49%; padding: 10px 5px; font-size: 14px;" onclick="window.open('https://store.steampowered.com/app/2192780/Grimdark_Survivors/', '_blank')" type="button" class="ui black button" data-i18n="Check in Store">Check in Store</button>
+								<button id="rgogbtn" style="margin-top: 15px; margin-bottom: 5px; margin-left: auto; width: 49%; padding: 10px 5px; font-size: 14px;" onclick="window.open('https://www.gog.com/', '_blank')" type="button" class="ui black button" data-i18n="Check on GOG">Check on GOG</button>
+							</div>
+							<div style="display: flex;">
+								<button id="rmetabtn" style="margin-bottom: 5px; margin-right: auto; width: 49%; padding: 10px 5px; font-size: 14px;" onclick="window.open('http://www.metacritic.com/game/', '_blank')" type="button" class="ui black button" data-i18n="Check on Metacritic">Check on Metacritic</button>
+								<button id="rhltbbtn" style="margin-bottom: 5px; margin-left: auto; width: 49%; padding: 10px 5px; font-size: 14px;" onclick="window.open('https://howlongtobeat.com', '_blank')" type="button" class="ui black button" data-i18n="Check on HLTB">Check on HLTB</button>
+							</div>
+							<div style="display: flex;">
+								<button id="rgfbtn" style="margin-bottom: 5px; margin-right: auto; width: 49%; padding: 10px 5px; font-size: 14px;" onclick="window.open('https://gamefaqs.gamespot.com/', '_blank')" type="button" class="ui black button" data-i18n="Check on GameFAQs">Check on GameFAQs</button>
+								<button id="rigdbbtn" style="margin-bottom: 5px; margin-left: auto; width: 49%; padding: 10px 5px; font-size: 14px;" onclick="window.open('https://www.igdb.com', '_blank')" type="button" class="ui black button" data-i18n="Check on IGDB">Check on IGDB</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="column six wide" style="min-width: 550px; padding-top: 5%;left: -1px;">
+			<canvas id="canvas" width="510" height="550"></canvas>
+			<button type="button" class="circular ui button" onClick="startSpin();" id="spin_button">START<br>ROLL</button>
+
+			<div class="pio-container" style="margin-left: -80px; margin-bottom: 30px;">
+				<div class="pio-action"></div>
+				<canvas id="pio" width="300" height="300"></canvas>
+			</div>
+		</div>
+
+		<div class="column" style="padding-right: 30px; min-width: 250px">
+			<div class="ui piled segments" style="margin-top: .4em;">
+				<div class="ui compact segment" style="padding: .6em 1em; height: 70px;">
+					<div class="ui grid">
+						<div class="eleven wide column">
+							<div id="avatardiv" style="position: relative; text-align: center; float:left;">
+								<img id="profile-avatar" src="/img/avatar.jpg" alt="miniavatar" style="width:52px; height:52px; border:2px solid #222; border-radius: 2px;background-color: black;">
+								<div id="emoji" style="width:20px; height:20px; position: absolute; bottom: 8px; right: 0px;">🦈</div>
+							</div>
+							<div style="float:left;margin-left:10px; margin-top: 2px;">
+								<div id="profile-name" style="font-size: 28px;color: black;font-weight: bold;font-family: Custom6;margin-bottom: 6px;">Neptunia</div>
+							</div>
+						</div>
+						<div class="five wide column">
+							<div id="profile"><button id="profile-btn" disabled class="ui button black" style="width: 100%; margin: 0px; padding: 5px; font-size: 10px;" data-i18n="Profile">Profile</button></div>
+							<button id="loginSteam" class="ui button black" style="display:none; width: 100%; margin: 0px; padding: 5px; font-size: 10px;" data-i18n="Login">Login</button>
+							<button id="logoutSteam" class="ui button black" style="display:none; width: 100%; margin: 0px; padding: 5px; font-size: 10px;" data-i18n="Logout">Logout</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="gdescription" class="ui piled segments">
+				<div class="ui compact segment">
+					<span style="color: black; font-size: 20px; font-weight: 600" data-i18n="Description">Description</span>
+				</div>
+				<div class="ui secondary segment">
+					<div id="descWrapper" style="margin-top: 10px; height: 196px; min-height: 163.5px; margin-bottom: 10px;">
+						<div style="height: 100%; overflow-y: scroll; overflow-x: hidden; padding-right: 10px; font-size: 16px; font-weight: 600">
+							<article>
+								<span id="promopreview" style="white-space: normal;"></span>
+								<span id="rdesc" style="white-space: normal;">
+									<div id="intro-ru" style="font-weight: normal; display: none;">
+										<p style="padding-bottom:10px">Единственный в своем роде рандомайзер и база данных всех игр существовавших в Steam (+эксклюзивы GOG) с дополнительной информацией о сложности, рейтингах и времени прохождения взятой из GameFAQ, SteamSpy, HLTB, Metacritic, IGDB.</p>
+										<p style="padding-bottom:10px">Используйте колесо на этой странице чтобы узнать какую игру вам следует пройти следующей, укажите ваши предпочтения на странице настроек или попробуйте один из наших челенджей.</p>
+										<p style="padding-bottom:10px">Суть челенджей состоит в том, чтобы прочувствовать насколько "разнообразной" может быть игровая индустрия.</p>
+										<h3 class="seo">
+											<p style="padding-bottom:10px">Примеры челенджей:</p>
+										</h3>
+										<div style="font-weight: normal;">
+											<ul style="margin-left:10px">
+												<li><b style="font-weight: bolder;">SGG</b>: Пройти игры в промежутках: <i style="font-style: italic;">1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;</li>
+												<li><b style="font-weight: bolder;">HPG</b>: Пройти игры в ценовом диапазоне: <i style="font-style: italic;">0-100, 100-200, 200-400, 400-550, 550-700, 700-1000, 1000-1500, 1500-5000</i>;</li>
+												<li><b style="font-weight: bolder;">Speedrun GG</b>: Пройдите 10 случайных игр на 15-25% быстрее чем указано в графе "время прохождения";</li>
+												<li><b style="font-weight: bolder;">Indie GG</b>: Пройдите 10 случайных Indie игр и поддержите независимых разработчиков;</li>
+												<li><b style="font-weight: bolder;">Coop GG</b>: Любой GG с фильтром на кооперативное прохождение и заинтересованным другом;</li>
+												<li><b style="font-weight: bolder;">One-trick GG</b>: Любой GG в одном определенном жанре (только RPG, FPS и т.д.);</li>
+											</ul>
+										</div>
+									</div>
+									<div id="intro-en" style="font-weight: normal; display: none;">
+										<p style="padding-bottom:10px">A one of a kind randomizer and database of all the games that existed in Steam (+GOG exclusives) with additional information about the difficulty, ratings and game length from GameFAQ, SteamSpy, HLTB, Metacritic, IGDB.</p>
+										<p style="padding-bottom:10px">Use the wheel on this page to find out which game you are going to play next, set your preferences on the settings page or try one of our gauntlets.</p>
+										<p style="padding-bottom:10px">The point of gauntlet is to experience how "diverse" the video game industry can be.</p>
+										<h3 class="seo">
+											<p style="padding-bottom:10px">Examples of gauntlets:</p>
+										</h3>
+										<div style="font-weight: normal;">
+											<ul style="margin-left:10px">
+												<li><b style="font-weight: bolder;">SGG</b>: Complete games in the specified time periods: <i style="font-style: italic;">1985-1990, 1990-1995, 1995-2000, 2000-2003, 2003-2006, 2006-2009, 2009-2012, 2012-2014, 2014-2016, 2016-2018</i>;</li>
+												<li><b style="font-weight: bolder;">HPG</b>: Complete games in the specified price periods: <i style="font-style: italic;">0-5, 5-10, 10-20, 20-30, 30-35, 35-40, 40-45, 45-50</i>;</li>
+												<li><b style="font-weight: bolder;">Speedrun GG</b>: Complete 10 random games 15-25% faster than in "time to beat";</li>
+												<li><b style="font-weight: bolder;">Indie GG</b>: Complete 10 random Indie games and support independent developers;</li>
+												<li><b style="font-weight: bolder;">Coop GG</b>: Any SGG with a filter for cooperative gameplay with an interested friend;</li>
+												<li><b style="font-weight: bolder;">One-trick GG</b>: Any GG in one specific genre (only RPG, FPS, etc.);</li>
+											</ul>
+										</div>
+									</div>
+								</span>
+							</article>
+						</div>
+					</div>
+				</div>
+				<div class="ui compact segment" id="searchtt">
+					<select id="allgames" name="allgames[]" data-i18n-data-placeholder="Search Your Favorite Games..." data-placeholder="Search Your Favorite Games..." class="ui fluid search dropdown"></select>
+				</div>
+			</div>
+
+			<div id="full-glist" class="ui piled segments" style="margin-bottom:0em;">
+				<div class="ui compact segment">
+					<span style="color: black; font-size: 20px; font-weight: 600" data-i18n="Full list">Full list</span>
+				</div>
+				<div class="ui secondary segment" style="padding: 2px 20px;">
+					<div style=" margin-top: 15px; margin-bottom: 15px;">
+						<div id="gListWrapper" style="height: 176px; min-height: 163.5px; overflow-y: auto; overflow-x: hidden; padding-right: 10px;" class="ui divided items">
+							<div class="ui item" onclick="showGame(0)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list1" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/0.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all0">Grand Theft Auto</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(1)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list2" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/9.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all1">Alone in the Dark</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(2)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list3" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/8.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all2">Heli Heroes</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(3)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list4" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/7.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all3">Peggle Extreme</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(4)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list5" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/6.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all4">Overlord II</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(5)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list6" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/5.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all5">Journey of a Roach</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(6)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list7" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/4.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all6">Chowderchu</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(7)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list8" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/3.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all7">The Underground Man</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(8)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list9" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/2.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all8">This War of Mine</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(9)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list10" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/1.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all9">Ori and the Blind Forest</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(10)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list11" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/10.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all10">Dark Messiah of Might &amp; Magic</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(11)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list12" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/11.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all11">Vampire: The Masquerade - Bloodlines</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(12)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list13" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/12.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all12">Highway Blossoms</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(13)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list14" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/13.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all13">Quantum Break</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(14)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list15" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/14.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all14">Fallout: New Vegas</a>
+								</div>
+							</div>
+							<div class="ui item" onclick="showGame(15)">
+								<div class="ui tiny image">
+									<img alt="SGG" id="im_list16" onload="this.style.opacity='1'; this.style.border='double #000';" src="img/15.jpg">
+								</div>
+								<div class="middle aligned content">
+									<a class="gtext header" id="all15">DARK SOULS™ III</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="type-wrap"><span id="typed" style="white-space:pre;"></span></div>
+
+<div id="privacy" class="ui modal">
+	<i class="close icon"></i>
+	<div class="header" data-i18n="Privacy 0">Privacy 0</div>
+	<div class="image content">
+		<div class="image">
+			<img alt="SGG" src="/img/privacy.jpg" style="border-radius: 2px; width: 500px; -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75); -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75); box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);">
+		</div>
+		<div class="description" style="font-family: Gothic; color: #3e3e3e; font-size: 16px; font-weight: 600;">
+			<span data-i18n="Privacy 1">Privacy 1</span>
+			<span data-i18n="Privacy 2">Privacy 2</span>
+		</div>
+	</div>
+	<div class="actions">
+		<div class="ui deny black button">OK</div>
+	</div>
+</div>
+<div id="empty" class="ui small basic modal">
+	<i class="close icon"></i>
+	<div class="ui icon header">
+		<i class="frown outline icon"></i>
+		<span data-i18n="No games found">No games found</span>
+	</div>
+	<div class="content">
+		<div class="content" style="font-family: Gothic; font-size: 16px; font-weight: 600; text-align: center;" data-i18n="Change filters, use bigger time period or contact us if nothing helps.">
+			Change filters, use bigger time period or contact us if nothing helps.
+		</div>
+	</div>
+</div>
+
+<script src="js/pgwheel.js?v=dev"></script>

@@ -1,0 +1,142 @@
+[
+  {
+    "id": 231,
+    "aggregated_rating": 80,
+    "aggregated_rating_count": 1,
+    "external_games": [
+      {
+        "id": 188800,
+        "uid": "UC1KWUKZ0S7-utVLBsX-h4mA",
+        "external_game_source": 10
+      },
+      {
+        "id": 245229,
+        "uid": "2755",
+        "external_game_source": 14
+      },
+      {
+        "id": 154294,
+        "uid": "2980",
+        "external_game_source": 3
+      },
+      {
+        "id": 15169,
+        "uid": "70",
+        "external_game_source": 1
+      }
+    ],
+    "first_release_date": 911433600,
+    "genres": [
+      {
+        "id": 5,
+        "name": "Shooter"
+      },
+      {
+        "id": 9,
+        "name": "Puzzle"
+      },
+      {
+        "id": 31,
+        "name": "Adventure"
+      }
+    ],
+    "involved_companies": [
+      {
+        "id": 96883,
+        "company": {
+          "id": 56,
+          "name": "Valve"
+        },
+        "developer": true,
+        "publisher": true
+      },
+      {
+        "id": 386691,
+        "company": {
+          "id": 24,
+          "name": "Sierra Entertainment"
+        },
+        "developer": false,
+        "publisher": true
+      }
+    ],
+    "name": "Half-Life",
+    "rating": 88.48116431217102,
+    "rating_count": 2925,
+    "release_dates": [
+      {
+        "id": 399352,
+        "date": 911433600,
+        "platform": 6
+      },
+      {
+        "id": 399353,
+        "date": 912124800,
+        "platform": 6
+      },
+      {
+        "id": 304908,
+        "date": 1360800000,
+        "platform": 3
+      },
+      {
+        "id": 193588,
+        "date": 1360800000,
+        "platform": 14
+      }
+    ],
+    "slug": "half-life",
+    "themes": [
+      {
+        "id": 1,
+        "name": "Action"
+      },
+      {
+        "id": 18,
+        "name": "Science fiction"
+      },
+      {
+        "id": 19,
+        "name": "Horror"
+      },
+      {
+        "id": 20,
+        "name": "Thriller"
+      },
+      {
+        "id": 39,
+        "name": "Warfare"
+      }
+    ],
+    "total_rating": 84.24058215608551,
+    "total_rating_count": 2926,
+    "url": "https://www.igdb.com/games/half-life",
+    "websites": [
+      {
+        "id": 15342,
+        "url": "https://store.steampowered.com/app/70",
+        "type": 13
+      },
+      {
+        "id": 239839,
+        "url": "https://www.half-life.com/en/halflife",
+        "type": 1
+      },
+      {
+        "id": 605698,
+        "url": "https://combineoverwiki.net/wiki/Half-Life",
+        "type": 2
+      },
+      {
+        "id": 41193,
+        "url": "https://en.wikipedia.org/wiki/Half-Life_(video_game)",
+        "type": 3
+      },
+      {
+        "id": 1058225,
+        "url": "https://www.twitch.tv/directory/category/half-life",
+        "type": 6
+      }
+    ]
+  }
+]

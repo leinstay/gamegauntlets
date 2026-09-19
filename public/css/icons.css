@@ -1,0 +1,18 @@
+/* The five Font Awesome glyphs this site uses — replaces the 3 MB Font Awesome 5.12.1 package.
+   fonts/gg-icons-*.woff2/.woff are subsets of fa-solid-900 / fa-brands-400 from that release (same outlines, metrics and
+   code points), and the rules below are the matching excerpt of its all.css, so rendering is unchanged.
+   Font Awesome Free 5.12.1 by @fontawesome — https://fontawesome.com; licence https://fontawesome.com/license/free
+   (icons CC BY 4.0, fonts SIL OFL 1.1, code MIT). To add an icon, re-subset with fontTools:
+   pyftsubset fa-solid-900.ttf --unicodes=U+F11B,U+F013,U+F0AE,U+F074,<new> --flavor=woff2 --layout-features='' */
+@font-face{font-family:'Font Awesome 5 Free';font-style:normal;font-weight:900;font-display:auto;src:url(fonts/gg-icons-solid.woff2) format('woff2'),url(fonts/gg-icons-solid.woff) format('woff')}
+@font-face{font-family:'Font Awesome 5 Brands';font-style:normal;font-weight:400;font-display:auto;src:url(fonts/gg-icons-brands.woff2) format('woff2'),url(fonts/gg-icons-brands.woff) format('woff')}
+.fa,.fas,.fab{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;display:inline-block;font-style:normal;font-variant:normal;text-rendering:auto;line-height:1}
+.fa,.fas{font-family:'Font Awesome 5 Free';font-weight:900}
+.fab{font-family:'Font Awesome 5 Brands';font-weight:400}
+.fa-spin{animation:fa-spin 2s infinite linear}
+@keyframes fa-spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.fa-gamepad:before{content:"\f11b"}
+.fa-cog:before{content:"\f013"}
+.fa-tasks:before{content:"\f0ae"}
+.fa-random:before{content:"\f074"}
+.fa-accessible-icon:before{content:"\f368"}

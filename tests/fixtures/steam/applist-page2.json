@@ -1,0 +1,10 @@
+{
+  "response": {
+    "apps": [
+      { "appid": 40, "name": "Deathmatch Classic", "last_modified": 1745368590, "price_change_number": 37149137 },
+      { "appid": 50, "name": "Half-Life: Opposing Force", "last_modified": 1745368600, "price_change_number": 37149137 }
+    ],
+    "have_more_results": false,
+    "last_appid": 50
+  }
+}

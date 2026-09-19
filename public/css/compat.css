@@ -1,0 +1,27 @@
+/*
+ * Compatibility layer for the library upgrade (Fomantic UI 2.9 JS + FA 6 + ion.rangeSlider 2.5 running on the
+ * site's original Semantic UI 2.4 stylesheet). Every rule restores something that computed-style diffs against the
+ * pre-upgrade build showed as different. Keep it small; never restyle here.
+ */
+
+/*
+ * Fomantic's dropdown module adds <i class="remove icon"> to `clearable` dropdowns; the Semantic 2.4 stylesheet has
+ * no rule for it, so it rendered inline and made the dropdown 3px taller. Legacy look: nothing visible, a click on
+ * the caret clears the value. So: hidden while empty, and an invisible click target over the caret once a value is
+ * selected.
+ */
+.ui.dropdown > .remove.icon {
+	display: none;
+}
+.ui.clearable.dropdown > select:not(.noselection) ~ .remove.icon,
+.ui.clearable.dropdown > input[value]:not([value=""]):not(.search) ~ .remove.icon {
+	display: block;
+	position: absolute;
+	top: .78571429em;
+	right: 1em;
+	margin: -.78571429em;
+	padding: .91666667em;
+	z-index: 4;
+	opacity: 0;
+	cursor: pointer;
+}

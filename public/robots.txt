@@ -1,0 +1,8 @@
+Sitemap: https://gamegauntlets.com/sitemap.xml
+User-agent: *
+Disallow: /api/
+Disallow: /admin.html
+Disallow: /?en
+Disallow: /?ru
+Disallow: /?de
+Disallow: /?fr

@@ -1,0 +1,1127 @@
+{
+  "en": {
+    "inDevelopment": {
+      "active": false
+    },
+    "copyrights": "CD PROJEKT RED®, CD PROJEKT®, The Witcher® are registered trademarks of CD PROJEKT RED S.A. The Witcher game © 2015–2026 CD PROJEKT RED S.A. Developed by CD PROJEKT RED S.A. All rights reserved. The Witcher game is set in the universe created by Andrzej Sapkowski in his series of books. All other copyrights and trademarks are the property of their respective owners.",
+    "isUsingDosBox": false,
+    "technologies": [],
+    "releaseStatus": "default",
+    "description": "<p>\r\n<a href=\"https://www.gog.com/game/the_witcher_3_wild_hunt_songs_of_the_past\"><img src=\"https://images.gog.com/6cd3bf2e2561e4aa5f67b1dbc68fb1d1edebe000b024e3b1493045cda1a3c0fc.jpg\"></a><br>\r\n&nbsp;\r\n</p>\r\n<hr><h4>&nbsp;A genre-defining classic, upgraded</h4><figure class=\"image\"><img src=\"https://images.gog.com/27722102fb60cd825580ac86cebff9e7fa0a0fe9b777c614586a748eae638f35.jpg\"></figure>\r\n<p...</p>",
+    "size": 0,
+    "overview": "<p>\r\n<a href=\"https://www.gog.com/game/the_witcher_3_wild_hunt_songs_of_the_past\"><img src=\"https://images.gog.com/6cd3bf2e2561e4aa5f67b1dbc68fb1d1edebe000b024e3b1493045cda1a3c0fc.jpg\"></a><br>\r\n&nbsp;\r\n</p>\r\n<hr><h4>&nbsp;A genre-defining classic, upgraded</h4><figure class=\"image\"></p>",
+    "featuresDescription": "",
+    "additionalRequirements": "<p>\r\nSystem requirements will change on 2026.09.29. See the new ones: <a href=\"http://thewitcher.ly/NewRequirements\">http://thewitcher.ly/NewRequirements</a>\r\n</p>",
+    "_links": {
+      "self": {
+        "href": "https://api.gog.com/v2/games/1640424747?locale=en-US"
+      },
+      "store": {
+        "href": "https://www.gog.com/en/game/the_witcher_3_wild_hunt_game_of_the_year_edition"
+      },
+      "support": {
+        "href": "https://www.gog.com/support/the_witcher_3_wild_hunt_game_of_the_year_edition"
+      },
+      "forum": {
+        "href": "https://www.gog.com/forum/the_witcher_3_wild_hunt"
+      },
+      "icon": {
+        "href": "https://images.gog-statics.com/54f370d5a222709473400969b22e1b6f5d6fc66eef00ce72b08e0b80bd9544d3.png"
+      },
+      "iconSquare": {
+        "href": "https://images.gog-statics.com/f19d083b1e92cf612c3825b07dad67858f6f943424d6a55b3eebeecc3a6d7b6f.png"
+      },
+      "logo": {
+        "href": "https://images.gog-statics.com/90dc4e2c86b036c2b2c392adea197ad7dc6b750ce01af0416ed8b37f3d0101c9.png"
+      },
+      "boxArtImage": {
+        "href": "https://images.gog-statics.com/6278561a6c70684ab3cd86065ba337c4ae9dd5e3f63b5bd9997d2eba602d17cd.jpg"
+      },
+      "backgroundImage": {
+        "href": "https://images.gog-statics.com/9f3a742af9acf163ed9ce23dece108fd416433dc71cf6392a9ee6f8c7a6e7afe.jpg"
+      },
+      "galaxyBackgroundImage": {
+        "href": "https://images.gog-statics.com/7809c7dbb669c753234bf81df927521d2084f54e14f97ad1a3fecfbac10f2df4.jpg"
+      },
+      "isRequiredByGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1179418179?locale=en-US"
+        }
+      ],
+      "includesGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1495134320?locale=en-US"
+        }
+      ]
+    },
+    "_embedded": {
+      "product": {
+        "isAvailableForSale": true,
+        "isVisibleInCatalog": true,
+        "isPreorder": false,
+        "isVisibleInAccount": true,
+        "id": 1640424747,
+        "title": "The Witcher 3: Wild Hunt - Complete Edition",
+        "isInstallable": false,
+        "globalReleaseDate": "2016-08-30T00:00:00+02:00",
+        "hasProductCard": true,
+        "gogReleaseDate": "2016-08-29T23:00:00+02:00",
+        "category": "PACK",
+        "hasPatrons": false,
+        "hasHowLongToBeatInformation": true,
+        "hasDreamlistStories": true,
+        "hasOpenCriticInformation": true,
+        "hasFaqInformation": true,
+        "isSecret": false,
+        "_links": {
+          "image": {
+            "href": "https://images.gog-statics.com/71d71c40052877a42c096b8230c71856a560d42132208cfa8e719243b5c6626b_{formatter}.png",
+            "templated": true,
+            "formatters": [
+              "800",
+              "1600",
+              "glx_logo",
+              "glx_logo_2x",
+              "product_630",
+              "product_630_2x"
+            ]
+          },
+          "checkout": {
+            "href": "https://www.gog.com/en/checkout/manual/1640424747"
+          },
+          "prices": {
+            "href": "https://api.gog.com/products/1640424747/prices?countryCode={country}",
+            "templated": true
+          }
+        }
+      },
+      "productType": "PACK",
+      "localizations": [
+        {
+          "_embedded": {
+            "language": {
+              "code": "ar",
+              "name": "Arabic"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "br",
+              "name": "Portuguese (Brazilian)"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "br",
+              "name": "Portuguese (Brazilian)"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "cn",
+              "name": "Chinese Simplified"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "cn",
+              "name": "Chinese Simplified"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "cz",
+              "name": "Czech"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "de",
+              "name": "German"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "de",
+              "name": "German"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "es",
+              "name": "Spanish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "es_mx",
+              "name": "Latin American Spanish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "hu",
+              "name": "Hungarian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "it",
+              "name": "Italian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "jp",
+              "name": "Japanese"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "jp",
+              "name": "Japanese"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ko",
+              "name": "Korean"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ko",
+              "name": "Korean"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "tr",
+              "name": "Turkish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "zh",
+              "name": "Chinese Traditional"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        }
+      ],
+      "publisher": {
+        "name": "CD PROJEKT RED",
+        "searchIndex": "cd-projekt-red"
+      },
+      "publishers": [
+        {
+          "name": "CD PROJEKT RED",
+          "searchIndex": "cd-projekt-red"
+        }
+      ],
+      "developers": [
+        {
+          "name": "CD PROJEKT RED",
+          "searchIndex": "cd-projekt-red"
+        }
+      ],
+      "supportedOperatingSystems": [
+        {
+          "operatingSystem": {
+            "name": "windows",
+            "versions": "Windows"
+          },
+          "systemRequirements": [
+            {
+              "type": "minimum",
+              "description": "<br>\nOS: 64-bit Windows 7 or 64-bit Windows 8 (8.1)<br>\nProcessor: Intel CPU Core i5-2500K 3.3 GHz or AMD CPU Phenom II X4 940<br>\nMemory: 6 GB RAM<br>\nGraphics: Nvidia GPU GeForce GTX 660 / AMD GPU Radeon HD 7870<br>\nPlease mind that we only officially support full-size desktop graphics cards<br>\nHard Drive: 35 GB of available space <br>\nDirectX: 11",
+              "requirements": [
+                {
+                  "id": "system",
+                  "name": "System:",
+                  "description": "64-bit Windows 10/11"
+                },
+                {
+                  "id": "processor",
+                  "name": "Processor:",
+                  "description": "Intel CPU Core i5-2500K 3.3GHz / AMD A10-5800K APU (3.8GHz)"
+                },
+                {
+                  "id": "memory",
+                  "name": "Memory:",
+                  "description": "6 GB RAM"
+                },
+                {
+                  "id": "graphics",
+                  "name": "Graphics:",
+                  "description": "Nvidia GPU GeForce GTX 660 / AMD GPU Radeon HD 7870"
+                },
+                {
+                  "id": "directx",
+                  "name": "DirectX:",
+                  "description": "11"
+                },
+                {
+                  "id": "storage",
+                  "name": "Storage:",
+                  "description": "50 GB of available space"
+                }
+              ]
+            },
+            {
+              "type": "recommended",
+              "description": "<br>\nOS: 64-bit Windows 7 or 64-bit Windows 8 (8.1)<br>\nProcessor: Intel CPU Core i7 3770 3.4 GHz / AMD CPU AMD FX-8350 4 GHz<br>\nMemory: 8 GB RAM<br>\nGraphics: Nvidia GPU GeForce GTX 770 / AMD GPU Radeon R9 290<br>\nPlease mind that we only officially support full-size desktop graphics cards<br>\nHard Drive: 35 GB of available space <br>\nDirectX: 11",
+              "requirements": [
+                {
+                  "id": "system",
+                  "name": "System:",
+                  "description": "64-bit Windows 10/11"
+                },
+                {
+                  "id": "processor",
+                  "name": "Processor:",
+                  "description": "Intel Core i5-7400/Ryzen 5 1600"
+                },
+                {
+                  "id": "memory",
+                  "name": "Memory:",
+                  "description": "8 GB RAM"
+                },
+                {
+                  "id": "graphics",
+                  "name": "Graphics:",
+                  "description": "Nvidia GTX 1070/Radeon RX 480"
+                },
+                {
+                  "id": "directx",
+                  "name": "DirectX:",
+                  "description": "12"
+                },
+                {
+                  "id": "storage",
+                  "name": "Storage:",
+                  "description": "50 GB of available space"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tags": [
+        {
+          "id": 57,
+          "name": "Role-playing",
+          "level": 1,
+          "slug": "rpg"
+        },
+        {
+          "id": 69,
+          "name": "Adventure",
+          "level": 2,
+          "slug": "adventure"
+        },
+        {
+          "id": 71,
+          "name": "Fantasy",
+          "level": 3,
+          "slug": "fantasy"
+        }
+      ],
+      "features": [
+        {
+          "name": "Achievements",
+          "id": "achievements"
+        },
+        {
+          "name": "Cloud saves",
+          "id": "cloud_saves"
+        },
+        {
+          "name": "Controller support",
+          "id": "controller_support"
+        },
+        {
+          "name": "Overlay",
+          "id": "overlay"
+        },
+        {
+          "name": "Single-player",
+          "id": "single"
+        }
+      ]
+    }
+  },
+  "ru": {
+    "inDevelopment": {
+      "active": false
+    },
+    "copyrights": "CD PROJEKT RED®, CD PROJEKT®, The Witcher® are registered trademarks of CD PROJEKT RED S.A. The Witcher game © 2015–2026 CD PROJEKT RED S.A. Developed by CD PROJEKT RED S.A. All rights reserved. The Witcher game is set in the universe created by Andrzej Sapkowski in his series of books. All other copyrights and trademarks are the property of their respective owners.",
+    "isUsingDosBox": false,
+    "technologies": [],
+    "releaseStatus": "default",
+    "description": "<p>\r\n<a href=\"https://www.gog.com/game/the_witcher_3_wild_hunt_songs_of_the_past\"><img src=\"https://images.gog.com/ff4e50446946e39661f6deb66912d9e0633a94ae8bfd1072bd8d750fea305780.jpg\"></a>\r\n</p>\r\n\r\n<p>\r\n&nbsp;\r\n</p>\r\n<hr><h4>Улучшенная классика</h4>\r\n<p>\r\n<img src=\"https://images.gog.com/5ca1845b6b5a94fb79b73ee15ca9e89922ace889b6dbafc407df968e905c2bd0.jpg\">\r\n</p>\r\n\r\n<p>\r\n&nbsp;\r\n</p>\r\n\r\n<p>\r\nЛюби...</p>",
+    "size": 0,
+    "overview": "<p>\r\n<a href=\"https://www.gog.com/game/the_witcher_3_wild_hunt_songs_of_the_past\"><img src=\"https://images.gog.com/ff4e50446946e39661f6deb66912d9e0633a94ae8bfd1072bd8d750fea305780.jpg\"></a>\r\n</p>\r\n\r\n<p>\r\n&nbsp;\r\n</p>\r\n<hr><h4>Улучшенная классика</h4>\r\n<p></p>",
+    "featuresDescription": "",
+    "additionalRequirements": "<p>\r\nSystem requirements will change on 2026.09.29. See the new ones: <a href=\"http://thewitcher.ly/NewRequirements\">http://thewitcher.ly/NewRequirements</a>\r\n</p>",
+    "_links": {
+      "self": {
+        "href": "https://api.gog.com/v2/games/1640424747?locale=ru-RU"
+      },
+      "store": {
+        "href": "https://www.gog.com/ru/game/the_witcher_3_wild_hunt_game_of_the_year_edition"
+      },
+      "support": {
+        "href": "https://www.gog.com/support/the_witcher_3_wild_hunt_game_of_the_year_edition"
+      },
+      "forum": {
+        "href": "https://www.gog.com/forum/the_witcher_3_wild_hunt"
+      },
+      "icon": {
+        "href": "https://images.gog-statics.com/54f370d5a222709473400969b22e1b6f5d6fc66eef00ce72b08e0b80bd9544d3.png"
+      },
+      "iconSquare": {
+        "href": "https://images.gog-statics.com/f19d083b1e92cf612c3825b07dad67858f6f943424d6a55b3eebeecc3a6d7b6f.png"
+      },
+      "logo": {
+        "href": "https://images.gog-statics.com/90dc4e2c86b036c2b2c392adea197ad7dc6b750ce01af0416ed8b37f3d0101c9.png"
+      },
+      "boxArtImage": {
+        "href": "https://images.gog-statics.com/6278561a6c70684ab3cd86065ba337c4ae9dd5e3f63b5bd9997d2eba602d17cd.jpg"
+      },
+      "backgroundImage": {
+        "href": "https://images.gog-statics.com/9f3a742af9acf163ed9ce23dece108fd416433dc71cf6392a9ee6f8c7a6e7afe.jpg"
+      },
+      "galaxyBackgroundImage": {
+        "href": "https://images.gog-statics.com/7809c7dbb669c753234bf81df927521d2084f54e14f97ad1a3fecfbac10f2df4.jpg"
+      },
+      "isRequiredByGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1179418179?locale=ru-RU"
+        }
+      ],
+      "includesGames": [
+        {
+          "href": "https://api.gog.com/v2/games/1495134320?locale=ru-RU"
+        }
+      ]
+    },
+    "_embedded": {
+      "product": {
+        "isAvailableForSale": true,
+        "isVisibleInCatalog": true,
+        "isPreorder": false,
+        "isVisibleInAccount": true,
+        "id": 1640424747,
+        "title": "Ведьмак 3: Дикая Охота — Полное издание",
+        "isInstallable": false,
+        "globalReleaseDate": "2016-08-30T00:00:00+02:00",
+        "hasProductCard": true,
+        "gogReleaseDate": "2016-08-29T23:00:00+02:00",
+        "category": "PACK",
+        "hasPatrons": false,
+        "hasHowLongToBeatInformation": true,
+        "hasDreamlistStories": true,
+        "hasOpenCriticInformation": true,
+        "hasFaqInformation": true,
+        "isSecret": false,
+        "_links": {
+          "image": {
+            "href": "https://images.gog-statics.com/71d71c40052877a42c096b8230c71856a560d42132208cfa8e719243b5c6626b_{formatter}.png",
+            "templated": true,
+            "formatters": [
+              "800",
+              "1600",
+              "glx_logo",
+              "glx_logo_2x",
+              "product_630",
+              "product_630_2x"
+            ]
+          },
+          "checkout": {
+            "href": "https://www.gog.com/ru/checkout/manual/1640424747"
+          },
+          "prices": {
+            "href": "https://api.gog.com/products/1640424747/prices?countryCode={country}",
+            "templated": true
+          }
+        }
+      },
+      "productType": "PACK",
+      "localizations": [
+        {
+          "_embedded": {
+            "language": {
+              "code": "ar",
+              "name": "Arabic"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "br",
+              "name": "Portuguese (Brazilian)"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "br",
+              "name": "Portuguese (Brazilian)"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "cn",
+              "name": "Chinese Simplified"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "cn",
+              "name": "Chinese Simplified"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "cz",
+              "name": "Czech"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "de",
+              "name": "German"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "de",
+              "name": "German"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "en",
+              "name": "English"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "es",
+              "name": "Spanish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "es_mx",
+              "name": "Latin American Spanish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "fr",
+              "name": "French"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "hu",
+              "name": "Hungarian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "it",
+              "name": "Italian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "jp",
+              "name": "Japanese"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "jp",
+              "name": "Japanese"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ko",
+              "name": "Korean"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ko",
+              "name": "Korean"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "pl",
+              "name": "Polish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "audio"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "ru",
+              "name": "Russian"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "tr",
+              "name": "Turkish"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        },
+        {
+          "_embedded": {
+            "language": {
+              "code": "zh",
+              "name": "Chinese Traditional"
+            },
+            "localizationScope": {
+              "type": "text"
+            }
+          }
+        }
+      ],
+      "publisher": {
+        "name": "CD PROJEKT RED",
+        "searchIndex": "cd-projekt-red"
+      },
+      "publishers": [
+        {
+          "name": "CD PROJEKT RED",
+          "searchIndex": "cd-projekt-red"
+        }
+      ],
+      "developers": [
+        {
+          "name": "CD PROJEKT RED",
+          "searchIndex": "cd-projekt-red"
+        }
+      ],
+      "supportedOperatingSystems": [
+        {
+          "operatingSystem": {
+            "name": "windows",
+            "versions": "Windows"
+          },
+          "systemRequirements": [
+            {
+              "type": "minimum",
+              "description": "<br>\nОС: 64-битная Windows 7 или 64-битная Windows 8 (8.1);<br>\nПроцессор: Intel CPU Core i5-2500K 3.3 ГГц или AMD CPU Phenom II X4 940;<br>\nПамять: 6 ГБ ОЗУ; <br>\nВидеокарта: Nvidia GPU GeForce GTX 660 / AMD GPU Radeon HD 7870;<br>\nЖесткий диск: 40 ГБ свободного места; <br>\nDirectX: 11",
+              "requirements": [
+                {
+                  "id": "system",
+                  "name": "Система:",
+                  "description": "64-bit Windows 10/11"
+                },
+                {
+                  "id": "processor",
+                  "name": "Процессор: ",
+                  "description": "Intel CPU Core i5-2500K 3.3GHz / AMD A10-5800K APU (3.8GHz)"
+                },
+                {
+                  "id": "memory",
+                  "name": "Память:",
+                  "description": "6 GB RAM"
+                },
+                {
+                  "id": "graphics",
+                  "name": "Графика:",
+                  "description": "Nvidia GPU GeForce GTX 660 / AMD GPU Radeon HD 7870"
+                },
+                {
+                  "id": "directx",
+                  "name": "DirectX：",
+                  "description": "11"
+                },
+                {
+                  "id": "storage",
+                  "name": "Место на диске:",
+                  "description": "50 GB of available space"
+                }
+              ]
+            },
+            {
+              "type": "recommended",
+              "description": "<br>\nОС: 64-битная Windows 7 или 64-битная Windows 8 (8.1);<br>\nПроцессор: Intel CPU Core i7 3770 3.4 ГГц / AMD CPU AMD FX-8350 4 ГГц;<br>\nПамять: 8 ГБ ОЗУ; <br>\nВидеокарта: Nvidia GPU GeForce GTX 770 / AMD GPU Radeon R9 290;<br>\nЖесткий диск: 40 ГБ свободного места; <br>\nDirectX: 11",
+              "requirements": [
+                {
+                  "id": "system",
+                  "name": "Система:",
+                  "description": "64-bit Windows 10/11"
+                },
+                {
+                  "id": "processor",
+                  "name": "Процессор: ",
+                  "description": "Intel Core i5-7400/Ryzen 5 1600"
+                },
+                {
+                  "id": "memory",
+                  "name": "Память:",
+                  "description": "8 GB RAM"
+                },
+                {
+                  "id": "graphics",
+                  "name": "Графика:",
+                  "description": "Nvidia GTX 1070/Radeon RX 480"
+                },
+                {
+                  "id": "directx",
+                  "name": "DirectX：",
+                  "description": "12"
+                },
+                {
+                  "id": "storage",
+                  "name": "Место на диске:",
+                  "description": "50 GB of available space"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tags": [
+        {
+          "id": 57,
+          "name": "Ролевая игра",
+          "level": 1,
+          "slug": "rpg"
+        },
+        {
+          "id": 69,
+          "name": "Приключение",
+          "level": 2,
+          "slug": "adventure"
+        },
+        {
+          "id": 71,
+          "name": "Фэнтези",
+          "level": 3,
+          "slug": "fantasy"
+        }
+      ],
+      "features": [
+        {
+          "name": "Достижения",
+          "id": "achievements"
+        },
+        {
+          "name": "Облачные сохранения",
+          "id": "cloud_saves"
+        },
+        {
+          "name": "Поддержка контроллера",
+          "id": "controller_support"
+        },
+        {
+          "name": "Оверлей",
+          "id": "overlay"
+        },
+        {
+          "name": "Одиночная игра",
+          "id": "single"
+        }
+      ]
+    }
+  },
+  "pricesUsd": {
+    "_links": {
+      "self": {
+        "href": "/api/products/1640424747/prices?countryCode=US"
+      },
+      "product": {
+        "href": "https://api.gog.com/products/1640424747"
+      }
+    },
+    "_embedded": {
+      "prices": [
+        {
+          "currency": {
+            "code": "USD"
+          },
+          "basePrice": "4999 USD",
+          "finalPrice": "4999 USD",
+          "bonusWalletFunds": "0 USD"
+        }
+      ]
+    }
+  },
+  "pricesRub": {
+    "_links": {
+      "self": {
+        "href": "/api/products/1640424747/prices?countryCode=RU"
+      },
+      "product": {
+        "href": "https://api.gog.com/products/1640424747"
+      }
+    },
+    "_embedded": {
+      "prices": [
+        {
+          "currency": {
+            "code": "RUB"
+          },
+          "basePrice": "445899 RUB",
+          "finalPrice": "445899 RUB",
+          "bonusWalletFunds": "0 RUB"
+        },
+        {
+          "currency": {
+            "code": "USD"
+          },
+          "basePrice": "4999 USD",
+          "finalPrice": "4999 USD",
+          "bonusWalletFunds": "0 USD"
+        }
+      ]
+    }
+  },
+  "catalog": {
+    "id": "1640424747",
+    "slug": "the_witcher_3_wild_hunt_game_of_the_year_edition",
+    "title": "The Witcher 3: Wild Hunt - Complete Edition",
+    "productType": "pack",
+    "releaseDate": "2016.08.30",
+    "developers": [
+      "CD PROJEKT RED"
+    ],
+    "operatingSystems": [
+      "windows"
+    ],
+    "price": {
+      "final": "$49.99",
+      "base": "$49.99",
+      "discount": null
+    },
+    "coverHorizontal": "https://images.gog-statics.com/6278561a6c70684ab3cd86065ba337c4ae9dd5e3f63b5bd9997d2eba602d17cd.jpg"
+  }
+}

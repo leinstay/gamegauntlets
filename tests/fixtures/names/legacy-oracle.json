@@ -1,0 +1,1261 @@
+{
+    "simpleName": [
+        {
+            "args": [
+                "Half-Life 2",
+                false,
+                false,
+                false
+            ],
+            "result": "Half Life 2"
+        },
+        {
+            "args": [
+                "The Elder Scrolls V: Skyrim Special Edition",
+                false,
+                false,
+                false
+            ],
+            "result": "Elder Scrolls V Skyrim"
+        },
+        {
+            "args": [
+                "Resident Evil 2 (Classic)",
+                false,
+                false,
+                false
+            ],
+            "result": "Resident Evil 2"
+        },
+        {
+            "args": [
+                "Divinity: Original Sin 2 - Definitive Edition",
+                false,
+                false,
+                false
+            ],
+            "result": "Divinity Original Sin 2"
+        },
+        {
+            "args": [
+                "Batman: Arkham Knight Game of the Year Edition",
+                false,
+                false,
+                false
+            ],
+            "result": "Batman Arkham Knight"
+        },
+        {
+            "args": [
+                "Portal 2",
+                false,
+                false,
+                false
+            ],
+            "result": "Portal 2"
+        },
+        {
+            "args": [
+                "Fallout: New Vegas",
+                false,
+                false,
+                false
+            ],
+            "result": "Fallout New Vegas"
+        },
+        {
+            "args": [
+                "Mass Effect (2007)",
+                false,
+                false,
+                false
+            ],
+            "result": "Mass Effect"
+        },
+        {
+            "args": [
+                "Grand Theft Auto V",
+                false,
+                false,
+                false
+            ],
+            "result": "Grand Theft Auto V"
+        },
+        {
+            "args": [
+                "Tomb Raider (2013) Deluxe",
+                false,
+                false,
+                false
+            ],
+            "result": "Tomb Raider"
+        },
+        {
+            "args": [
+                "DOOM ™",
+                false,
+                false,
+                false
+            ],
+            "result": "DOOM"
+        },
+        {
+            "args": [
+                "Sekiro®: Shadows Die Twice - GOTY Edition",
+                false,
+                false,
+                false
+            ],
+            "result": "Sekiro Shadows Die Twice"
+        },
+        {
+            "args": [
+                "Marvel's Spider-Man Remastered",
+                false,
+                false,
+                false
+            ],
+            "result": "Marvel s Spider Man Remastered"
+        },
+        {
+            "args": [
+                "Prehistorik 2",
+                false,
+                false,
+                false
+            ],
+            "result": "Prehistorik 2"
+        },
+        {
+            "args": [
+                "Sid Meier's Civilization VI",
+                false,
+                false,
+                false
+            ],
+            "result": "Sid Meier s Civilization VI"
+        },
+        {
+            "args": [
+                "Final Fantasy VII Remake",
+                false,
+                false,
+                false
+            ],
+            "result": "Final Fantasy VII Remake"
+        },
+        {
+            "args": [
+                "The Witcher 3: Wild Hunt - Game of the Year Edition",
+                false,
+                false,
+                false
+            ],
+            "result": "Witcher 3 Wild Hunt"
+        },
+        {
+            "args": [
+                "Command & Conquer",
+                false,
+                false,
+                false
+            ],
+            "result": "Command and Conquer"
+        },
+        {
+            "args": [
+                "Middle-earth: Shadow of War",
+                false,
+                false,
+                false
+            ],
+            "result": "Middle earth Shadow of War"
+        },
+        {
+            "args": [
+                "Tom Clancy's Rainbow Six Siege",
+                false,
+                false,
+                false
+            ],
+            "result": "Tom Clancy s Rainbow Six Siege"
+        },
+        {
+            "args": [
+                "Hook (2015)",
+                false,
+                false,
+                false
+            ],
+            "result": "Hook"
+        },
+        {
+            "args": [
+                "Amnesia: The Dark Descent",
+                false,
+                false,
+                false
+            ],
+            "result": "Amnesia Dark Descent"
+        },
+        {
+            "args": [
+                "Injustice 2 Legendary Edition",
+                false,
+                false,
+                false
+            ],
+            "result": "Injustice 2"
+        },
+        {
+            "args": [
+                "Dark Souls III",
+                false,
+                false,
+                false
+            ],
+            "result": "Dark Souls III"
+        },
+        {
+            "args": [
+                "The Sims 4 Digital Starter Pack",
+                false,
+                false,
+                false
+            ],
+            "result": "Sims 4"
+        },
+        {
+            "args": [
+                "Half-Life 2",
+                true,
+                false,
+                false
+            ],
+            "result": "Half Life 2"
+        },
+        {
+            "args": [
+                "Dark Souls III",
+                true,
+                false,
+                false
+            ],
+            "result": "Dark Souls 3"
+        },
+        {
+            "args": [
+                "Final Fantasy VII Remake",
+                true,
+                false,
+                false
+            ],
+            "result": "Final Fantasy 7 Remake"
+        },
+        {
+            "args": [
+                "Sid Meier's Civilization VI",
+                true,
+                false,
+                false
+            ],
+            "result": "Sid Meier s Civilization 6"
+        },
+        {
+            "args": [
+                "Street Fighter V",
+                true,
+                false,
+                false
+            ],
+            "result": "Street Fighter 5"
+        },
+        {
+            "args": [
+                "Deus Ex: Human Revolution",
+                false,
+                false,
+                true
+            ],
+            "result": "Deus Ex"
+        },
+        {
+            "args": [
+                "The Witcher 3: Wild Hunt",
+                false,
+                false,
+                true
+            ],
+            "result": "The Witcher 3"
+        },
+        {
+            "args": [
+                "Baldur's Gate 3",
+                false,
+                true,
+                false
+            ],
+            "result": "Baldur s Gate 3"
+        },
+        {
+            "args": [
+                "Left 4 Dead 2",
+                false,
+                false,
+                false
+            ],
+            "result": "Left 4 Dead 2"
+        },
+        {
+            "args": [
+                "Marvel vs. Capcom: Infinite",
+                false,
+                false,
+                false
+            ],
+            "result": "Marvel vs Capcom Infinite"
+        },
+        {
+            "args": [
+                "Sonic the Hedgehog 2 Collection",
+                false,
+                false,
+                false
+            ],
+            "result": "Sonic the Hedgehog 2"
+        },
+        {
+            "args": [
+                "Beat Saber VR",
+                false,
+                false,
+                false
+            ],
+            "result": "Beat Saber"
+        },
+        {
+            "args": [
+                "",
+                false,
+                false,
+                false
+            ],
+            "result": ""
+        },
+        {
+            "args": [
+                "!!!",
+                false,
+                false,
+                false
+            ],
+            "result": "!!!"
+        }
+    ],
+    "stringRomToNum": [
+        {
+            "arg": "Civilization VI",
+            "result": "Civilization 6"
+        },
+        {
+            "arg": "Final Fantasy VII",
+            "result": "Final Fantasy 7"
+        },
+        {
+            "arg": "Dark Souls III",
+            "result": "Dark Souls 3"
+        },
+        {
+            "arg": "Grand Theft Auto V",
+            "result": "Grand Theft Auto 5"
+        },
+        {
+            "arg": "Street Fighter V",
+            "result": "Street Fighter 5"
+        },
+        {
+            "arg": "Rocky IV",
+            "result": "Rocky 4"
+        },
+        {
+            "arg": "Doom",
+            "result": "Doom"
+        },
+        {
+            "arg": "Half-Life 2",
+            "result": "Half-Life 2"
+        },
+        {
+            "arg": "Warcraft III",
+            "result": "Warcraft 3"
+        },
+        {
+            "arg": "Diablo IV",
+            "result": "Diablo 4"
+        }
+    ],
+    "swapRoman": [
+        {
+            "arg": "Civilization VI",
+            "result": "Civilization 6"
+        },
+        {
+            "arg": "Final Fantasy VII",
+            "result": "Final Fantasy 7"
+        },
+        {
+            "arg": "Rocky IV",
+            "result": "Rocky 4"
+        },
+        {
+            "arg": "Diablo 4",
+            "result": "Diablo 4"
+        },
+        {
+            "arg": "Doom 3",
+            "result": "Doom 3"
+        },
+        {
+            "arg": "Grand Theft Auto 5",
+            "result": "Grand Theft Auto 5"
+        }
+    ],
+    "swapNumber": [
+        {
+            "arg": "Civilization VI",
+            "result": "Civilization VI"
+        },
+        {
+            "arg": "Final Fantasy VII",
+            "result": "Final Fantasy VII"
+        },
+        {
+            "arg": "Rocky IV",
+            "result": "Rocky IV"
+        },
+        {
+            "arg": "Diablo 4",
+            "result": "Diablo IV"
+        },
+        {
+            "arg": "Doom 3",
+            "result": "Doom III"
+        },
+        {
+            "arg": "Grand Theft Auto 5",
+            "result": "Grand Theft Auto V"
+        }
+    ],
+    "isDemo": [
+        {
+            "arg": "Half-Life 2 Demo",
+            "result": true
+        },
+        {
+            "arg": "Portal Soundtrack",
+            "result": true
+        },
+        {
+            "arg": "Doom Alpha Version Test",
+            "result": true
+        },
+        {
+            "arg": "Dark Souls III",
+            "result": false
+        },
+        {
+            "arg": "Cyberpunk 2077",
+            "result": false
+        },
+        {
+            "arg": "demo",
+            "result": false
+        },
+        {
+            "arg": "Foo Bar Demo ",
+            "result": true
+        }
+    ],
+    "fixName": [
+        {
+            "arg": "Marvel&#039;s Spider-Man",
+            "result": "Marvel's Spider-Man"
+        },
+        {
+            "arg": "  Trimmed  ",
+            "result": "Trimmed"
+        },
+        {
+            "arg": "Sekiro&reg;",
+            "result": "Sekiro®"
+        },
+        {
+            "arg": "DOOM&trade;",
+            "result": "DOOM™"
+        }
+    ],
+    "metaphone": [
+        {
+            "arg": "Thompson",
+            "result": "0MPSN"
+        },
+        {
+            "arg": "Knight",
+            "result": "NFT"
+        },
+        {
+            "arg": "Philosophy",
+            "result": "FLSF"
+        },
+        {
+            "arg": "Xerox",
+            "result": "SRKS"
+        },
+        {
+            "arg": "Wright",
+            "result": "RFT"
+        },
+        {
+            "arg": "Half",
+            "result": "HLF"
+        },
+        {
+            "arg": "Life",
+            "result": "LF"
+        },
+        {
+            "arg": "Skyrim",
+            "result": "SKRM"
+        },
+        {
+            "arg": "Witcher",
+            "result": "WXR"
+        },
+        {
+            "arg": "Cyberpunk",
+            "result": "SBRPNK"
+        },
+        {
+            "arg": "Doom",
+            "result": "TM"
+        },
+        {
+            "arg": "Portal",
+            "result": "PRTL"
+        },
+        {
+            "arg": "Fallout",
+            "result": "FLT"
+        },
+        {
+            "arg": "Civilization",
+            "result": "SFLSXN"
+        },
+        {
+            "arg": "Warcraft",
+            "result": "WRKRFT"
+        },
+        {
+            "arg": "Gnome",
+            "result": "NM"
+        },
+        {
+            "arg": "Psycho",
+            "result": "PSX"
+        },
+        {
+            "arg": "Write",
+            "result": "RT"
+        },
+        {
+            "arg": "Whale",
+            "result": "WL"
+        },
+        {
+            "arg": "Queue",
+            "result": "K"
+        },
+        {
+            "arg": "Physics",
+            "result": "FSKS"
+        },
+        {
+            "arg": "Nation",
+            "result": "NXN"
+        },
+        {
+            "arg": "Special",
+            "result": "SPXL"
+        },
+        {
+            "arg": "Machine",
+            "result": "MXN"
+        },
+        {
+            "arg": "Sword",
+            "result": "SWRT"
+        },
+        {
+            "arg": "Knife",
+            "result": "NF"
+        },
+        {
+            "arg": "Hour",
+            "result": "HR"
+        },
+        {
+            "arg": "Honest",
+            "result": "HNST"
+        },
+        {
+            "arg": "Ghost",
+            "result": "FST"
+        },
+        {
+            "arg": "Ghetto",
+            "result": "FT"
+        },
+        {
+            "arg": "Gnat",
+            "result": "NT"
+        },
+        {
+            "arg": "Sign",
+            "result": "SN"
+        },
+        {
+            "arg": "Reign",
+            "result": "RN"
+        },
+        {
+            "arg": "Neighbor",
+            "result": "NFBR"
+        },
+        {
+            "arg": "Weigh",
+            "result": "WF"
+        },
+        {
+            "arg": "Eight",
+            "result": "EFT"
+        },
+        {
+            "arg": "Fight",
+            "result": "FFT"
+        },
+        {
+            "arg": "Slight",
+            "result": "SLFT"
+        },
+        {
+            "arg": "Laugh",
+            "result": "LF"
+        },
+        {
+            "arg": "Ought",
+            "result": "OFT"
+        },
+        {
+            "arg": "Fought",
+            "result": "FFT"
+        },
+        {
+            "arg": "Icing",
+            "result": "ISNK"
+        },
+        {
+            "arg": "Cat",
+            "result": "KT"
+        },
+        {
+            "arg": "Cent",
+            "result": "SNT"
+        },
+        {
+            "arg": "Cellar",
+            "result": "SLR"
+        },
+        {
+            "arg": "Cinema",
+            "result": "SNM"
+        },
+        {
+            "arg": "Cyst",
+            "result": "SST"
+        },
+        {
+            "arg": "Church",
+            "result": "XRX"
+        },
+        {
+            "arg": "School",
+            "result": "SXL"
+        },
+        {
+            "arg": "Ache",
+            "result": "AX"
+        },
+        {
+            "arg": "Scheme",
+            "result": "SXM"
+        },
+        {
+            "arg": "Schema",
+            "result": "SXM"
+        },
+        {
+            "arg": "Chef",
+            "result": "XF"
+        },
+        {
+            "arg": "Choir",
+            "result": "XR"
+        },
+        {
+            "arg": "Chorus",
+            "result": "XRS"
+        },
+        {
+            "arg": "Character",
+            "result": "XRKTR"
+        },
+        {
+            "arg": "Chic",
+            "result": "XK"
+        },
+        {
+            "arg": "Champagne",
+            "result": "XMPKN"
+        },
+        {
+            "arg": "Dodge",
+            "result": "TJ"
+        },
+        {
+            "arg": "Fudge",
+            "result": "FJ"
+        },
+        {
+            "arg": "Ridge",
+            "result": "RJ"
+        },
+        {
+            "arg": "Judge",
+            "result": "JJ"
+        },
+        {
+            "arg": "Age",
+            "result": "AJ"
+        },
+        {
+            "arg": "Cage",
+            "result": "KJ"
+        },
+        {
+            "arg": "Gym",
+            "result": "JM"
+        },
+        {
+            "arg": "Gyro",
+            "result": "JR"
+        },
+        {
+            "arg": "Giant",
+            "result": "JNT"
+        },
+        {
+            "arg": "Gene",
+            "result": "JN"
+        },
+        {
+            "arg": "Sing",
+            "result": "SNK"
+        },
+        {
+            "arg": "Singer",
+            "result": "SNJR"
+        },
+        {
+            "arg": "Longer",
+            "result": "LNJR"
+        },
+        {
+            "arg": "Finger",
+            "result": "FNJR"
+        },
+        {
+            "arg": "Anger",
+            "result": "ANJR"
+        },
+        {
+            "arg": "Ring",
+            "result": "RNK"
+        },
+        {
+            "arg": "Bang",
+            "result": "BNK"
+        },
+        {
+            "arg": "Toy",
+            "result": "T"
+        },
+        {
+            "arg": "Boy",
+            "result": "B"
+        },
+        {
+            "arg": "Play",
+            "result": "PL"
+        },
+        {
+            "arg": "Say",
+            "result": "S"
+        },
+        {
+            "arg": "Yellow",
+            "result": "YL"
+        },
+        {
+            "arg": "Yes",
+            "result": "YS"
+        },
+        {
+            "arg": "Aesthetic",
+            "result": "ES0TK"
+        },
+        {
+            "arg": "Pneumonia",
+            "result": "NMN"
+        },
+        {
+            "arg": "Comb",
+            "result": "KM"
+        },
+        {
+            "arg": "Lamb",
+            "result": "LM"
+        },
+        {
+            "arg": "Dumb",
+            "result": "TM"
+        },
+        {
+            "arg": "Numb",
+            "result": "NM"
+        },
+        {
+            "arg": "Bomb",
+            "result": "BM"
+        },
+        {
+            "arg": "Rabbit",
+            "result": "RBT"
+        },
+        {
+            "arg": "Butter",
+            "result": "BTR"
+        },
+        {
+            "arg": "Ladder",
+            "result": "LTR"
+        },
+        {
+            "arg": "Fasion",
+            "result": "FXN"
+        },
+        {
+            "arg": "Shore",
+            "result": "XR"
+        },
+        {
+            "arg": "Sheep",
+            "result": "XP"
+        },
+        {
+            "arg": "Fish",
+            "result": "FX"
+        },
+        {
+            "arg": "Tension",
+            "result": "TNXN"
+        },
+        {
+            "arg": "Vision",
+            "result": "FXN"
+        },
+        {
+            "arg": "Version",
+            "result": "FRXN"
+        },
+        {
+            "arg": "Social",
+            "result": "SXL"
+        },
+        {
+            "arg": "Vase",
+            "result": "FS"
+        },
+        {
+            "arg": "Value",
+            "result": "FL"
+        },
+        {
+            "arg": "Van",
+            "result": "FN"
+        },
+        {
+            "arg": "Very",
+            "result": "FR"
+        },
+        {
+            "arg": "Zebra",
+            "result": "SBR"
+        },
+        {
+            "arg": "Zoo",
+            "result": "S"
+        },
+        {
+            "arg": "Buzz",
+            "result": "BS"
+        },
+        {
+            "arg": "Hello",
+            "result": "HL"
+        },
+        {
+            "arg": "Bubble",
+            "result": "BBL"
+        },
+        {
+            "arg": "Kayak",
+            "result": "KYK"
+        },
+        {
+            "arg": "Vortex",
+            "result": "FRTKS"
+        },
+        {
+            "arg": "Vex",
+            "result": "FKS"
+        },
+        {
+            "arg": "Hex",
+            "result": "HKS"
+        },
+        {
+            "arg": "Nova",
+            "result": "NF"
+        },
+        {
+            "arg": "Steam",
+            "result": "STM"
+        },
+        {
+            "arg": "Epic",
+            "result": "EPK"
+        },
+        {
+            "arg": "Origin",
+            "result": "ORJN"
+        },
+        {
+            "arg": "Valve",
+            "result": "FLF"
+        },
+        {
+            "arg": "Ubisoft",
+            "result": "UBSFT"
+        },
+        {
+            "arg": "Bethesda",
+            "result": "B0ST"
+        },
+        {
+            "arg": "Rockstar",
+            "result": "RKSTR"
+        },
+        {
+            "arg": "Blizzard",
+            "result": "BLSRT"
+        },
+        {
+            "arg": "Capcom",
+            "result": "KPKM"
+        },
+        {
+            "arg": "Konami",
+            "result": "KNM"
+        },
+        {
+            "arg": "Nintendo",
+            "result": "NNTNT"
+        },
+        {
+            "arg": "Sega",
+            "result": "SK"
+        },
+        {
+            "arg": "Atari",
+            "result": "ATR"
+        },
+        {
+            "arg": "Square",
+            "result": "SKR"
+        },
+        {
+            "arg": "Enix",
+            "result": "ENKS"
+        }
+    ],
+    "phoneme": [
+        {
+            "arg": "Grand Theft Auto V",
+            "result": "0FT 5 AT KRNT"
+        },
+        {
+            "arg": "Final Fantasy VII",
+            "result": "7 FNL FNTS"
+        },
+        {
+            "arg": "Dark Souls III",
+            "result": "3 SLS TRK"
+        },
+        {
+            "arg": "The Witcher 3",
+            "result": "0 3 WXR"
+        },
+        {
+            "arg": "Half-Life 2",
+            "result": "2 HLFLF"
+        }
+    ],
+    "levenPhon": [
+        {
+            "arg": "Grand Theft Auto V",
+            "result": "0FT 5 AT KRNT"
+        },
+        {
+            "arg": "Final Fantasy VII",
+            "result": "7 FNL FNTS"
+        },
+        {
+            "arg": "Dark Souls III",
+            "result": "3 SLS TRK"
+        },
+        {
+            "arg": "The Witcher 3",
+            "result": "0 3 WXR"
+        },
+        {
+            "arg": "Half-Life 2",
+            "result": "2 HLFLF"
+        }
+    ],
+    "similar_text": [
+        {
+            "args": [
+                "half life 2",
+                "half life 2"
+            ],
+            "sim": 11,
+            "percent": 100
+        },
+        {
+            "args": [
+                "half life 2",
+                "halflife2"
+            ],
+            "sim": 9,
+            "percent": 90
+        },
+        {
+            "args": [
+                "the witcher 3 wild hunt",
+                "witcher 3"
+            ],
+            "sim": 9,
+            "percent": 56.25
+        },
+        {
+            "args": [
+                "grand theft auto v",
+                "grand theft auto 5"
+            ],
+            "sim": 17,
+            "percent": 94.444444
+        },
+        {
+            "args": [
+                "dark souls iii",
+                "dark souls 3"
+            ],
+            "sim": 11,
+            "percent": 84.615385
+        },
+        {
+            "args": [
+                "portal 2",
+                "portal"
+            ],
+            "sim": 6,
+            "percent": 85.714286
+        },
+        {
+            "args": [
+                "sekiro shadows die twice",
+                "sekiro"
+            ],
+            "sim": 6,
+            "percent": 40
+        },
+        {
+            "args": [
+                "",
+                "abc"
+            ],
+            "sim": 0,
+            "percent": 0
+        },
+        {
+            "args": [
+                "abc",
+                ""
+            ],
+            "sim": 0,
+            "percent": 0
+        },
+        {
+            "args": [
+                "kingdom come deliverance",
+                "kingdom come deliverance 2"
+            ],
+            "sim": 24,
+            "percent": 96
+        }
+    ],
+    "levenshtein": [
+        {
+            "args": [
+                "kitten",
+                "sitting"
+            ],
+            "result": 3
+        },
+        {
+            "args": [
+                "half life",
+                "halflife"
+            ],
+            "result": 1
+        },
+        {
+            "args": [
+                "",
+                "abc"
+            ],
+            "result": 3
+        },
+        {
+            "args": [
+                "abc",
+                "abc"
+            ],
+            "result": 0
+        },
+        {
+            "args": [
+                "flaw",
+                "lawn"
+            ],
+            "result": 2
+        }
+    ],
+    "similarity": [
+        {
+            "args": [
+                "Half-Life 2",
+                "Half Life 2"
+            ],
+            "result": {
+                "cost": 1,
+                "score": 0.87,
+                "grade": true
+            }
+        },
+        {
+            "args": [
+                "Grand Theft Auto V",
+                "Grand Theft Auto 5"
+            ],
+            "result": {
+                "cost": 0,
+                "score": 1,
+                "grade": true
+            }
+        },
+        {
+            "args": [
+                "Dark Souls III",
+                "Dark Souls 3"
+            ],
+            "result": {
+                "cost": 0,
+                "score": 1,
+                "grade": true
+            }
+        },
+        {
+            "args": [
+                "The Witcher 3",
+                "Witcher 3: Wild Hunt"
+            ],
+            "result": {
+                "cost": 6,
+                "score": 0.32999999999999996,
+                "grade": false
+            }
+        },
+        {
+            "args": [
+                "Portal",
+                "Portal 2"
+            ],
+            "result": {
+                "cost": 2,
+                "score": 0.6,
+                "grade": false
+            }
+        }
+    ],
+    "simpleSim": [
+        {
+            "args": [
+                "Half Life 2",
+                "half-life 2"
+            ],
+            "percent": 100
+        },
+        {
+            "args": [
+                "Dark Souls 3",
+                "Dark Souls III"
+            ],
+            "percent": 100
+        },
+        {
+            "args": [
+                "Portal",
+                "Portal 2"
+            ],
+            "percent": 85.714286
+        },
+        {
+            "args": [
+                "Doom Eternal",
+                "DOOM"
+            ],
+            "percent": 50
+        }
+    ]
+}

@@ -1,0 +1,2 @@
+# Keep files byte-identical to the server (LF); no EOL conversion
+* -text

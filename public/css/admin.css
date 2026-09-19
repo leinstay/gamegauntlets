@@ -1,0 +1,266 @@
+/*
+ * Game Gauntlets — admin panel stylesheet.
+ * Self-contained (does not depend on main.css): the admin panel is a separate page
+ * (public/admin.html) for a handful of trusted Steam accounts, not the public site.
+ */
+
+:root {
+  --color-bg: #14161a;
+  --color-panel: #1d2026;
+  --color-panel-light: #262a32;
+  --color-border: #343a45;
+  --color-text: #e8eaed;
+  --color-text-muted: #9aa2ad;
+  --color-accent: #4da3ff;
+  --color-accent-hover: #6fb6ff;
+  --color-ok: #3ec97a;
+  --color-warn: #e0a63e;
+  --color-danger: #e0544a;
+  --radius: 6px;
+  --font-body: "Segoe UI", "Source Sans Pro", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+a { color: var(--color-accent); }
+
+#admin-root { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* ---------- forbidden ---------- */
+
+.admin-forbidden {
+  margin: auto;
+  text-align: center;
+  padding: 2em;
+}
+
+/* ---------- header ---------- */
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--color-panel);
+  border-bottom: 1px solid var(--color-border);
+}
+.admin-header h1 { font-size: 18px; margin: 0; }
+.admin-user { display: flex; align-items: center; gap: 10px; }
+
+/* ---------- tabs ---------- */
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 20px 0;
+  background: var(--color-panel);
+  border-bottom: 1px solid var(--color-border);
+}
+.admin-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  color: var(--color-text-muted);
+  padding: 8px 14px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  cursor: pointer;
+  font: inherit;
+}
+.admin-tab:hover { color: var(--color-text); }
+.admin-tab.active {
+  color: var(--color-text);
+  background: var(--color-bg);
+  border-color: var(--color-border);
+}
+
+.admin-content { flex: 1; padding: 20px; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+/* ---------- generic components ---------- */
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.panel-head h2 { margin: 0; font-size: 16px; }
+
+.btn {
+  display: inline-block;
+  background: var(--color-panel-light);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 7px 14px;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+.btn:hover { border-color: var(--color-accent); color: var(--color-accent-hover); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-small { padding: 4px 10px; font-size: 12px; }
+.btn-tiny { padding: 0 5px; font-size: 12px; line-height: 1.6; }
+
+input[type="text"], input[type="search"], input[type="number"], textarea, select {
+  background: var(--color-panel-light);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  font: inherit;
+}
+
+.muted { color: var(--color-text-muted); font-size: 12px; }
+
+.admin-error {
+  background: rgba(224, 84, 74, .15);
+  border: 1px solid var(--color-danger);
+  color: #ffb3ac;
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: var(--color-panel-light);
+  border: 1px solid var(--color-border);
+}
+.badge-ok { border-color: var(--color-ok); color: var(--color-ok); }
+.badge-warn { border-color: var(--color-warn); color: var(--color-warn); }
+
+/* ---------- tables ---------- */
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.admin-table th, .admin-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+.admin-table th { background: var(--color-panel-light); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .02em; }
+.admin-table tr:last-child td { border-bottom: none; }
+.cell-actions { white-space: nowrap; }
+.cell-error { max-width: 260px; overflow-wrap: anywhere; color: var(--color-danger); }
+
+.candidates {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 12px;
+  max-width: 360px;
+}
+
+.avatar { width: 20px; height: 20px; border-radius: 3px; vertical-align: middle; margin-right: 6px; }
+
+/* ---------- filters / search ---------- */
+
+.filters { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.filters label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-muted); }
+
+.search-row, .search-panel { position: relative; margin-bottom: 12px; }
+.search-results {
+  position: absolute;
+  z-index: 5;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 2px 0 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--color-panel-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  max-height: 240px;
+  overflow-y: auto;
+}
+.search-results li {
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.search-results li:hover { background: var(--color-bg); }
+.search-results li.empty { color: var(--color-text-muted); cursor: default; }
+
+.pager { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+
+/* ---------- conflicts override panel ---------- */
+
+.override-panel, .override-form {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 480px;
+}
+.override-panel label, .override-form label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--color-text-muted); }
+.override-actions { display: flex; gap: 8px; }
+
+/* ---------- game detail ---------- */
+
+.game-detail h4 { margin-bottom: 6px; margin-top: 20px; }
+.game-detail code { background: var(--color-panel-light); padding: 1px 5px; border-radius: 4px; }
+
+/* ---------- presets ---------- */
+
+.preset-card {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 14px;
+}
+.preset-head { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+.preset-name { flex: 1; min-width: 160px; }
+.preset-games { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.preset-games li {
+  background: var(--color-panel-light);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 3px 6px 3px 10px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.preset-games li.empty { border: none; background: none; color: var(--color-text-muted); }
+.preset-add { position: relative; max-width: 320px; }
+.preset-add-input { width: 100%; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 768px) {
+  .admin-content { padding: 12px; }
+  .admin-tabs { padding: 8px 12px 0; overflow-x: auto; }
+  .admin-table, .admin-table thead, .admin-table tbody, .admin-table th, .admin-table td, .admin-table tr {
+    display: block;
+  }
+  .admin-table thead { display: none; }
+  .admin-table tr { border-bottom: 1px solid var(--color-border); padding: 8px 0; }
+  .admin-table td { border: none; padding: 4px 0; }
+}

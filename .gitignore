@@ -1,0 +1,49 @@
+/CLAUDE.md
+/AGENTS.md
+/.claude/
+
+.env
+.env.*
+!.env.example
+config.local.json
+
+/ajax/scripts/steamdb/
+*.sql
+*.sql.gz
+*.log
+*.bak
+*.bak-*
+
+/ajax/json/select/
+/ajax/json/statistic.json
+
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/
+
+/.well-known/
+
+# Local specs and plans (not deployed)
+/docs/
+
+# Node
+node_modules/
+
+# Old PHP site copy and its local server-data copies; kept only on the
+# owner's workstation for reference, never re-added to the repo.
+/legacy/
+
+
+# Local dev database and dumps
+/.dev/
+
+# Owner-provided secrets dropped into the repo root
+/secret.txt
+
+# Database schema files live with the agents (.claude/tools/db), not in the repository
+/migrations/
+
+# Music is deployed by hand, only the marker file is tracked
+/public/msc/*
+!/public/msc/.music

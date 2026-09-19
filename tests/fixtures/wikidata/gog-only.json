@@ -1,0 +1,59 @@
+{
+  "head" : {
+    "vars" : [ "item", "gogId", "igdbId_", "hltbId_", "metacriticId_", "opencriticId_", "mobyId_", "mobyIdOld_", "gamefaqsId_", "wikiEnTitle_", "wikiRuTitle_", "pubDates", "developers", "publishers" ]
+  },
+  "results" : {
+    "bindings" : [ {
+      "item" : {
+        "type" : "uri",
+        "value" : "http://www.wikidata.org/entity/Q287637"
+      },
+      "gogId" : {
+        "type" : "literal",
+        "value" : "game/the_witcher"
+      },
+      "igdbId_" : {
+        "type" : "literal",
+        "value" : "the-witcher"
+      },
+      "hltbId_" : {
+        "type" : "literal",
+        "value" : "10267"
+      },
+      "mobyId_" : {
+        "type" : "literal",
+        "value" : "89883"
+      },
+      "mobyIdOld_" : {
+        "type" : "literal",
+        "value" : "witcher-steelbook-edition"
+      },
+      "gamefaqsId_" : {
+        "type" : "literal",
+        "value" : "915112"
+      },
+      "wikiEnTitle_" : {
+        "xml:lang" : "en",
+        "type" : "literal",
+        "value" : "The Witcher (video game)"
+      },
+      "wikiRuTitle_" : {
+        "xml:lang" : "ru",
+        "type" : "literal",
+        "value" : "Ведьмак (игра)"
+      },
+      "pubDates" : {
+        "type" : "literal",
+        "value" : "2007-10-26T00:00:00Z|11"
+      },
+      "developers" : {
+        "type" : "literal",
+        "value" : "CD Projekt RED"
+      },
+      "publishers" : {
+        "type" : "literal",
+        "value" : "Atari, Inc."
+      }
+    } ]
+  }
+}

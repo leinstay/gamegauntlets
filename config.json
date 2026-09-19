@@ -1,0 +1,197 @@
+{
+  "site": {
+    "origin": "https://gamegauntlets.com",
+    "languages": ["en", "ru", "de", "fr"],
+    "previewOrigins": []
+  },
+  "admins": [],
+  "wheel": {
+    "minSegments": 1,
+    "maxSegments": 16,
+    "defaultSegments": 12,
+    "marblesDailyLimit": 100
+  },
+  "resolver": {
+    "releaseToleranceMonths": 8,
+    "oldGameRuleMonths": 12,
+    "playtime": {
+      "minReviews": 10
+    },
+    "ggScore": {
+      "missingPenalty": {
+        "scoreSteam": 4,
+        "scoreIgdb": 2,
+        "scoreIgdbUsers": 2,
+        "scoreCritics": 4,
+        "scoreUsersMetacritic": 4,
+        "scoreGamerankings": 2,
+        "scoreGamefaqs": 2
+      },
+      "ownerBuckets": [
+        { "value": 150000000, "penalty": -6 },
+        { "value": 75000000, "penalty": -6 },
+        { "value": 35000000, "penalty": -6 },
+        { "value": 15000000, "penalty": -4 },
+        { "value": 7500000, "penalty": -4 },
+        { "value": 3500000, "penalty": -2 },
+        { "value": 1500000, "penalty": -2 },
+        { "value": 750000, "penalty": 2 },
+        { "value": 350000, "penalty": 2 },
+        { "value": 150000, "penalty": 4 },
+        { "value": 75000, "penalty": 4 },
+        { "value": 35000, "penalty": 6 },
+        { "value": 10000, "penalty": 6 }
+      ],
+      "ageBrackets": [
+        { "maxYears": 3, "penalty": 0 },
+        { "maxYears": 6, "penalty": 2 },
+        { "maxYears": 12, "penalty": 2 },
+        { "maxYears": 18, "penalty": 4 },
+        { "maxYears": 24, "penalty": 4 }
+      ],
+      "defaultAgePenalty": 6,
+      "indiePenalty": 8,
+      "voteWeighting": {
+        "enabled": false,
+        "logBase": 10,
+        "offset": 10,
+        "minWeight": 1
+      }
+    },
+    "ggp": {
+      "defaults": { "time": 30, "score": 15, "owners": 5, "difficulty": 20 },
+      "difficulty": {
+        "Simple": 0,
+        "Simple-Easy": 5,
+        "Easy": 10,
+        "Easy-Just Right": 15,
+        "Just Right": 20,
+        "Just Right-Tough": 25,
+        "Tough": 30,
+        "Tough-Unforgiving": 35,
+        "Unforgiving": 40
+      },
+      "time": {
+        "linear": { "maxTime": 10, "multiplier": 5 },
+        "exact": [
+          { "time": 11, "value": 60 },
+          { "time": 12, "value": 70 },
+          { "time": 13, "value": 80 },
+          { "time": 14, "value": 90 },
+          { "time": 15, "value": 100 }
+        ],
+        "longValue": 100,
+        "longBrackets": [
+          { "max": 18, "bonus": 10 },
+          { "max": 21, "bonus": 20 },
+          { "max": 24, "bonus": 30 },
+          { "max": 27, "bonus": 40 }
+        ],
+        "longElseBonus": 50
+      },
+      "score": [
+        { "op": "<=", "bound": 30, "value": 10 },
+        { "op": "<", "bound": 40, "value": 15 },
+        { "op": "<", "bound": 50, "value": 20 },
+        { "op": "<", "bound": 60, "value": 25 },
+        { "op": "<", "bound": 70, "value": 30 },
+        { "op": "<", "bound": 80, "value": 35 },
+        { "op": "<", "bound": 100, "value": 40 }
+      ],
+      "owners": {
+        "150000000": 20,
+        "75000000": 20,
+        "35000000": 20,
+        "15000000": 18,
+        "7500000": 16,
+        "3500000": 14,
+        "1500000": 12,
+        "750000": 10,
+        "350000": 8,
+        "150000": 6,
+        "75000": 4,
+        "35000": 2,
+        "10000": 0
+      },
+      "priceMultiplierRub": [
+        { "lt": 10000, "multiplier": 1 },
+        { "lt": 25000, "multiplier": 1 },
+        { "lt": 40000, "multiplier": 1 },
+        { "lt": 60000, "multiplier": 1 },
+        { "lt": 80000, "multiplier": 1 }
+      ]
+    }
+  },
+  "sources": {
+    "steam": {
+      "enabled": true,
+      "refreshDays": 1,
+      "rateLimit": { "max": 1, "duration": 6000 },
+      "requestDelayMs": 350,
+      "discoverMaxResults": 50000,
+      "batchSize": 5000,
+      "discoverCron": "0 */2 * * *",
+      "catalogWalkHours": 24,
+      "missingRefreshDays": 3
+    },
+    "gog": {
+      "enabled": true,
+      "refreshDays": 7,
+      "rateLimit": { "max": 1, "duration": 1000 }
+    },
+    "wikidata": {
+      "enabled": true,
+      "refreshDays": 30,
+      "rateLimit": { "max": 1, "duration": 1000 },
+      "discoverCron": "0 3 * * 0",
+      "steamPageSize": 50000,
+      "maxSteamAppId": 4000000,
+      "gogOnlyLimit": 5000
+    },
+    "igdb": {
+      "enabled": true,
+      "refreshDays": 30,
+      "rateLimit": { "max": 4, "duration": 1000 },
+      "discoverPageLimit": 500
+    },
+    "steamspy": {
+      "enabled": true,
+      "refreshDays": 7,
+      "rateLimit": { "max": 1, "duration": 1500 },
+      "allPageDelayMs": 60000
+    },
+    "hltb": {
+      "enabled": true,
+      "refreshDays": 30,
+      "rateLimit": { "max": 1, "duration": 1500 },
+      "dailyCap": 3000
+    },
+    "gamefaqs": {
+      "enabled": true,
+      "refreshDays": 90,
+      "dailyCap": 1500,
+      "rateLimit": { "max": 1, "duration": 3000 },
+      "proxy": null
+    },
+    "metacritic": {
+      "enabled": true,
+      "refreshDays": 60,
+      "retryDays": 90,
+      "dailyCap": 20000,
+      "rateLimit": { "max": 1, "duration": 2500 }
+    }
+  },
+  "retention": {
+    "rollLogMonths": 12
+  },
+  "maintenance": {
+    "purgeNonGames": true
+  },
+  "stats": {
+    "rollsOffset": 3546988
+  },
+  "export": {
+    "enabled": false,
+    "steamdbRepoDir": "var/steamdb"
+  }
+}
