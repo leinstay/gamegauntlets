@@ -291,33 +291,47 @@ var $bgs = [];
 
 	var $body = document.getElementById('content-bg');
 
+	// Each background exists as <name>.avif / <name>.webp (2560x1440) and <name>-s.* (1280x720, small screens).
 	var settings = {
 		images: {
-			'img/dynamic_backgrounds/15.jpg': 'center',
-			'img/dynamic_backgrounds/16.jpg': 'center',
-			'img/dynamic_backgrounds/17.jpg': 'center',
-			'img/dynamic_backgrounds/18.jpg': 'center',
+			'img/dynamic_backgrounds/15': 'center',
+			'img/dynamic_backgrounds/16': 'center',
+			'img/dynamic_backgrounds/17': 'center',
+			'img/dynamic_backgrounds/18': 'center',
 		},
 		delay: 15000
 	};
+	var smallScreen = Math.max(screen.width, screen.height) * (window.devicePixelRatio || 1) <= 1400;
 	var pos = 0,
 		lastPos = 0,
 		changePos = 0,
 		$wrapper, $bg, k, v;
+	// Only the first picture is fetched with the page; every next one is requested one rotation ahead.
+	function loadBg(i) {
+		var el = $bgs[i];
+		if (!el || el.getAttribute('data-loaded')) return;
+		el.setAttribute('data-loaded', '1');
+		var base = el.getAttribute('data-src') + (smallScreen ? '-s' : '');
+		el.style.backgroundImage = 'url("' + base + '.webp")';
+		// browsers without image-set()/type() ignore this assignment and keep the WebP above
+		el.style.backgroundImage = 'image-set(url("' + base + '.avif") type("image/avif"), url("' + base + '.webp") type("image/webp"))';
+	}
 	$wrapper = document.createElement('div');
 	$wrapper.id = 'bg';
 	$body.appendChild($wrapper);
 	for (k in settings.images) {
 		$bg = document.createElement('div');
-		$bg.style.backgroundImage = 'url("' + k + '")';
+		$bg.setAttribute('data-src', k);
 		$bg.style.backgroundPosition = settings.images[k];
 		$wrapper.appendChild($bg);
 		$bgs.push($bg);
 	}
+	loadBg(pos);
 	$bgs[pos].classList.add('visible');
 	$bgs[pos].classList.add('top');
 	if ($bgs.length == 1 || !canUse('transition'))
 		return;
+	setTimeout(function () { loadBg(1); }, 5000);
 	setInterval(function () {
 		lastPos = pos;
 		pos++;
@@ -327,6 +341,8 @@ var $bgs = [];
 		if (changePos >= $bgs.length)
 			changePos = 0;
 		$bgs[lastPos].classList.remove('top');
+		loadBg(pos);
+		loadBg(changePos);
 		$bgs[pos].classList.add('visible');
 		$bgs[pos].classList.add('top');
 		setTimeout(function () {
