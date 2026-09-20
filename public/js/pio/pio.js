@@ -246,6 +246,8 @@ export function createPio(opts = {}) {
   let app = null;
   let model = null;
   let destroyed = false;
+  let dialogueReady = false;
+  let modelInitStarted = false;
   let hideTimer = null;
   let sequenceTimer = null;
   const followUpTimers = new Set();
@@ -282,6 +284,7 @@ export function createPio(opts = {}) {
     visible = !visible;
     writeBoolPref(VISIBLE_KEY, visible);
     applyVisible(visible);
+    if (visible && dialogueReady) initModel();
   });
 
   function setExpression(mood) {
@@ -598,6 +601,15 @@ export function createPio(opts = {}) {
     dialogueEngine.recordVisit();
     setSoundEnabled(opts.sound != null ? opts.sound : readBoolPref(SOUND_KEY, true));
     playPendingSettingsEvent();
+    dialogueReady = true;
+    if (visible) await initModel();
+  }
+
+  // The renderer and the model (2.4 MB of textures) are only created once she is actually on screen: a visitor
+  // who closed her does not pay for them, and the model is never initialised inside a hidden canvas.
+  async function initModel() {
+    if (modelInitStarted || destroyed) return;
+    modelInitStarted = true;
 
     if (typeof PIXI === 'undefined' || !PIXI.live2d) {
       // eslint-disable-next-line no-console
