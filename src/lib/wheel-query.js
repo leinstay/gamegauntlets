@@ -18,6 +18,8 @@
 //     (`NOT col REGEXP 'RPG|Action'`), i.e. it rejects a game that has *any* of the excluded
 //     values — `NOT (col LIKE ... OR col LIKE ... OR ...)` here, NULL-safe (a NULL column has no
 //     tags, so it always passes an exclude filter, same as this rewrite's previous behaviour).
+//   - developers/publishers compare case-insensitively (`col COLLATE utf8mb4_unicode_ci LIKE ...`)
+//     — see CASE_INSENSITIVE_LIST_FIELDS below for why.
 //   - "difficulty" is a scalar column here (`games.difficulty`), not a pipe list (GameFAQs assigns
 //     exactly one difficulty tier per game) — AND semantics would only ever match when at most one
 //     value is selected, so difficulty include/exclude use plain `IN` / `NOT IN` (OR-style exact
@@ -70,6 +72,19 @@ const COLUMN_BY_FIELD = {
 const MAX_LIST_ITEMS = 16;
 const MAX_NAMES = 16;
 
+// developers/publishers dictionary values are case-merged (src/api/dictionaries.js folds "8floor" and
+// "8FLOOR" into one entry, keeping whichever spelling is most common as the value everyone filters
+// with). A LIKE match against a single spelling would then miss rows stored under any other spelling
+// in the same group, so these two columns compare case-insensitively — COLLATE rather than
+// LOWER(column), so an index on the column (if one is ever added) stays usable. The other pipe-list
+// fields aren't case-merged and keep the plain (collation-default) comparison, matching legacy's
+// REGEXP alternation, which wasn't case-insensitive either.
+const CASE_INSENSITIVE_LIST_FIELDS = new Set(['developers', 'publishers']);
+
+function likeColumnExpr(column) {
+  return CASE_INSENSITIVE_LIST_FIELDS.has(column) ? `${column} COLLATE utf8mb4_unicode_ci` : column;
+}
+
 // Legacy slider tops (`.claude/docs/frontend.md` "Options": "ru max 5000 ₽ = unlimited, en $500").
 const DEFAULT_PRICE_MAX = { rub: 5000, usd: 500 };
 
@@ -116,7 +131,8 @@ function addPipeListConditions(conditions, params, group, mode) {
     const values = capArray(group?.[field], MAX_LIST_ITEMS);
     if (values.length === 0) continue;
     const column = COLUMN_BY_FIELD[field];
-    const likeAlternation = values.map(() => `${column} LIKE CONCAT('%|', ?, '|%')`).join(' OR ');
+    const columnExpr = likeColumnExpr(column);
+    const likeAlternation = values.map(() => `${columnExpr} LIKE CONCAT('%|', ?, '|%')`).join(' OR ');
     if (mode === 'include') {
       // OR: matches if the game has ANY of the selected values (legacy REGEXP alternation).
       conditions.push(`(${likeAlternation})`);

@@ -66,10 +66,33 @@ test('include + exclude across several fields combine with AND, each field indep
     sql,
     `SELECT games.id FROM games WHERE ${ALWAYS_ON_EN} ` +
       "AND (genres LIKE CONCAT('%|', ?, '|%')) " +
-      "AND (developers LIKE CONCAT('%|', ?, '|%')) " +
+      "AND (developers COLLATE utf8mb4_unicode_ci LIKE CONCAT('%|', ?, '|%')) " +
       "AND (categories IS NULL OR NOT (categories LIKE CONCAT('%|', ?, '|%')))",
   );
   assert.deepEqual(params, ['RPG', 'CD Projekt', 'VR']);
+});
+
+test('developers/publishers: include compares case-insensitively (COLLATE), matching every spelling merged into the value', () => {
+  const { sql, params } = buildWheelQuery({ include: { developers: ['8floor'] }, allowEmpty: true }, {});
+  assert.equal(
+    sql,
+    `SELECT games.id FROM games WHERE ${ALWAYS_ON_EN} AND (developers COLLATE utf8mb4_unicode_ci LIKE CONCAT('%|', ?, '|%'))`,
+  );
+  assert.deepEqual(params, ['8floor']);
+});
+
+test('developers/publishers: exclude also compares case-insensitively, still NULL-safe', () => {
+  const { sql, params } = buildWheelQuery({ exclude: { publishers: ['8FLOOR'] }, allowEmpty: true }, {});
+  assert.equal(
+    sql,
+    `SELECT games.id FROM games WHERE ${ALWAYS_ON_EN} AND (publishers IS NULL OR NOT (publishers COLLATE utf8mb4_unicode_ci LIKE CONCAT('%|', ?, '|%')))`,
+  );
+  assert.deepEqual(params, ['8FLOOR']);
+});
+
+test('other pipe-list fields are NOT made case-insensitive (no COLLATE added)', () => {
+  const { sql } = buildWheelQuery({ include: { genres: ['RPG'], tags: ['Indie'], categories: ['VR'], languages: ['English'], voiceovers: ['English'] }, allowEmpty: true }, {});
+  assert.ok(!sql.includes('COLLATE'), sql);
 });
 
 test('difficulty include/exclude use IN / NOT IN, not LIKE (scalar column, not pipe-wrapped)', () => {

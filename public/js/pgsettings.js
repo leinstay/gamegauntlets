@@ -185,30 +185,54 @@ var DICTIONARY_FIELDS = {
 	tags: { apiField: 'tags', translate: false }
 };
 
-var sarray = {};
-$("select").each(function () {
-	var id = $(this).attr("id");
-	if (id === "name" || id === "presets") return; // handled separately below
+// developers/publishers (84k/71k distinct names) are too big to ship whole: /api/dictionaries/<field>
+// without `q` only returns the top TOP_LIMIT (src/api/dictionaries.js) by game count, and the rest is
+// reachable through the endpoint's `?q=` search (ranked, over the FULL list, server-side). These two
+// fields get a different apiSettings below -- everything else keeps today's "fetch once, filter
+// client-side" behaviour untouched.
+var LARGE_DICTIONARY_FIELDS = { developers: true, publishers: true };
 
-	var name = $(this).attr("name");
-	var contextEl = this;
-	var placeholder = $(this).attr('data-placeholder') ? ($(this).attr('data-placeholder')) : "";
-	if (name.indexOf("[]") >= 0) name = name.slice(0, -2);
-	var vname = name;
-	if (name.indexOf("no") >= 0) name = name.slice(0, -2);
-	var dict = DICTIONARY_FIELDS[name];
-	// maxSelections: 16 everywhere, matching legacy AND the new API's per-list cap
-	// (src/api/wheel.js `listFilter.maxItems`) -- no change needed here.
-	var mxsel = 16;
-	var select = sarray[vname] = $(this).dropdown({
-		filterRemoteData: true,
+// One top-list fetch per field, shared by its include and exclude select (both call this with the
+// same apiField). Appended as plain <option>s before .dropdown() runs so opening the dropdown with an
+// empty search box shows it immediately -- Fomantic auto-queries its apiSettings URL (with an empty
+// `{query}`) the moment a remote dropdown with no items yet is first opened, and the endpoint rejects
+// an empty (but present) `q`; pre-populating the <select> avoids that call ever happening.
+var topDictionaryRequests = {};
+function fetchTopDictionaryList(apiField) {
+	if (!topDictionaryRequests[apiField]) topDictionaryRequests[apiField] = $.get('/api/dictionaries/' + apiField + '?lang=' + __language);
+	return topDictionaryRequests[apiField];
+}
+
+var sarray = {};
+function initDictionarySelect(contextEl, vname, dict, placeholder, mxsel) {
+	var isLarge = !!LARGE_DICTIONARY_FIELDS[dict.apiField];
+	var select = sarray[vname] = $(contextEl).dropdown({
+		filterRemoteData: !isLarge,
 		fullTextSearch: 'exact',
 		maxSelections: mxsel,
 		clearable: true,
 		placeholder: placeholder,
 		saveRemoteData: false,
 		preserveHTML: false,
-		apiSettings: {
+		minCharacters: isLarge ? 2 : 0,
+		throttle: isLarge ? 300 : 200,
+		apiSettings: isLarge ? {
+			// The server already ranked/filtered these -- see the #name game-search dropdown further
+			// down this file for the same pattern (cache: false, {query} template, results already
+			// final).
+			url: '/api/dictionaries/' + dict.apiField + '?lang=' + __language + '&q={query}',
+			cache: false,
+			onResponse: function (result) {
+				var data = [];
+				if (result) { // Semantic copies a top-level JSON array into {"0":…}: no .length, iterate with $.each
+					var selected = $(contextEl).val() || [];
+					$.each(result, function (i, option) {
+						if (selected.indexOf(option.value) === -1) data.push({ value: option.value, name: option.name });
+					});
+				}
+				return { success: true, results: data };
+			}
+		} : {
 			url: '/api/dictionaries/' + dict.apiField + '?lang=' + __language,
 			cache: true,
 			onResponse: function (result) {
@@ -250,10 +274,18 @@ $("select").each(function () {
 		var selectValues = sessionStorage.getItem(vname).split(",");
 		$.each(selectValues, function (i, sVal) {
 			if (!sVal) return;
+			// A large-dictionary field may already have this exact value as a plain (unselected)
+			// <option> from the top-list preload above -- mark that one selected instead of adding a
+			// second, duplicate <option> with the same value.
+			var existing = $(contextEl).find('option').filter(function () { return this.value === sVal; });
+			if (existing.length) { existing.prop('selected', true); return; }
 			// Legacy restored ALL selects (including tags/developers/publishers) through the same
 			// blanket __tranlsation_data[sVal] || sVal lookup, regardless of whether that field's
 			// live dropdown list was itself translated -- t() falls back to the raw key when there
 			// is no translation, so this reproduces that (slightly inconsistent) legacy behaviour.
+			// Also covers a saved developer/publisher value that isn't in the top list fetched above
+			// (or hasn't arrived yet): appended as its own <option>, it renders as a selected label
+			// regardless of what the dictionary fetch does or doesn't contain.
 			var translate = t(sVal);
 			$(contextEl).append($('<option>', {
 				value: sVal,
@@ -261,6 +293,33 @@ $("select").each(function () {
 				class: "addition"
 			}).text(translate));
 		});
+	}
+}
+
+$("select").each(function () {
+	var id = $(this).attr("id");
+	if (id === "name" || id === "presets") return; // handled separately below
+
+	var name = $(this).attr("name");
+	var contextEl = this;
+	var placeholder = $(this).attr('data-placeholder') ? ($(this).attr('data-placeholder')) : "";
+	if (name.indexOf("[]") >= 0) name = name.slice(0, -2);
+	var vname = name;
+	if (name.indexOf("no") >= 0) name = name.slice(0, -2);
+	var dict = DICTIONARY_FIELDS[name];
+	// maxSelections: 16 everywhere, matching legacy AND the new API's per-list cap
+	// (src/api/wheel.js `listFilter.maxItems`) -- no change needed here.
+	var mxsel = 16;
+
+	if (LARGE_DICTIONARY_FIELDS[dict.apiField]) {
+		fetchTopDictionaryList(dict.apiField).done(function (result) {
+			$.each(result || [], function (i, option) {
+				$(contextEl).append($('<option>', { value: option.value }).text(option.name));
+			});
+			initDictionarySelect(contextEl, vname, dict, placeholder, mxsel);
+		});
+	} else {
+		initDictionarySelect(contextEl, vname, dict, placeholder, mxsel);
 	}
 });
 
