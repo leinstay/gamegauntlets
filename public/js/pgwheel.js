@@ -821,6 +821,16 @@ var pioevents = function () {
 	}).mouseleave(function () {
 		clearTimeout(timeFVars.searchbartimer)
 	});
+	// Pio lives on the wheel page only, so "settings:open" is her reaction to the visitor reaching for the
+	// Settings tab (hover for half a second, at most once a minute) rather than to the settings page itself.
+	var settingsTabSaid = 0;
+	$(".settings-link").off("mouseenter.pio mouseleave.pio").on("mouseenter.pio", function () {
+		timeFVars.settingstabtimer = setTimeout(function () {
+			if (GG.pio && Date.now() - settingsTabSaid > 6e4) settingsTabSaid = Date.now(), GG.pio.emit("settings:open", {});
+		}, 500)
+	}).on("mouseleave.pio", function () {
+		clearTimeout(timeFVars.settingstabtimer)
+	});
 	var o = !1;
 	$("#rgogbtn").mouseenter(function () {
 		timeFVars.gogtimer = setTimeout(function () {
