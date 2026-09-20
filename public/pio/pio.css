@@ -18,9 +18,16 @@
 }
 
 /* Hidden: the model and the bubble go away, the round button stays as a "bring her back" tab. */
-.pio-container.pio-hidden .pio-canvas,
 .pio-container.pio-hidden .pio-dialog {
   display: none;
+}
+/* Not display:none -- a Live2D model initialised in an unrendered canvas comes back at the wrong scale. */
+.pio-container.pio-hidden .pio-canvas {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 .pio-container.pio-hidden {
   width: 2.6em;
