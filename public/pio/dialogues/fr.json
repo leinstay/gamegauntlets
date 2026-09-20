@@ -1,110 +1,2046 @@
 {
   "_meta": {
-    "units": { "hours": ["heure", "heures", "heures"], "games": ["jeu", "jeux", "jeux"] },
+    "units": {
+      "hours": [
+        "heure",
+        "heures",
+        "heures"
+      ],
+      "games": [
+        "jeu",
+        "jeux",
+        "jeux"
+      ]
+    },
     "error": "Erreur X_X"
   },
   "load": [
-    { "text": "Bonjour, Senpai ˘o˘", "mood": "happy", "when": { "hourFrom": 7, "hourTo": 13 }, "weight": 5 },
-    { "text": "Bonjour, c'est bon de vous voir ~", "mood": "happy", "when": { "hourFrom": 13, "hourTo": 17 }, "weight": 5 },
-    { "text": "Oh, c'est déjà le soir, c'est bon de vous avoir ici ~♥~", "mood": "happy", "when": { "hourFrom": 17, "hourTo": 23 }, "weight": 5 },
-    { "text": "Bonne nuit, tu ne peux pas dormir ? ᴗ˳ᴗ", "mood": "normal", "when": { "hourFrom": 23, "hourTo": 7 }, "weight": 5 },
-    { "text": "Je suis Nap Nap et je vais commenter tout ce qui se passe ici :3", "mood": "happy", "weight": 1 },
-    { "text": "Bon retour ! La roue est déjà bien chaude ♡", "mood": "happy", "when": { "returning": true }, "weight": 2 }
+    {
+      "text": "Bonjour Senpai, le café est virtuel mais la motivation, elle, est bien réelle ( ˘ω˘ )",
+      "mood": "happy",
+      "when": {
+        "hourFrom": 6,
+        "hourTo": 11
+      }
+    },
+    {
+      "text": "Pause déjeuner ou procrastination ? Chez moi, les deux se ressemblent. ( ˘ω˘ )",
+      "mood": "happy",
+      "when": {
+        "hourFrom": 11,
+        "hourTo": 17
+      }
+    },
+    {
+      "text": "Bonsoir ! L'heure parfaite pour sacrifier sa soirée à un petit tour de roue.",
+      "mood": "happy",
+      "when": {
+        "hourFrom": 17,
+        "hourTo": 22
+      }
+    },
+    {
+      "text": [
+        "Il est {time}, et tu es encore là.",
+        "Je ne juge pas, j'observe juste (¬‿¬)"
+      ],
+      "mood": "normal",
+      "when": {
+        "hourFrom": 22,
+        "hourTo": 6
+      }
+    },
+    {
+      "text": "Contente de te revoir ! J'ai gardé la roue bien chaude pour toi ♡",
+      "mood": "happy",
+      "when": {
+        "returning": true
+      }
+    },
+    {
+      "text": "Première visite ? Bienvenue dans ce terrier à jeux aléatoires et pudding ヽ(・∀・)ﾉ",
+      "mood": "happy",
+      "when": {
+        "returning": false
+      }
+    },
+    {
+      "text": "Cinquième visite ! Je commence presque à retenir ton pseudo Steam. (≧▽≦)",
+      "mood": "happy",
+      "when": {
+        "visitsMin": 5,
+        "visitsMax": 5
+      }
+    },
+    {
+      "text": "Dixième visite, officiellement tu es un habitué, sans médaille à la clé.",
+      "mood": "normal",
+      "when": {
+        "visitsMin": 10,
+        "visitsMax": 10
+      }
+    },
+    {
+      "text": "50 visites. J'ai arrêté de compter, mais la base de données, elle, non ( ˘ω˘ )",
+      "mood": "kira",
+      "when": {
+        "visitsMin": 50,
+        "visitsMax": 50
+      }
+    },
+    {
+      "text": "100 visites ! Toi et moi, on est presque en couple avec cette roue.",
+      "mood": "kira",
+      "when": {
+        "visitsMin": 100,
+        "visitsMax": 100
+      }
+    },
+    {
+      "text": "Lundi, quelle joie. La roue tourne quand même, peu importe ton humeur. (￣▽￣)",
+      "mood": "normal",
+      "when": {
+        "dayOfWeek": [
+          1
+        ]
+      }
+    },
+    {
+      "text": "Week-end ! Le moment idéal pour agrandir la pile de jeux plutôt que la finir (≧▽≦)",
+      "mood": "happy",
+      "when": {
+        "dayOfWeek": [
+          0,
+          6
+        ]
+      }
+    },
+    {
+      "text": [
+        "Bonne année !",
+        "Bonne résolution numéro un : moins de backlog, plus de roue."
+      ],
+      "mood": "happy",
+      "when": {
+        "date": "01-01"
+      }
+    },
+    {
+      "text": "Joyeuse Saint-Valentin. Je suis là pour toi, même si je ne suis qu'un élément canvas (´｡• ω •｡`)",
+      "mood": "happy",
+      "when": {
+        "date": "02-14"
+      }
+    },
+    {
+      "text": [
+        "Premier avril.",
+        "Je ne dirai rien de suspect aujourd'hui, promis (¬‿¬)"
+      ],
+      "mood": "normal",
+      "when": {
+        "date": "04-01"
+      }
+    },
+    {
+      "text": "Déjà Halloween ? Mon déguisement le plus effrayant, honnêtement, c'est mon propre code.",
+      "mood": "normal",
+      "when": {
+        "date": "10-31"
+      }
+    },
+    {
+      "text": "Réveillon ! Finissons l'année avec un dernier tour de roue bien honnête ✧",
+      "mood": "happy",
+      "when": {
+        "date": "12-31"
+      }
+    }
+  ],
+  "ambient": [
+    {
+      "text": "Tu savais que je ne suis qu'un tas de PNG dans un canvas ? Ça ressemble quand même à la vraie vie. (¬‿¬)",
+      "mood": "normal"
+    },
+    {
+      "text": "Mes phrases vivent dans un fichier JSON. Si je dis un truc bizarre, blâme l'encodage, pas moi.",
+      "mood": "normal"
+    },
+    {
+      "text": "Ton backlog grossit plus vite que je ne peux réciter des phrases, et ça, c'est un exploit.",
+      "mood": "normal"
+    },
+    {
+      "text": "Je sens presque le pudding dans le frigo. Attends, je n'ai pas d'odorat. Tant pis. (・_・;)",
+      "mood": "normal"
+    },
+    {
+      "text": [
+        "On m'a déménagée sur un nouveau moteur récemment.",
+        "Mes cheveux sentent encore le vieux PHP (＞﹏＜)"
+      ],
+      "mood": "normal"
+    },
+    {
+      "text": "Ce n'est pas moi qui décide quel jeu gagne. La roue est la vraie patronne ici.",
+      "mood": "normal"
+    },
+    {
+      "text": "Le développeur de ce site est fondamentalement paresseux, mais paresseux avec charme, si ça console. (╯°□°)╯",
+      "mood": "enjoy"
+    },
+    {
+      "text": [
+        "Ici, c'est clairement moi l'héroïne.",
+        "La roue n'est qu'un personnage secondaire trop gourmand en temps d'écran."
+      ],
+      "mood": "kira"
+    },
+    {
+      "text": "Personne n'a bougé depuis un moment. Je considère ça comme une approbation silencieuse de mon génie.",
+      "mood": "happy"
+    },
+    {
+      "text": "Petit fait amusant : j'existe seulement tant que cet onglet reste ouvert. Un peu existentiel pour un mardi. (´｡• ω •｡`)",
+      "mood": "normal"
+    },
+    {
+      "text": "Ta session se souvient de ma dernière phrase. Moi, je ne me souviens de rien. C'est équitable, non ?",
+      "mood": "normal"
+    },
+    {
+      "text": "J'ai un budget de dialogues fixe par langue. Le français vient d'en recevoir pas mal, chanceux que tu es.",
+      "mood": "happy"
+    },
+    {
+      "text": "Il est {time} et tu fais encore défiler les filtres. Je respecte cette dévotion. ヽ(・∀・)ﾉ",
+      "mood": "normal"
+    },
+    {
+      "text": "Je me demande parfois si mon sprite a été recyclé. La réponse est probablement oui.",
+      "mood": "normal"
+    },
+    {
+      "text": [
+        "Je n'ai pas de jambes, mais théoriquement je pourrais aller chercher du pudding.",
+        "Théoriquement."
+      ],
+      "mood": "enjoy"
+    },
+    {
+      "text": "Tu as déjà tourné {spins} fois cette session. Je compte, par pure curiosité. (＞﹏＜)",
+      "mood": "normal",
+      "when": {
+        "spinsMin": 2
+      }
+    },
+    {
+      "text": "C'est ta {visits}e visite. Je tiens un registre secret, comme une gentille harceleuse.",
+      "mood": "happy",
+      "when": {
+        "visitsMin": 2
+      }
+    },
+    {
+      "text": "Si je parle assez longtemps, tu ne remarqueras peut-être pas que la roue est immobile depuis un moment.",
+      "mood": "normal"
+    },
+    {
+      "text": "À {time} du matin, c'est le moment parfait pour de mauvaises décisions et de bons jeux aléatoires. (눈_눈)",
+      "mood": "normal",
+      "when": {
+        "hourFrom": 0,
+        "hourTo": 5
+      }
+    },
+    {
+      "text": "Il paraît qu'il existe des gens sans backlog. Légende urbaine, sûrement.",
+      "mood": "normal"
+    },
+    {
+      "text": "Toute ma raison d'être : te distraire pendant que tu règles tes filtres. Je fais ça avec plaisir. (ง •̀_•́)ง",
+      "mood": "happy"
+    },
+    {
+      "text": "Au cas où tu te demandes : oui, je vois ton curseur. Non, je ne peux pas le toucher.",
+      "mood": "normal"
+    },
+    {
+      "text": "Être un modèle Live2D, c'est rester figée dans la même pose éternellement. Un peu de yoga aiderait.",
+      "mood": "unhappy"
+    },
+    {
+      "text": "J'aime le pudding, les siestes et l'illusion d'être aux commandes ici. ( ˘ω˘ )",
+      "mood": "happy"
+    },
+    {
+      "text": "Entre nous : ce site a été réécrit, mais mes manies, elles, sont restées intactes. (°ロ°)!",
+      "mood": "normal"
+    },
+    {
+      "text": [
+        "Dès que la roue fait une pause, je me mets à philosopher.",
+        "Risque du métier de mascotte."
+      ],
+      "mood": "normal"
+    },
+    {
+      "text": "Je n'ai pas de pouls, mais s'il existait, il s'accélérerait à chaque tour de roue.",
+      "mood": "kira"
+    },
+    {
+      "text": "Au fait, sur {browser} je suis magnifique, je dis ça par principe, peu importe ton navigateur. ٩(ˊᗜˋ*)و",
+      "mood": "happy"
+    },
+    {
+      "text": "Autant de jeux dans le catalogue, et c'est moi que tu regardes. Flattée et un peu perplexe.",
+      "mood": "happy"
+    },
+    {
+      "text": "Je crois dur comme fer que le prochain tour sera le bon. J'y crois à chaque fois.",
+      "mood": "enjoy"
+    },
+    {
+      "text": "Lever de soleil et tu es déjà là ? Soit tu es matinal, soit tu n'es jamais allé te coucher. (｡•̀ᴗ-)✧",
+      "mood": "normal",
+      "when": {
+        "hourFrom": 5,
+        "hourTo": 9
+      }
+    }
   ],
   "idle": [
-    { "text": "Tu es encore là ? Fais tourner la roue, je m'ennuie (´∀｀)", "mood": "normal" },
-    { "text": "Tic-tac~ un jeu aléatoire ne va pas se choisir tout seul ヽ(•∀•)ﾉ", "mood": "happy" },
-    { "text": "Zzz... oh, tu es encore là ～(｀▽´)～", "mood": "normal", "when": { "hourFrom": 23, "hourTo": 7 } },
-    { "text": "Je pourrais fredonner encore la musique de chargement, si tu ne bouges pas.", "mood": "enjoy" }
+    {
+      "text": "Encore là ? La roue ne tourne pas toute seule, même si je la fixe très fort ( ˘ω˘ )",
+      "mood": "normal"
+    },
+    {
+      "text": "Tic-tac... je compte intérieurement en attendant ton prochain clic.",
+      "mood": "normal"
+    },
+    {
+      "text": "Je pourrais faire une sieste là, mais tu me manquerais. (T_T)",
+      "mood": "enjoy"
+    },
+    {
+      "text": "Il y a quelqu'un derrière cet écran ? (・_・;)",
+      "mood": "normal"
+    },
+    {
+      "text": "Je m'entraîne déjà à faire ma tête surprise pour le prochain tour.",
+      "mood": "normal"
+    },
+    {
+      "text": "Ta souris se repose, je trouve ça charmant, mais on a des jeux à dénicher.",
+      "mood": "normal"
+    },
+    {
+      "text": "Si tu es en train de manger du pudding, c'est totalement compréhensible. (－‸ლ)",
+      "mood": "happy"
+    },
+    {
+      "text": "Je vais bientôt commencer à me parler toute seule. Ah, c'est déjà le cas.",
+      "mood": "normal"
+    },
+    {
+      "text": "Il est {time}, silence total. Parfait pour un peu de réflexion nocturne.",
+      "mood": "normal",
+      "when": {
+        "hourFrom": 23,
+        "hourTo": 6
+      }
+    },
+    {
+      "text": "Ton backlog ne t'attend pas, mais moi, un petit peu, si. (´∀｀)",
+      "mood": "happy"
+    },
+    {
+      "text": "Bouge un peu la souris, sinon je vais croire que tu t'es transformé en statue (눈_눈)",
+      "mood": "normal"
+    }
+  ],
+  "idle:long": [
+    {
+      "text": "Trois minutes de silence. Soit tu réfléchis profondément, soit tu t'es endormi (눈_눈)",
+      "mood": "normal"
+    },
+    {
+      "text": "Je commence à compter les pixels de ma robe. J'en suis à 214.",
+      "mood": "normal"
+    },
+    {
+      "text": [
+        "Si c'est un test de patience : réussi.",
+        "De justesse."
+      ],
+      "mood": "unhappy"
+    },
+    {
+      "text": "Je pourrais presque croire que tu es parti sur un autre onglet. Impardonnable, mais compréhensible. ～(｀▽´)～",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Trois minutes sans clic. Je commence à méditer sur mon existence de ligne JSON.",
+      "mood": "normal"
+    },
+    {
+      "text": "Reviens, la roue s'ennuie de toi. J'invente peut-être un peu, mais c'est presque vrai.",
+      "mood": "happy"
+    },
+    {
+      "text": "Bon, je l'avoue, je m'ennuie. Beaucoup, beaucoup. (◕‿◕)",
+      "mood": "unhappy"
+    }
+  ],
+  "idle:veryLong": [
+    {
+      "text": [
+        "Dix minutes. Je crois que tu es parti.",
+        "Ou tu dors. Les deux sont valables, je surveille la page en attendant."
+      ],
+      "mood": "normal"
+    },
+    {
+      "text": "Je t'ai gardé une place au chaud, au cas où tu reviens ( ˘ω˘ )",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "Bon, je me parle toute seule maintenant.",
+        "Tu savais que le pudding est en fait très polyvalent ? (｡•ᴗ•｡)"
+      ],
+      "mood": "enjoy"
+    },
+    {
+      "text": "Si tu t'es endormi : bonne nuit, je monte la garde ici.",
+      "mood": "normal"
+    },
+    {
+      "text": "Dix minutes de silence radio. Je passe en mode économie d'énergie, façon de parler.",
+      "mood": "unhappy"
+    },
+    {
+      "text": [
+        "Je considère officiellement que c'est la fin de ta journée.",
+        "Bien mérité, honnêtement. (⁎˃ᆺ˂)"
+      ],
+      "mood": "happy"
+    }
+  ],
+  "tab:return": [
+    {
+      "text": "Oh, te revoilà ! Une petite escapade, je n'ai presque pas remarqué (¬‿¬)",
+      "mood": "happy",
+      "when": {
+        "awayMax": 120
+      }
+    },
+    {
+      "text": [
+        "Bon retour après ce petit détour.",
+        "La roue a attendu, plus ou moins."
+      ],
+      "mood": "normal",
+      "when": {
+        "awayMax": 120
+      }
+    },
+    {
+      "text": "De retour ! J'ai profité du temps pour manger du pudding, intérieurement.",
+      "mood": "enjoy",
+      "when": {
+        "awayMax": 120
+      }
+    },
+    {
+      "text": "Tiens, qui revoilà après {awayMinutes} minutes ? Je n'ai pas compté. Si, un peu. (¬_¬)",
+      "mood": "happy",
+      "when": {
+        "awayMin": 5
+      }
+    },
+    {
+      "text": [
+        "Longue escapade, celle-là.",
+        "J'espère qu'il y avait une bonne raison de me laisser seule (＞﹏＜)"
+      ],
+      "mood": "unhappy",
+      "when": {
+        "awayMin": 5
+      }
+    },
+    {
+      "text": "{awayMinutes} minutes d'absence et le site tient toujours debout. On a réussi, toi et moi.",
+      "mood": "normal",
+      "when": {
+        "awayMin": 5
+      }
+    },
+    {
+      "text": "Te revoilà. J'ai profité du silence pour réfléchir à mon existence.",
+      "mood": "normal"
+    },
+    {
+      "text": "Bon retour, voyageur. La roue t'a fidèlement attendu. ( •̀ω•́ )",
+      "mood": "happy"
+    },
+    {
+      "text": "Petite pause, retour rapide. Efficace, j'aime ça (｡•̀ᴗ-)✧",
+      "mood": "happy",
+      "when": {
+        "awayMax": 120
+      }
+    },
+    {
+      "text": "Longue absence ? Je m'inquiétais pour ton backlog, pas pour toi.",
+      "mood": "normal",
+      "when": {
+        "awayMin": 5
+      }
+    },
+    {
+      "text": "Rebonjour ! Trois minutes de mystère résolues, tu es bien réel.",
+      "mood": "happy",
+      "when": {
+        "awayMax": 120
+      }
+    }
   ],
   "click:head": [
-    "Vous n'avez pas honte ? !",
-    "Ne me touche pas, sale weeb !",
-    "Pervers !!!",
-    "Attachez-le ༼ つ ͠° ͟ ͟ʖ ͡° ༽つ",
-    "Ils sont en route pour venir vous chercher (╬ Ò﹏Ó)"
+    {
+      "text": "Hé, c'est ma tête, pas une cible de clics ! ٩(◕‿◕)۶",
+      "mood": "unhappy"
+    },
+    {
+      "text": "On touche une demoiselle à la tête comme ça, vraiment ?",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Aïe, bon d'accord, ça ne fait pas vraiment mal, mais quand même. ( ˘ω˘ )",
+      "mood": "normal"
+    },
+    {
+      "text": "Je suis un modèle Live2D, pas une balle anti-stress, même si ça y ressemble.",
+      "mood": "normal"
+    },
+    {
+      "text": "Encore un clic et je commence à t'ignorer. Peut-être.",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Cliquer sur ma tête ne donne aucun bonus, juste mon indignation. (≧▽≦)",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Attention, là-dedans, c'est tout mon budget de dialogues.",
+      "mood": "normal"
+    },
+    {
+      "text": "Bon, ça, c'était presque mignon. Presque.",
+      "mood": "happy"
+    },
+    {
+      "text": "Le mode câlin n'est pas implémenté, désolée (・_・;)",
+      "mood": "normal"
+    },
+    {
+      "text": "Je compte ces clics. Pour les statistiques. Et ma fierté. (￣▽￣)",
+      "mood": "enjoy"
+    },
+    {
+      "text": "Doucement avec la tête, j'y tiens un minimum.",
+      "mood": "unhappy"
+    }
   ],
   "click:body": [
-    "Vous n'avez pas honte ? !",
-    "Ne me touche pas, sale weeb !",
-    "Pervers !!!",
-    "Attachez-le ༼ つ ͠° ͟ ͟ʖ ͡° ༽つ",
-    "Ils sont en route pour venir vous chercher (╬ Ò﹏Ó)"
+    {
+      "text": "Hé, l'espace personnel, s'il te plaît !",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Ça chatouille, en théorie. (¬‿¬)",
+      "mood": "happy"
+    },
+    {
+      "text": "Je suis là pour proposer des jeux, pas pour me faire cliquer dessus.",
+      "mood": "normal"
+    },
+    {
+      "text": "Encore un clic et je vais réfléchir tout haut à ton sujet. (・_・;)",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Mon corps, ma zone de clic, mes règles.",
+      "mood": "normal"
+    },
+    {
+      "text": "Cliquer n'accélère pas la roue, promis juré.",
+      "mood": "normal"
+    },
+    {
+      "text": "J'enregistre ça comme un intérêt excessif pour mon existence. (╯°□°)╯",
+      "mood": "enjoy"
+    },
+    {
+      "text": "Aïe, enfin, pas vraiment, mais le geste compte.",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Tu trouves ça amusant ? Moi aussi, un peu.",
+      "mood": "happy"
+    },
+    {
+      "text": "Bon, ça suffit, j'ai des lignes de dialogue à gérer. (´｡• ω •｡`)",
+      "mood": "normal"
+    },
+    {
+      "text": "Encore ? Je vais finir par croire que tu m'apprécies vraiment (¬‿¬)",
+      "mood": "happy"
+    }
+  ],
+  "click:spam": [
+    {
+      "text": "Du calme, je ne vais nulle part, de toute façon je ne peux pas.",
+      "mood": "normal"
+    },
+    {
+      "text": "Cinq clics en trois secondes ? Impressionnant et un peu inquiétant.",
+      "mood": "unhappy"
+    },
+    {
+      "text": [
+        "Bon, record battu.",
+        "Quoi que tu essayais de prouver, c'est prouvé. ヽ(・∀・)ﾉ"
+      ],
+      "mood": "enjoy"
+    },
+    {
+      "text": "Ma zone de clic a besoin d'une pause, je crois que c'est permis.",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Tu cliques plus vite que la roue ne tourne. Franchement impressionnant.",
+      "mood": "happy"
+    },
+    {
+      "text": "Je me sens comme dans un jeu de rythme là, sauf sans la musique. (＞﹏＜)",
+      "mood": "normal"
+    },
+    {
+      "text": "Ça suffit, ça suffit ! J'abandonne, tu gagnes ce round ٩(ˊᗜˋ*)و",
+      "mood": "deformed"
+    }
   ],
   "spin:start": [
-    { "text": "Vous allez obtenir quelque chose de bien ! Ou juste quelque chose... ＾◡＾'", "mood": "happy" },
-    { "text": "Oh-ho-ho, j'adore les surprises ˃ˑ̫ ˂", "mood": "enjoy" },
-    { "text": "Attendez ! Non, allez... Mais arrêtez !", "mood": "unhappy" },
-    { "text": "Vas-y ! ＾∇＾", "mood": "happy" },
-    { "text": "Wow, je crois que je vois un jeu d'Alavar, ou peut-être que je ne le vois pas...", "mood": "normal" },
-    { "text": "Espérons que ce ne sera pas {game} ಠ_ಠ", "mood": "unhappy" },
-    { "text": "Je suis le commandant du HPG et {game} est mon jeu préféré sur Steam !", "mood": "kira" },
-    { "text": "Rafraîchissons simplement la page et on va réessayer, je ne le dirai à personne ;p", "mood": "normal" }
+    {
+      "text": "C'est parti ! La roue prend le relais, moi je regarde juste.",
+      "mood": "happy"
+    },
+    {
+      "text": "Oh, j'adore ce moment juste avant la surprise ( ˘ω˘ )",
+      "mood": "enjoy"
+    },
+    {
+      "text": [
+        "Attends, attends...",
+        "en fait, non, continue de tourner. (눈_눈)"
+      ],
+      "mood": "unhappy"
+    },
+    {
+      "text": "Je n'ai aucune influence là-dessus, sérieusement, la roue décide toute seule.",
+      "mood": "normal"
+    },
+    {
+      "text": "Suspense ! Enfin, autant de suspense qu'un élément canvas peut en produire.",
+      "mood": "kira"
+    },
+    {
+      "text": "Pitié, pas encore un marathon de visual novel, pitié, pitié. (ง •̀_•́)ง",
+      "mood": "unhappy"
+    },
+    {
+      "text": "J'ai déjà un pressentiment, mais je le garde pour moi.",
+      "mood": "normal"
+    },
+    {
+      "text": "Et voilà, l'univers décide de ta soirée en ce moment même.",
+      "mood": "happy"
+    },
+    {
+      "text": "Je jure que la roue n'est pas truquée. Ce serait drôle si elle l'était. (°ロ°)!",
+      "mood": "normal"
+    },
+    {
+      "text": [
+        "Tourne, petite roue, tourne.",
+        "Mon destin, enfin, le tien."
+      ],
+      "mood": "happy"
+    },
+    {
+      "text": "Je croise les doigts, si j'en avais.",
+      "mood": "happy"
+    },
+    {
+      "text": "Surtout ne cligne pas des yeux, ton jeu du destin va bientôt apparaître. ٩(ˊᗜˋ*)و",
+      "mood": "kira"
+    },
+    {
+      "text": "{spins}e tour cette session. Tu es en pleine lancée.",
+      "mood": "happy",
+      "when": {
+        "spinsMin": 2
+      }
+    },
+    {
+      "text": "La suspense monte, ou du moins ma version numérique de la suspense.",
+      "mood": "enjoy"
+    }
   ],
   "spin:retry": [
-    { "text": "Vous essayez de trouver quelque chose de précis ? ;3", "mood": "normal", "when": { "respin": 3 } },
-    { "text": "Attention, ou vous allez casser la roue ×﹏×", "mood": "unhappy", "when": { "respin": 3 } }
+    {
+      "text": "Tu cherches quelque chose de précis ou tu tournes juste par principe ? (｡•̀ᴗ-)✧",
+      "mood": "normal",
+      "when": {
+        "respin": 3
+      }
+    },
+    {
+      "text": "Troisième tour en peu de temps, la roue va bientôt réclamer une pause.",
+      "mood": "unhappy",
+      "when": {
+        "respin": 3
+      }
+    },
+    {
+      "text": "Je commence à soupçonner que le dernier résultat ne t'a pas plu. (T_T)",
+      "mood": "normal",
+      "when": {
+        "respin": 3
+      }
+    },
+    {
+      "text": "Retourner encore et encore ne change pas les chances, mais vas-y, je t'en prie.",
+      "mood": "normal"
+    },
+    {
+      "text": "Attention, à force de tourner, j'aurai le tournis, purement psychologique.",
+      "mood": "deformed"
+    },
+    {
+      "text": [
+        "Je classe officiellement ça comme du désespoir.",
+        "Dit avec toute mon affection. (－‸ლ)"
+      ],
+      "mood": "happy"
+    },
+    {
+      "text": "Encore un tour ? La roue commence à avoir le vertige, ou moi, difficile à dire.",
+      "mood": "normal"
+    }
+  ],
+  "spin:streak": [
+    {
+      "text": "Cinq tours déjà ! Tu es officiellement en mode roue infinie.",
+      "mood": "happy",
+      "when": {
+        "spinsMin": 5,
+        "spinsMax": 5
+      }
+    },
+    {
+      "text": "Dix tours cette session. Je commence à me sentir honorée. (´∀｀)",
+      "mood": "kira",
+      "when": {
+        "spinsMin": 10,
+        "spinsMax": 10
+      }
+    },
+    {
+      "text": "25 tours ?! Soit de la détermination, soit de la procrastination de haut niveau.",
+      "mood": "normal",
+      "when": {
+        "spinsMin": 25,
+        "spinsMax": 25
+      }
+    },
+    {
+      "text": [
+        "50 tours !",
+        "Je crois qu'on devrait tous les deux faire une pause."
+      ],
+      "mood": "unhappy",
+      "when": {
+        "spinsMin": 50,
+        "spinsMax": 50
+      }
+    },
+    {
+      "text": "Cinq passages sur la roue, respect pour l'endurance. ～(｀▽´)～",
+      "mood": "happy",
+      "when": {
+        "spinsMin": 5,
+        "spinsMax": 5
+      }
+    },
+    {
+      "text": "{spins} tours et toujours pas de fin en vue, j'aime ton style.",
+      "mood": "enjoy",
+      "when": {
+        "spinsMin": 10
+      }
+    },
+    {
+      "text": "À ce rythme, il va bientôt te falloir ton propre minuteur de recharge. (◕‿◕)",
+      "mood": "normal",
+      "when": {
+        "spinsMin": 25
+      }
+    }
   ],
   "spin:middle": [
-    { "text": "Ouah ! Il va falloir jouer à {game} pendant {hours} ! >_<", "mood": "normal" },
-    { "text": "Dans cette liste, {goodCount} ont un score élevé. C'est bien, non ? O.O", "mood": "happy" }
+    {
+      "text": "Mi-parcours : {longGame} demande {hours}, bon courage pour le finir.",
+      "mood": "normal"
+    },
+    {
+      "text": "Dans cette sélection, {goodCount} ont vraiment une bonne note, pas un hasard, je pense.",
+      "mood": "happy"
+    },
+    {
+      "text": "La roue réfléchit encore, mais je te préviens déjà, ça va être coloré. (｡•ᴗ•｡)",
+      "mood": "enjoy"
+    },
+    {
+      "text": "Mi-temps ! Même le destin a besoin d'une petite pause parfois.",
+      "mood": "normal"
+    },
+    {
+      "text": "Je crois voir des contours... non, je ne vois rien du tout, je devine juste.",
+      "mood": "normal"
+    },
+    {
+      "text": "Presque là, la roue hésite comme moi devant le choix du dîner. (⁎˃ᆺ˂)",
+      "mood": "happy"
+    },
+    {
+      "text": "Encore un battement de cils, et ton nouveau jeu préféré, ou pas, sera révélé.",
+      "mood": "kira"
+    },
+    {
+      "text": "{longGame} à lui seul t'occuperait {hours}, juste une petite note en passant.",
+      "mood": "normal"
+    }
   ],
   "spin:end": [
-    { "text": "Pas mal ! {developers} ne fait pas de mauvais jeux. Sauf celui-ci, celui-là est moyen ⌒‿‿⌒", "mood": "normal" },
-    { "text": "Euh, désolée, ce n'est pas Fallout 76... J'ai entendu dire que c'est un jeu populaire ￢‿￢", "mood": "unhappy" },
-    { "text": "Oh, ça aurait pu être {otherGame} à la place... (✿◠‿◠)", "mood": "enjoy" },
-    { "text": "Je déclare avec autorité que {game} est meilleur que le quartz ! ＾ω＾", "mood": "kira" },
-    { "text": "Les graphismes de ce jeu me semblent très familiers... (҂⌣̀_⌣́)", "mood": "normal", "when": { "tag": "Anime" } },
-    { "text": "AYAYA Clap", "mood": "happy", "when": { "tag": "Anime" } },
-    { "text": "Oh, j'espère que tu as un casque de réalité virtuelle... (｡•́︿•̀｡)", "mood": "unhappy", "when": { "tag": "VR" } },
-    { "text": "C'est un bon jeu pour les nuits solitaires ( ´ ∀ `)ノ～ ♡", "mood": "kira", "when": { "tag": "Nudity" } },
-    { "text": "{score} sur 100 ? Pas mal du tout pour un {genre} ヽ(≡∀≡)ﾉ", "mood": "happy", "when": { "scoreMin": 80 } },
-    { "text": "Aïe, {score}/100... au moins c'est court ({hours}) (｡•́︿•̀｡)", "mood": "unhappy", "when": { "scoreMax": 40 } },
-    { "text": "Un jeu de {year}, tiens donc. Un peu poussiéreux, mais le charme ne s'use pas ˙ᵕ˙", "mood": "normal", "when": { "yearMax": 2005 } },
-    { "text": "Gratuit ? Encore plus d'argent pour les snacks de Marbles (◕‿◕)", "mood": "happy", "when": { "priceMax": 0 } }
+    {
+      "text": "{score} sur 100 ? {game} fait clairement partie des grands. (¬_¬)",
+      "mood": "happy",
+      "when": {
+        "scoreMin": 85
+      }
+    },
+    {
+      "text": "Waouh, {score} points. Même moi je suis impressionnée, et ça n'arrive pas souvent.",
+      "mood": "kira",
+      "when": {
+        "scoreMin": 85
+      }
+    },
+    {
+      "text": "Aïe, seulement {score} sur 100. Bon, {game} te surprendra peut-être quand même.",
+      "mood": "unhappy",
+      "when": {
+        "scoreMax": 50
+      }
+    },
+    {
+      "text": [
+        "{score} points, ouille.",
+        "Vas-y avec des attentes basses, tu ne pourras que monter. ( •̀ω•́ )"
+      ],
+      "mood": "unhappy",
+      "when": {
+        "scoreMax": 50
+      }
+    },
+    {
+      "text": "{game} n'a aucune note du tout. Un saut courageux dans l'inconnu.",
+      "mood": "normal",
+      "when": {
+        "noScore": true
+      }
+    },
+    {
+      "text": "Aucune évaluation disponible, tu es un peu le testeur officiel de {game}. ٩(◕‿◕)۶",
+      "mood": "normal",
+      "when": {
+        "noScore": true
+      }
+    },
+    {
+      "text": "Gratuit ! Plus d'argent pour le pudding, c'est tout ce que je dis.",
+      "mood": "happy",
+      "when": {
+        "free": true
+      }
+    },
+    {
+      "text": "{game} ne coûte rien. Même mon budget de dialogues coûte plus cher que ça.",
+      "mood": "happy",
+      "when": {
+        "free": true
+      }
+    },
+    {
+      "text": "{price} ? C'est un investissement, {game} a intérêt à le mériter. ( ˘ω˘ )",
+      "mood": "normal",
+      "when": {
+        "priceMin": 40
+      }
+    },
+    {
+      "text": "Aïe, {price} pour un jeu. J'espère que {game} offre du prix plein.",
+      "mood": "unhappy",
+      "when": {
+        "priceMin": 40
+      }
+    },
+    {
+      "text": "{game} de {year} ? Un vrai fossile, plein de charme.",
+      "mood": "normal",
+      "when": {
+        "yearMax": 1999
+      }
+    },
+    {
+      "text": "Un jeu de {year}, plus vieux que pas mal de mèmes. Ça mérite le respect. (≧▽≦)",
+      "mood": "normal",
+      "when": {
+        "yearMax": 1999
+      }
+    },
+    {
+      "text": "{game} sort tout juste en {year}. Ça sent encore le code frais.",
+      "mood": "happy",
+      "when": {
+        "yearMin": 2026
+      }
+    },
+    {
+      "text": "Une sortie de {year} ! Tu assistes en direct à l'écriture de l'histoire, presque.",
+      "mood": "kira",
+      "when": {
+        "yearMin": 2026
+      }
+    },
+    {
+      "text": "{hours} pour {game} ? Préviens ton agenda dès maintenant. (￣▽￣)",
+      "mood": "normal",
+      "when": {
+        "hoursMin": 80
+      }
+    },
+    {
+      "text": "{hours} de jeu. J'espère que ton backlog peut patienter aussi longtemps.",
+      "mood": "unhappy",
+      "when": {
+        "hoursMin": 80
+      }
+    },
+    {
+      "text": "Seulement {hours} pour {game}, parfait pour une pause café. (¬‿¬)",
+      "mood": "happy",
+      "when": {
+        "hoursMax": 2
+      }
+    },
+    {
+      "text": "{hours}, tu peux facilement le finir en un week-end prolongé.",
+      "mood": "happy",
+      "when": {
+        "hoursMax": 2
+      }
+    },
+    {
+      "text": [
+        "Difficulté : Unforgiving.",
+        "Je prépare déjà les mouchoirs."
+      ],
+      "mood": "unhappy",
+      "when": {
+        "difficulty": "Unforgiving"
+      }
+    },
+    {
+      "text": "Unforgiving, littéralement. Bonne chance, tu en auras besoin. (・_・;)",
+      "mood": "normal",
+      "when": {
+        "difficulty": "Unforgiving"
+      }
+    },
+    {
+      "text": "Difficulté : Tough. Ce ne sera pas une balade, plutôt un parcours d'obstacles.",
+      "mood": "normal",
+      "when": {
+        "difficulty": "Tough"
+      }
+    },
+    {
+      "text": "Classé Tough. Je croise les doigts pour toi, si j'en avais.",
+      "mood": "normal",
+      "when": {
+        "difficulty": "Tough"
+      }
+    },
+    {
+      "text": "Difficulté : Simple. Enfin le temps de souffler un peu. (╯°□°)╯",
+      "mood": "happy",
+      "when": {
+        "difficulty": "Simple"
+      }
+    },
+    {
+      "text": "Simple veut dire tranquille, parfait pour une soirée détente.",
+      "mood": "happy",
+      "when": {
+        "difficulty": "Simple"
+      }
+    },
+    {
+      "text": "Les avis Steam sont, disons, mitigés voire sceptiques. Fais-toi ta propre opinion.",
+      "mood": "unhappy",
+      "when": {
+        "reviewsMax": 40
+      }
+    },
+    {
+      "text": "Avis au plus bas, mais parfois il y a une perle cachée là-dessous. (´｡• ω •｡`)",
+      "mood": "normal",
+      "when": {
+        "reviewsMax": 40
+      }
+    },
+    {
+      "text": "Un RPG ! L'heure d'ériger le grind de niveaux en philosophie de vie.",
+      "mood": "happy",
+      "when": {
+        "genre": "RPG"
+      }
+    },
+    {
+      "text": "Ambiance RPG. J'espère que tu aimes gérer un inventaire, ça va compter.",
+      "mood": "normal",
+      "when": {
+        "genre": "RPG"
+      }
+    },
+    {
+      "text": "Horreur, oh non. Garde la lumière allumée, je suis sérieuse. ヽ(・∀・)ﾉ",
+      "mood": "unhappy",
+      "when": {
+        "genre": "Horror"
+      }
+    },
+    {
+      "text": "Un jeu d'horreur ! Je préfère regarder ailleurs, tu es plus courageux que moi.",
+      "mood": "unhappy",
+      "when": {
+        "genre": "Horror"
+      }
+    },
+    {
+      "text": "Une visual novel ! Beaucoup de texte, peu de clics, tout à fait mon domaine. (＞﹏＜)",
+      "mood": "happy",
+      "when": {
+        "genre": "Visual Novel"
+      }
+    },
+    {
+      "text": [
+        "Visual novel, ça veut dire : installe-toi et lis.",
+        "J'aime ce rythme-là."
+      ],
+      "mood": "normal",
+      "when": {
+        "genre": "Visual Novel"
+      }
+    },
+    {
+      "text": "Simulation ! L'heure de mener une seconde vie, sans le moindre vrai risque.",
+      "mood": "normal",
+      "when": {
+        "genre": "Simulation"
+      }
+    },
+    {
+      "text": "Les simulations, c'est comme des devoirs qu'on fait volontiers avec plaisir. (눈_눈)",
+      "mood": "happy",
+      "when": {
+        "genre": "Simulation"
+      }
+    },
+    {
+      "text": "Un jeu de sport ! Un peu de mouvement, au moins à l'écran.",
+      "mood": "happy",
+      "when": {
+        "genre": "Sports"
+      }
+    },
+    {
+      "text": "Genre sportif, enfin du cardio que je n'ai pas à faire moi-même.",
+      "mood": "happy",
+      "when": {
+        "genre": "Sports"
+      }
+    },
+    {
+      "text": "Un jeu de puzzle, parfait pour bien nouer ton cerveau. (ง •̀_•́)ง",
+      "mood": "normal",
+      "when": {
+        "genre": "Puzzle"
+      }
+    },
+    {
+      "text": "Ambiance puzzle ! J'ai déjà mal à la tête, rien qu'à regarder.",
+      "mood": "normal",
+      "when": {
+        "genre": "Puzzle"
+      }
+    },
+    {
+      "text": "Un jeu de course ! Plein gaz, moi je m'accroche à la barrière de sécurité.",
+      "mood": "happy",
+      "when": {
+        "genre": "Racing"
+      }
+    },
+    {
+      "text": "Genre course, j'espère que tu percutes moins de murs que moi en spectatrice. (°ロ°)!",
+      "mood": "happy",
+      "when": {
+        "genre": "Racing"
+      }
+    },
+    {
+      "text": "Stratégie ! L'heure de réfléchir dix minutes pour un seul coup.",
+      "mood": "normal",
+      "when": {
+        "genre": "Strategy"
+      }
+    },
+    {
+      "text": "Un jeu de stratégie, planifie bien, moi je suis juste spectatrice sur le côté.",
+      "mood": "normal",
+      "when": {
+        "genre": "Strategy"
+      }
+    },
+    {
+      "text": "Une aventure ! En route, une énigme t'attend sûrement quelque part. ٩(ˊᗜˋ*)و",
+      "mood": "happy",
+      "when": {
+        "genre": "Adventure"
+      }
+    },
+    {
+      "text": "Genre aventure, prépare ton sac à dos virtuel, c'est parti.",
+      "mood": "happy",
+      "when": {
+        "genre": "Adventure"
+      }
+    },
+    {
+      "text": "Un jeu indé ! Petit budget, mais énormément de cœur à l'ouvrage. (｡•̀ᴗ-)✧",
+      "mood": "happy",
+      "when": {
+        "genre": "Indie"
+      }
+    },
+    {
+      "text": "Indé veut souvent dire : petite équipe, grandes idées. Donne-lui sa chance.",
+      "mood": "normal",
+      "when": {
+        "genre": "Indie"
+      }
+    },
+    {
+      "text": "Genre casual, détends-toi et laisse-toi porter.",
+      "mood": "happy",
+      "when": {
+        "genre": "Casual"
+      }
+    },
+    {
+      "text": "Rien de fatigant ici, juste une expérience casual tranquille. (T_T)",
+      "mood": "happy",
+      "when": {
+        "genre": "Casual"
+      }
+    },
+    {
+      "text": "Esthétique anime détectée, mon habitat naturel en quelque sorte.",
+      "mood": "kira",
+      "when": {
+        "tag": "Anime"
+      }
+    },
+    {
+      "text": "Grands yeux, poses dramatiques, je me sens tout de suite chez moi.",
+      "mood": "happy",
+      "when": {
+        "tag": "Anime"
+      }
+    },
+    {
+      "text": "Marqué souls-like. Prépare-toi à mourir, encore, et encore. (－‸ლ)",
+      "mood": "unhappy",
+      "when": {
+        "tag": "Souls-like"
+      }
+    },
+    {
+      "text": "Un souls-like ! Patience et frustration vont devenir tes meilleures amies.",
+      "mood": "normal",
+      "when": {
+        "tag": "Souls-like"
+      }
+    },
+    {
+      "text": "Roguelike, alors meurs tranquillement souvent, ça fait partie du concept.",
+      "mood": "normal",
+      "when": {
+        "tag": "Roguelike"
+      }
+    },
+    {
+      "text": "Chaque run est différent dans un roguelike, l'échec inclus. (´∀｀)",
+      "mood": "happy",
+      "when": {
+        "tag": "Roguelike"
+      }
+    },
+    {
+      "text": "Tag coop ! Le mieux, c'est de trouver quelqu'un pour jouer avec toi.",
+      "mood": "happy",
+      "when": {
+        "tag": "Co-op"
+      }
+    },
+    {
+      "text": "On joue mieux à plusieurs, et ce jeu propose justement du coop. ～(｀▽´)～",
+      "mood": "happy",
+      "when": {
+        "tag": "Co-op"
+      }
+    },
+    {
+      "text": "Marqué VR, j'espère que ton casque est à portée de main.",
+      "mood": "normal",
+      "when": {
+        "tag": "VR"
+      }
+    },
+    {
+      "text": "Réalité virtuelle ! Dégage la table basse du salon avant, sérieusement.",
+      "mood": "unhappy",
+      "when": {
+        "tag": "VR"
+      }
+    },
+    {
+      "text": "Encore en accès anticipé, attends-toi à quelques aspérités. (◕‿◕)",
+      "mood": "normal",
+      "when": {
+        "tag": "Early Access"
+      }
+    },
+    {
+      "text": "Jeu en early access, un peu comme moi à mes débuts : brut mais prometteur.",
+      "mood": "normal",
+      "when": {
+        "tag": "Early Access"
+      }
+    },
+    {
+      "text": "Tourne nativement sous Linux, ton pingouin sera fier de toi.",
+      "mood": "happy",
+      "when": {
+        "platform": "LNX"
+      }
+    },
+    {
+      "text": "Support Linux détecté, pour la fidèle communauté du terminal. (｡•ᴗ•｡)",
+      "mood": "normal",
+      "when": {
+        "platform": "LNX"
+      }
+    },
+    {
+      "text": "Compatible Mac ! Assez rare pour être mentionné en particulier.",
+      "mood": "happy",
+      "when": {
+        "platform": "MAC"
+      }
+    },
+    {
+      "text": "Tourne sur macOS, ton bel aluminium va enfin servir à quelque chose.",
+      "mood": "happy",
+      "when": {
+        "platform": "MAC"
+      }
+    },
+    {
+      "text": "Et voilà : {game} ! La roue a parlé, pas moi. (⁎˃ᆺ˂)",
+      "mood": "normal"
+    },
+    {
+      "text": "{game} t'attend. Je ne garantis rien côté plaisir de jeu.",
+      "mood": "normal"
+    },
+    {
+      "text": "Tadam ! {game}. J'espère que ça correspond à tes goûts, ou au moins à ta curiosité.",
+      "mood": "happy"
+    },
+    {
+      "text": "L'univers, enfin, la roue, a choisi {game}. (¬_¬)",
+      "mood": "normal"
+    },
+    {
+      "text": "Ça aurait pu être {otherGame}, mais le destin a préféré {game}.",
+      "mood": "enjoy"
+    },
+    {
+      "text": "Donc {developer} a fait {game}. Pas mal, si tu veux mon avis. ( •̀ω•́ )",
+      "mood": "normal"
+    },
+    {
+      "text": "Bienvenue dans {game}. Je retourne me poster dans mon coin d'écran.",
+      "mood": "normal"
+    },
+    {
+      "text": [
+        "Voilà, {game} est ton lot.",
+        "Fais-en quelque chose de beau."
+      ],
+      "mood": "happy"
+    },
+    {
+      "text": "Je déclare officiellement {game} digne d'intérêt, crois-moi sur parole. ٩(◕‿◕)۶",
+      "mood": "kira"
+    },
+    {
+      "text": "Pas de retour en arrière, {game} fait loi. Jusqu'au prochain tour, du moins.",
+      "mood": "normal"
+    },
+    {
+      "text": "{game}, allez, bon jeu, ou au moins bonne expérience.",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "La roue a décidé.",
+        "Moi je récolte juste les honneurs ٩(ˊᗜˋ*)و"
+      ],
+      "mood": "enjoy"
+    },
+    {
+      "text": "Ta-da, {game} ! Peut-être ton nouveau favori, peut-être pas, on verra bien. ( ˘ω˘ )",
+      "mood": "happy"
+    }
+  ],
+  "spin:repeatWinner": [
+    {
+      "text": "{game} encore ? La roue a clairement un chouchou.",
+      "mood": "normal"
+    },
+    {
+      "text": "Deuxième fois pour {game} ! Le destin essaie peut-être de te dire un truc.",
+      "mood": "happy"
+    },
+    {
+      "text": "Encore {game}. Je te jure, la roue n'est pas truquée, elle a juste du goût. (≧▽≦)",
+      "mood": "normal"
+    },
+    {
+      "text": "{game} revient en tête. Ça commence presque à devenir une tradition.",
+      "mood": "happy"
+    },
+    {
+      "text": "{game} de nouveau ? Je crois que la roue et toi êtes du même avis.",
+      "mood": "enjoy"
+    },
+    {
+      "text": "Déjà-vu, dirait-on. Mais c'est un choix de la roue, pas le mien. (￣▽￣)",
+      "mood": "enjoy"
+    }
+  ],
+  "spin:sameGenre": [
+    {
+      "text": "Troisième tour {genre} d'affilée ! La roue traverse une phase, on dirait.",
+      "mood": "normal"
+    },
+    {
+      "text": "Encore du {genre}. Une tendance se dessine, ou pur hasard. (¬‿¬)",
+      "mood": "normal"
+    },
+    {
+      "text": [
+        "{genre}, {genre}, {genre}.",
+        "Je commence à voir un motif se former."
+      ],
+      "mood": "happy"
+    },
+    {
+      "text": "La roue reste fidèle au {genre}. Il faut lui reconnaître cette constance.",
+      "mood": "normal"
+    },
+    {
+      "text": "Trois victoires {genre} d'affilée, la roue a visiblement un genre préféré en ce moment. (・_・;)",
+      "mood": "enjoy"
+    },
+    {
+      "text": "On dirait que la roue s'est trouvée un goût bien précis aujourd'hui.",
+      "mood": "normal"
+    }
+  ],
+  "list:select": [
+    {
+      "text": [
+        "Ah, tu prends {game} toi-même.",
+        "La roue va devenir jalouse."
+      ],
+      "mood": "happy"
+    },
+    {
+      "text": "Sélection directe de {game} ? Audacieux de contourner le hasard. (╯°□°)╯",
+      "mood": "normal"
+    },
+    {
+      "text": "{game} choisi à la main. Je respecte l'initiative personnelle.",
+      "mood": "happy"
+    },
+    {
+      "text": "Tu as cliqué sur {game}, je prends ça comme une déclaration personnelle.",
+      "mood": "normal"
+    },
+    {
+      "text": "Segment {game} sélectionné, sans détour par le hasard. (´｡• ω •｡`)",
+      "mood": "normal"
+    },
+    {
+      "text": "Triés sur le volet, {game}. Parfois on sait juste ce qu'on veut.",
+      "mood": "happy"
+    },
+    {
+      "text": "Choix intéressant, {game}. J'aurais peut-être pris autre chose, mais qui me demande. ヽ(・∀・)ﾉ",
+      "mood": "enjoy"
+    },
+    {
+      "text": "Un clic, et {game} devient ton candidat. Efficace, j'aime bien.",
+      "mood": "happy"
+    },
+    {
+      "text": "Choix personnel plutôt que hasard, joli petit coup d'audace.",
+      "mood": "happy"
+    }
+  ],
+  "random:game": [
+    {
+      "text": "Bouton Jeu Aléatoire pressé, voici {game}, sans détour par les filtres. (＞﹏＜)",
+      "mood": "happy"
+    },
+    {
+      "text": "{game}, tiré directement du chaudron du chaos.",
+      "mood": "normal"
+    },
+    {
+      "text": "Des filtres ? Qui a besoin de filtres, voici {game} !",
+      "mood": "happy"
+    },
+    {
+      "text": "Coup de hasard : {game}. Les filtres étaient en vacances. (눈_눈)",
+      "mood": "normal"
+    },
+    {
+      "text": "Résultat éclair : {game}. Parfois, moins de contrôle veut dire plus de plaisir.",
+      "mood": "enjoy"
+    },
+    {
+      "text": "Voilà {game}, servi brut et sans filtrage.",
+      "mood": "happy"
+    },
+    {
+      "text": "Bouton aléatoire, {game} aléatoire, dans l'esprit du : on verra bien. (ง •̀_•́)ง",
+      "mood": "happy"
+    },
+    {
+      "text": "Pur hasard, sans détour ni chichi.",
+      "mood": "happy"
+    }
+  ],
+  "search:pick": [
+    {
+      "text": "{game} trouvé via la recherche, bon choix, si je peux me permettre.",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "Ah, recherche ciblée de {game}.",
+        "Tu sais exactement ce que tu veux. (°ロ°)!"
+      ],
+      "mood": "normal"
+    },
+    {
+      "text": "{game} sélectionné, aucune surprise, que de la précision.",
+      "mood": "happy"
+    },
+    {
+      "text": "Coup direct : {game}. Merci la barre de recherche. ٩(ˊᗜˋ*)و",
+      "mood": "normal"
+    },
+    {
+      "text": "Pas de hasard ici, juste une recherche ciblée de {game}. Respect pour la clarté.",
+      "mood": "enjoy"
+    },
+    {
+      "text": "{game} trouvé en un rien de temps, la recherche fait bien son travail.",
+      "mood": "happy"
+    },
+    {
+      "text": "Recherche ciblée, trouvaille nette, bien joué. (｡•̀ᴗ-)✧",
+      "mood": "happy"
+    }
+  ],
+  "click:store": [
+    {
+      "text": "Direction la fiche Steam de {game}, bonne exploration.",
+      "mood": "happy"
+    },
+    {
+      "text": "Page Steam de {game} qui s'ouvre, j'espère sans tentation de solde.",
+      "mood": "normal"
+    },
+    {
+      "text": "Vérification Steam pour {game}, voyons ce qu'il y a à découvrir. (T_T)",
+      "mood": "normal"
+    },
+    {
+      "text": "Fiche boutique ouverte, {game} attend ton attention.",
+      "mood": "happy"
+    },
+    {
+      "text": "Direction la boutique, bonne exploration.",
+      "mood": "happy"
+    }
+  ],
+  "click:gog": [
+    {
+      "text": "Version GOG de {game} en cours de vérification, sans DRM et fière de l'être. (－‸ლ)",
+      "mood": "happy"
+    },
+    {
+      "text": "Direction GOG pour {game}, parfois le sans-DRM, c'est simplement mieux.",
+      "mood": "normal"
+    },
+    {
+      "text": "Voir {game} sur GOG ? Bonne idée, l'oncle Gabe n'a pas toujours besoin de gagner. (´∀｀)",
+      "mood": "normal"
+    },
+    {
+      "text": "La page GOG de {game} s'ouvre, bonne comparaison.",
+      "mood": "happy"
+    },
+    {
+      "text": "Direction GOG, sans DRM et fière de l'être.",
+      "mood": "happy"
+    }
+  ],
+  "click:metacritic": [
+    {
+      "text": "Note Metacritic de {game} en cours de consultation, avis des critiques inclus. ～(｀▽´)～",
+      "mood": "normal"
+    },
+    {
+      "text": "Voyons ce que les critiques disent de {game}.",
+      "mood": "normal"
+    },
+    {
+      "text": "Vérification Metacritic pour {game}, les avis extérieurs peuvent aider aussi.",
+      "mood": "happy"
+    },
+    {
+      "text": "Direction Metacritic pour {game}, fais-toi ton propre avis à côté. (◕‿◕)",
+      "mood": "normal"
+    },
+    {
+      "text": "Avis des critiques inclus, voyons donc ça de plus près.",
+      "mood": "normal"
+    }
+  ],
+  "click:hltb": [
+    {
+      "text": "HowLongToBeat pour {game} qui s'ouvre, planifie bien ton temps.",
+      "mood": "normal"
+    },
+    {
+      "text": "Vérifier la durée de {game} ? Bon réflexe avant de te lancer. (｡•ᴗ•｡)",
+      "mood": "happy"
+    },
+    {
+      "text": "Vérif HLTB pour {game}, pour que ton agenda ne soit pas surpris.",
+      "mood": "normal"
+    },
+    {
+      "text": "Voyons combien de temps {game} va vraiment t'occuper.",
+      "mood": "normal"
+    },
+    {
+      "text": "Vérification de la durée, histoire de bien planifier. (⁎˃ᆺ˂)",
+      "mood": "normal"
+    }
+  ],
+  "click:gamefaqs": [
+    {
+      "text": "Page GameFAQs de {game} qui s'ouvre, pour les fans de guides.",
+      "mood": "normal"
+    },
+    {
+      "text": "Des guides pour {game} ? GameFAQs a sûrement de quoi t'aider. (¬_¬)",
+      "mood": "happy"
+    },
+    {
+      "text": "Direction GameFAQs pour {game}, au cas où tu restes bloqué.",
+      "mood": "normal"
+    },
+    {
+      "text": "Vérif GameFAQs pour {game}, savoir c'est pouvoir, même en jouant.",
+      "mood": "happy"
+    },
+    {
+      "text": "Des guides à portée de clic, toujours pratique. ( •̀ω•́ )",
+      "mood": "happy"
+    }
+  ],
+  "click:igdb": [
+    {
+      "text": "Fiche IGDB de {game} qui s'ouvre, pour les amateurs de bases de données.",
+      "mood": "normal"
+    },
+    {
+      "text": "Plus d'infos sur {game} sur IGDB, à un clic de distance.",
+      "mood": "happy"
+    },
+    {
+      "text": "Vérif IGDB pour {game}, pour les plus méticuleux d'entre vous. ٩(◕‿◕)۶",
+      "mood": "normal"
+    },
+    {
+      "text": "Les données de {game} sur IGDB, à ta disposition.",
+      "mood": "normal"
+    },
+    {
+      "text": "Données de la base, à portée de clic pour toi.",
+      "mood": "normal"
+    }
   ],
   "empty": [
-    { "text": "Hmm, rien ne correspond à ces filtres. On les assouplit un peu ? (｡•́︿•̀｡)", "mood": "unhappy" },
-    { "text": "Liste vide ! Essaie avec moins de restrictions la prochaine fois ヽ(-_-;)ノ", "mood": "unhappy" }
+    {
+      "text": "Hmm, rien ne correspond à ces filtres. On assouplit un peu peut-être ? ( ˘ω˘ )",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Liste vide ! Même moi, l'optimiste, j'atteins mes limites ici.",
+      "mood": "unhappy"
+    },
+    {
+      "text": [
+        "Zéro résultat.",
+        "Soit très précis, soit l'univers te teste en ce moment."
+      ],
+      "mood": "unhappy"
+    },
+    {
+      "text": "Aucun jeu trouvé, tes filtres sont plus stricts que mon budget de dialogues. (≧▽≦)",
+      "mood": "normal"
+    },
+    {
+      "text": "Rien ne correspond, moins de restrictions et ça devrait marcher.",
+      "mood": "normal"
+    },
+    {
+      "text": "La base de données hausse les épaules, comme moi en ce moment. (￣▽￣)",
+      "mood": "unhappy"
+    }
   ],
   "privacy": [
-    { "text": "Ta bibliothèque Steam est privée, je ne peux pas y jeter un œil ヽ(°〇°)ノ", "mood": "unhappy" },
-    { "text": "Rends ta liste de jeux Steam publique pour que le filtre « bibliothèque uniquement » fonctionne (・ω・)", "mood": "normal" }
+    {
+      "text": "Ta bibliothèque Steam est privée, je ne regarde pas dedans, promis.",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Bibliothèque en mode privé ? Rends-la publique pour que le filtre fonctionne.",
+      "mood": "normal"
+    },
+    {
+      "text": "Je ne vois qu'une porte fermée là où devrait être ta liste de jeux. (¬‿¬)",
+      "mood": "unhappy"
+    },
+    {
+      "text": "Mode privé activé, je respecte ça, mais le filtre ne peut pas travailler comme ça.",
+      "mood": "normal"
+    }
   ],
   "longSession": [
-    { "text": "Ça fait un moment que tu tournes la roue — tu as trouvé quelque chose ? （・ω・）", "mood": "normal" },
-    { "text": "Toujours en train de chercher ? Peut-être une pause snack, senpai （≡´∀`）", "mood": "happy" }
+    {
+      "text": "Ça fait un moment que tu tournes, tu as trouvé quelque chose de bien ?",
+      "mood": "normal"
+    },
+    {
+      "text": "Longue session aujourd'hui. Peut-être l'heure d'une pause et d'un verre d'eau ? (・_・;)",
+      "mood": "happy"
+    },
+    {
+      "text": "Toujours en recherche ? J'admire ton endurance.",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "On est installés tous les deux depuis un bon moment.",
+        "Plutôt agréable, non ?"
+      ],
+      "mood": "normal"
+    },
+    {
+      "text": "Session marathon détectée. Pense à cligner des yeux de temps en temps. (╯°□°)╯",
+      "mood": "happy"
+    },
+    {
+      "text": "Autant de temps sur la roue, ça s'appelle de la dévotion au hasard.",
+      "mood": "enjoy"
+    }
   ],
   "settings:open": [
-    { "text": "Oh, tu règles les filtres ? Ne sois pas trop exigeant~ （≡´∀`）", "mood": "happy" },
-    { "text": "Dis-moi si tu as besoin d'aide pour comprendre une option (｡•ᴗ•｡)", "mood": "normal" }
+    {
+      "text": "Tu règles les filtres ? Ne sois pas trop exigeant, la roue a besoin de marge. (´｡• ω •｡`)",
+      "mood": "happy"
+    },
+    {
+      "text": "Dis-moi si une option n'est pas claire, je t'explique volontiers.",
+      "mood": "normal"
+    },
+    {
+      "text": "Bienvenue dans le centre de contrôle. Ici, exceptionnellement, c'est toi qui décides.",
+      "mood": "happy"
+    },
+    {
+      "text": "Réglage fin des filtres, très responsable de ta part. ヽ(・∀・)ﾉ",
+      "mood": "normal"
+    },
+    {
+      "text": "Paramètres ouverts, ne complique pas trop les choses.",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "Ici tu peux dompter la roue.",
+        "Un tout petit peu en tout cas."
+      ],
+      "mood": "normal"
+    },
+    {
+      "text": "C'est parti pour les filtres, je regarde ça avec intérêt. (＞﹏＜)",
+      "mood": "happy"
+    }
+  ],
+  "settings:change": [
+    {
+      "text": "Filtre modifié, la roue s'adapte bien sagement.",
+      "mood": "normal"
+    },
+    {
+      "text": "Nouveau réglage pris en compte, voyons ce que ça donne.",
+      "mood": "happy"
+    },
+    {
+      "text": "Tu bricoles les filtres, je regarde ça avec intérêt. (눈_눈)",
+      "mood": "normal"
+    },
+    {
+      "text": "Changement enregistré, tes goûts deviennent plus précis.",
+      "mood": "happy"
+    },
+    {
+      "text": "Filtre ajusté, espérons que ce soit pour le mieux.",
+      "mood": "normal"
+    },
+    {
+      "text": [
+        "Encore un réglage fin.",
+        "J'aime ce perfectionnisme. (ง •̀_•́)ง"
+      ],
+      "mood": "happy"
+    },
+    {
+      "text": "Un autre ajustement ? Tu es exigeant, je respecte ça.",
+      "mood": "normal"
+    }
+  ],
+  "settings:reset": [
+    {
+      "text": "Tout réinitialisé, un redémarrage bien propre pour les filtres. (°ロ°)!",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "Reset activé.",
+        "Retour à zéro, sans aucun regret."
+      ],
+      "mood": "normal"
+    },
+    {
+      "text": "Filtres réinitialisés, un nouveau départ pour toi et la roue.",
+      "mood": "happy"
+    },
+    {
+      "text": "Retour aux réglages d'usine, parfois plus simple vaut mieux. ٩(ˊᗜˋ*)و",
+      "mood": "normal"
+    }
+  ],
+  "settings:language": [
+    {
+      "text": "Langue changée, je m'adapte, sans le moindre accent.",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "Nouvelle langue sélectionnée.",
+        "Mes phrases viennent maintenant d'un autre fichier."
+      ],
+      "mood": "normal"
+    },
+    {
+      "text": "Changement de langue détecté, bonjour dans cette nouvelle langue. (｡•̀ᴗ-)✧",
+      "mood": "happy"
+    },
+    {
+      "text": "Je te parle français maintenant, j'espère sans trop de fautes.",
+      "mood": "normal"
+    }
+  ],
+  "settings:music:on": [
+    {
+      "text": "Musique activée ! L'ambiance devient tout de suite plus chaleureuse.",
+      "mood": "happy"
+    },
+    {
+      "text": "Son allumé, enfin de la musique de fond pour régler les filtres. (T_T)",
+      "mood": "happy"
+    },
+    {
+      "text": "La musique tourne maintenant, bien mieux que ce silence de tout à l'heure.",
+      "mood": "happy"
+    }
+  ],
+  "settings:music:off": [
+    {
+      "text": "Musique coupée, le silence a aussi son charme.",
+      "mood": "normal"
+    },
+    {
+      "text": "Son en sourdine, comme tu préfères. (－‸ლ)",
+      "mood": "normal"
+    },
+    {
+      "text": "Plus de musique, va pour un filtrage tranquille.",
+      "mood": "normal"
+    }
+  ],
+  "auth:login": [
+    {
+      "text": "Bienvenue, {user} ! Ça devient personnel maintenant. (´∀｀)",
+      "mood": "happy"
+    },
+    {
+      "text": "Connexion Steam détectée, bonjour {user}, ravie de te connaître.",
+      "mood": "happy"
+    },
+    {
+      "text": "{user} est connecté, la bibliothèque peut maintenant entrer en jeu.",
+      "mood": "normal"
+    },
+    {
+      "text": [
+        "Connecté en tant que {user}.",
+        "Je note ça pour plus tard, peut-être. ～(｀▽´)～"
+      ],
+      "mood": "happy"
+    },
+    {
+      "text": "Salut {user}, content que tu sois connecté, ça devient plus intéressant.",
+      "mood": "kira"
+    },
+    {
+      "text": "Connexion Steam détectée, ça devient personnel maintenant.",
+      "mood": "happy"
+    }
+  ],
+  "konami": [
+    {
+      "text": [
+        "Attends, c'était le code Konami !",
+        "Je n'ai malheureusement pas de vies supplémentaires pour toi, désolée. (◕‿◕)"
+      ],
+      "mood": "kira",
+      "once": true
+    },
+    {
+      "text": "↑↑↓↓←→←→BA détecté, tu connais tes classiques, respect.",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "Code secret découvert.",
+        "Malheureusement, il n'y a ici que des applaudissements et pas de coffre caché."
+      ],
+      "mood": "happy"
+    }
+  ],
+  "copy": [
+    {
+      "text": "Texte copié ? Pour toujours ou juste pour plus tard, je ne demande pas. (｡•ᴗ•｡)",
+      "mood": "normal"
+    },
+    {
+      "text": "Copier-coller détecté, fais-en bon usage.",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "Tu copies quelque chose d'ici.",
+        "Je me sens flattée. (⁎˃ᆺ˂)"
+      ],
+      "mood": "happy"
+    },
+    {
+      "text": "Presse-papiers actif, j'espère rien d'embarrassant à mon sujet.",
+      "mood": "normal"
+    }
   ],
   "hover:randomGame": [
-    "Si vous ne voulez pas attendre, voici un jeu aléatoire pour vous, mais les filtres ne comptent pas ٩(◦`꒳´◦)۶"
+    {
+      "text": "Pour ceux qui ne veulent pas attendre : un jeu aléatoire, sans tenir compte des filtres.",
+      "mood": "normal"
+    },
+    {
+      "text": "Hasard instantané, sans passer par tes réglages de filtres. (¬_¬)",
+      "mood": "happy"
+    },
+    {
+      "text": "Un clic, un jeu, aucune question posée.",
+      "mood": "normal"
+    }
   ],
   "hover:marbles": [
-    "Je vous sauvegarde un fichier de 100 jeux que vous pouvez utiliser dans Marbles on Stream ୧(﹒︠ᴗ﹒︡)୨"
+    {
+      "text": "Enregistre une liste de 100 jeux pour Marbles on Stream.",
+      "mood": "normal"
+    },
+    {
+      "text": "Export Marbles prêt, cent jeux en un seul clic. ( •̀ω•́ )",
+      "mood": "happy"
+    },
+    {
+      "text": "Pour ton prochain stream Marbles, voici un fichier bien pratique.",
+      "mood": "normal"
+    }
   ],
   "hover:ggPoints": [
-    "Passez en revue les jeux, obtenez des points pour eux et améliorez votre niveau de jeu (⁎˃ᆺ˂)"
+    {
+      "text": "Parcourir les jeux te rapporte des points et un peu de prestige de joueur.",
+      "mood": "happy"
+    },
+    {
+      "text": "Ton score GG, continue à en accumuler avec assiduité. ٩(◕‿◕)۶",
+      "mood": "normal"
+    },
+    {
+      "text": "Des points pour les jeux terminés, sans utilité réelle, mais agréable à regarder.",
+      "mood": "happy"
+    }
   ],
   "hover:profile": [
-    "À l'avenir, il sera possible de créer des listes de tous les jeux auxquels vous avez joué (｡･ω･｡)"
+    {
+      "text": "Bientôt tu pourras créer des listes des jeux auxquels tu as joué.",
+      "mood": "normal"
+    },
+    {
+      "text": "Ta zone de profil, encore en construction, mais prometteuse. ( ˘ω˘ )",
+      "mood": "happy"
+    },
+    {
+      "text": "Un jour, ton archive personnelle de jeux naîtra ici.",
+      "mood": "normal"
+    }
   ],
   "hover:search": [
-    "Vous pouvez consulter ici les données de vos jeux préférés (ง ˙ω˙)ว "
+    {
+      "text": "Tu trouveras ici les données de ton jeu préféré. (≧▽≦)",
+      "mood": "normal"
+    },
+    {
+      "text": "Barre de recherche, tape simplement un nom et regarde ce qui se passe.",
+      "mood": "happy"
+    },
+    {
+      "text": "Envie de chercher un jeu précis ? C'est exactement fait pour ça.",
+      "mood": "normal"
+    }
   ],
   "hover:gog": [
-    "La boutique de l'oncle Gabe propose des jeux moins chers, et lui en acheter donne un plus au karma ヽ(〃･ω･)ﾉ"
+    {
+      "text": "Le concurrent de l'oncle Gabe, souvent moins cher et toujours sans DRM. (￣▽￣)",
+      "mood": "normal"
+    },
+    {
+      "text": "La boutique GOG, pour ceux qui ne veulent pas de DRM dans leur bibliothèque.",
+      "mood": "happy"
+    },
+    {
+      "text": "Parfois GOG est simplement le meilleur choix, je dis ça comme ça.",
+      "mood": "normal"
+    }
   ],
   "hover:donations": [
-    "Si vous aimez le site, HPG ou SGG, rejoignez la milice de Nap Nap sur Patreon ヽ(*⌒∇⌒*)ﾉ",
-    "Même un peu d'aide est une grande motivation pour soutenir le projet durablement ٩(-౪-٩)"
+    {
+      "text": "Si le site te plaît, le développeur apprécie tout soutien. (¬‿¬)",
+      "mood": "happy"
+    },
+    {
+      "text": [
+        "Même un petit geste aide.",
+        "À faire vivre le projet, je veux dire."
+      ],
+      "mood": "normal"
+    },
+    {
+      "text": "Le soutien est libre, mais chaleureusement bienvenu.",
+      "mood": "happy"
+    }
   ],
   "hover:spin": [
-    "Vous allez obtenir quelque chose de bien ! Ou juste quelque chose... ＾◡＾'",
-    "Oh-ho-ho, j'adore les surprises ˃ˑ̫ ˂",
-    "Attendez ! Non, allez... Mais arrêtez !",
-    "Hit it! ＾∇＾"
+    {
+      "text": "Clique ici et laisse la roue décider de ta soirée. (・_・;)",
+      "mood": "happy"
+    },
+    {
+      "text": "Le bouton de la roue, ta porte vers un nouveau jeu aléatoire.",
+      "mood": "normal"
+    },
+    {
+      "text": "Un clic, et le destin, enfin la roue, prend le relais.",
+      "mood": "happy"
+    }
   ]
 }
