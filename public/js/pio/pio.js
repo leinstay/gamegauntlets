@@ -269,6 +269,11 @@ export function createPio(opts = {}) {
   function applyVisible(visible) {
     root.classList.toggle('pio-hidden', !visible);
     toggle.setAttribute('aria-pressed', String(!visible));
+    // Hidden = only this button stays on screen (as a small "bring her back" tab); without it a visitor who
+    // closed her once could never get her back, the preference is remembered in localStorage.
+    toggle.textContent = visible ? '×' : '💬';
+    toggle.title = visible ? 'Hide' : 'Show';
+    if (!visible) { try { dialog.classList.remove('pio-dialog-active'); } catch (e) { /* no bubble yet */ } }
   }
 
   let visible = readBoolPref(VISIBLE_KEY, true);

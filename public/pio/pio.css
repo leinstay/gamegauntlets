@@ -17,8 +17,21 @@
   pointer-events: none; /* only the canvas and toggle re-enable pointer events below */
 }
 
-.pio-container.pio-hidden {
+/* Hidden: the model and the bubble go away, the round button stays as a "bring her back" tab. */
+.pio-container.pio-hidden .pio-canvas,
+.pio-container.pio-hidden .pio-dialog {
   display: none;
+}
+.pio-container.pio-hidden {
+  width: 2.6em;
+  height: 2.6em;
+}
+.pio-container.pio-hidden .pio-toggle {
+  opacity: 0.85;
+  top: auto;
+  right: auto;
+  left: 0.4em;
+  bottom: 0.4em;
 }
 
 @media screen and (max-width: 1024px) {
