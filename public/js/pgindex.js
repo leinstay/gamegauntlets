@@ -301,7 +301,8 @@ var $bgs = [];
 		},
 		delay: 15000
 	};
-	var smallScreen = Math.max(screen.width, screen.height) * (window.devicePixelRatio || 1) <= 1400;
+	// phones and small tablets (by CSS pixels, so a 3x phone does not pull the 2560px file over mobile data)
+	var smallScreen = Math.max(screen.width, screen.height) <= 1100;
 	var pos = 0,
 		lastPos = 0,
 		changePos = 0,
