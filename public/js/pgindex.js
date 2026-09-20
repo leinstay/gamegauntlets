@@ -294,10 +294,10 @@ var $bgs = [];
 	// Each background exists as <name>.avif / <name>.webp (2560x1440) and <name>-s.* (1280x720, small screens).
 	var settings = {
 		images: {
-			'img/dynamic_backgrounds/15': 'center',
-			'img/dynamic_backgrounds/16': 'center',
-			'img/dynamic_backgrounds/17': 'center',
-			'img/dynamic_backgrounds/18': 'center',
+			'img/dynamic_backgrounds/o15': 'center',
+			'img/dynamic_backgrounds/o16': 'center',
+			'img/dynamic_backgrounds/o17': 'center',
+			'img/dynamic_backgrounds/o18': 'center',
 		},
 		delay: 15000
 	};
