@@ -40,9 +40,10 @@ jobs:
             --filter='- /node_modules/' \
             --filter='- /tests/' \
             ./ "$APP_DIR/"
-          # Cache busting: replace ?v=dev with the commit hash in HTML
+          # Cache busting: replace ?v=dev with the commit hash in HTML and in the Pio ES modules
+          # (static `import` specifiers do not inherit the importing script's query string)
           if [ -d "$APP_DIR/public" ]; then
-            find "$APP_DIR/public" -name '*.html' -exec sed -i "s/?v=dev/?v=${GITHUB_SHA::8}/g" {} +
+            find "$APP_DIR/public" \( -name '*.html' -o -path '*/js/pio/*.js' \) -exec sed -i "s/?v=dev/?v=${GITHUB_SHA::8}/g" {} +
           fi
 
       - name: Install, restart

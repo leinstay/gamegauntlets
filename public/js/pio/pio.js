@@ -44,7 +44,7 @@
 //   - The visit counter (`localStorage`, persists across sessions) and a few "environment" facts (browser,
 //     mobile, logged-in) are injected into every emit()'s context automatically so host call sites stay simple.
 
-import { createDialogueEngine, MOODS } from './dialogue.js';
+import { createDialogueEngine, MOODS } from './dialogue.js?v=dev'; // rewritten at deploy, see pio-global.js
 
 const CANVAS_SIZE = 300; // matches legacy <canvas id="pio" width="300" height="300"> (legacy/ajax/pages/wheel.php)
 const KNOWN_MOODS = MOODS;
