@@ -448,7 +448,9 @@ export function createPio(opts = {}) {
     }
     const base = typeof source === 'string' ? source : 'pio/dialogues';
     try {
-      const res = await fetch(`${base}/${lang}.json`);
+      // same release token as every other asset, otherwise browsers keep serving last week's phrases from cache
+      const ver = typeof window !== 'undefined' && window.GG && window.GG.version ? `?v=${window.GG.version}` : '';
+      const res = await fetch(`${base}/${lang}.json${ver}`);
       if (res.ok) dialogueEngine.setPool(lang, await res.json());
     } catch (e) {
       /* offline or missing file: engine simply has no phrases for this language yet */
