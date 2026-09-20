@@ -62,6 +62,23 @@ import { parseDate } from '../lib/dates.js';
 export const name = 'legacy_steamdb';
 export const extractOnly = true;
 
+// The old catalog stored developers/publishers comma-joined, so "Foo, Inc." came back as two names ("Foo" and
+// "Inc.") and "Inc."/"LLC"/"Ltd." ended up as the most common "developers" in the settings dropdown. A token that
+// is nothing but a company-form suffix belongs to the name before it.
+const COMPANY_SUFFIX_RE = /^(inc|incorporated|llc|l\.l\.c|ltd|limited|llp|co|corp|corporation|gmbh|ag|kg|ug|s\.?a|s\.?l|s\.?r\.?l|s\.?r\.?o|a\.?s|b\.?v|n\.?v|ab|oy|aps|pty|pty ltd|plc|sp\. z o\.o|sarl|sas|kft|d\.o\.o|co\., ?ltd)\.?$/i;
+
+export function splitCompanyList(value) {
+  const parts = splitList(value);
+  if (!parts) return parts;
+  const out = [];
+  for (const raw of parts) {
+    const part = String(raw).trim();
+    if (out.length > 0 && COMPANY_SUFFIX_RE.test(part)) out[out.length - 1] += ', ' + part;
+    else if (part) out.push(part);
+  }
+  return out;
+}
+
 /** 'a,b, c' -> ['a','b','c']; null/'' -> null. `toPipeList` (called by the resolver) handles trimming/dedup. */
 function splitList(value) {
   if (value === null || value === undefined || value === '') return null;
@@ -148,8 +165,8 @@ export function extract(payload = {}) {
     ownersEstimate: payload.stsp_owners ?? null,
 
     platforms: splitList(payload.platforms),
-    developers: splitList(payload.developers),
-    publishers: splitList(payload.publishers),
+    developers: splitCompanyList(payload.developers),
+    publishers: splitCompanyList(payload.publishers),
     genres: splitList(payload.genres),
     tags: splitList(payload.tags),
     categories: splitList(payload.categories),

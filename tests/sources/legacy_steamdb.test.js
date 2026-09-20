@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-import { name, extractOnly, extract } from '../../src/sources/legacy_steamdb.js';
+import { name, extractOnly, extract, splitCompanyList } from '../../src/sources/legacy_steamdb.js';
 import { sources, getSource } from '../../src/sources/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -146,4 +146,12 @@ test('extract: a mostly-empty row never throws and every optional field is absen
 
 test('extract: called with no payload at all does not throw', () => {
   assert.doesNotThrow(() => extract());
+});
+
+test('splitCompanyList: a bare company-form suffix is re-attached to the name before it', () => {
+  assert.deepEqual(splitCompanyList('Choice of Games, Inc., Hosted Games, LLC'), ['Choice of Games, Inc.', 'Hosted Games, LLC']);
+  assert.deepEqual(splitCompanyList('KOEI TECMO GAMES CO., LTD.'), ['KOEI TECMO GAMES CO., LTD.']);
+  assert.deepEqual(splitCompanyList('Valve, Hidden Path Entertainment'), ['Valve', 'Hidden Path Entertainment']);
+  assert.deepEqual(splitCompanyList('Inc.'), ['Inc.']);
+  assert.equal(splitCompanyList(null), null);
 });
