@@ -110,8 +110,8 @@ export function nextSourceState({ stats: currentStats, lastError: currentLastErr
  * for a job named `'discover'`, `fetchOne` otherwise. Every dependency is
  * injected so this is unit-testable without a real DB/Redis (see
  * tests/worker.test.js):
- *  - skips (and requeues delayed `requeueDelayMs`, same as the paused case)
- *    when `isPaused(source)` is true;
+ *  - skips (and requeues delayed `requeueDelayMs`) when `isPaused(source)` is
+ *    true, logging at most once per `egressLogIntervalMs` per source;
  *  - on an error whose `code` is `'EPROXY_UNAVAILABLE'` (thrown by
  *    src/lib/http.js's proxied path when the egress proxy itself can't be
  *    reached — see its module comment), ALSO requeues delayed instead of
@@ -141,12 +141,17 @@ export function createRunSourceJob({
   now = () => Date.now(),
 }) {
   let lastEgressOfflineLogAt = -Infinity;
+  const lastPausedLogAt = new Map(); // source -> ms; a paused source requeues a job every few seconds
 
   return async function runSourceJob(mod, job) {
     const sourceCtx = ctxForSource?.get(mod.name) ?? defaultCtx;
 
     if (await isPaused(mod.name)) {
-      logger.info('worker: source paused, requeuing', { source: mod.name, job: job.name, jobId: job.id });
+      const nowMs = now();
+      if (nowMs - (lastPausedLogAt.get(mod.name) ?? -Infinity) >= egressLogIntervalMs) {
+        lastPausedLogAt.set(mod.name, nowMs);
+        logger.info('worker: source paused, requeuing', { source: mod.name, job: job.name, jobId: job.id });
+      }
       await queueForFn(mod.name).add(job.name, job.data, { delay: requeueDelayMs });
       return { skipped: true, reason: 'paused' };
     }

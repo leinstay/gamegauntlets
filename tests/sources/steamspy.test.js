@@ -23,6 +23,7 @@ import {
   buildAllUrl,
   buildAppDetailsUrl,
   walkAllPages,
+  NON_JSON_PAGE,
   computeSteamScore,
   parseOwnersMidpoint,
 } from '../../src/sources/steamspy.js';
@@ -109,6 +110,48 @@ test('walkAllPages: any other error propagates instead of being treated as "done
     return out;
   };
   await assert.rejects(drain, /network boom/);
+});
+
+test('walkAllPages: skips a non-JSON page and carries on with the next one', async () => {
+  const requested = [];
+  const getPage = async (page) => {
+    requested.push(page);
+    if (page === 1) throw Object.assign(new Error('non-JSON'), { code: NON_JSON_PAGE });
+    if (page === 3) return {};
+    return { [page]: { appid: page } };
+  };
+  const yielded = [];
+  for await (const p of walkAllPages(getPage)) yielded.push(p.page);
+  assert.deepEqual(requested, [0, 1, 2, 3]);
+  assert.deepEqual(yielded, [0, 2]);
+});
+
+test('walkAllPages: three non-JSON pages in a row end the walk (the broken tail of the listing)', async () => {
+  const requested = [];
+  const getPage = async (page) => {
+    requested.push(page);
+    if (page >= 87) throw Object.assign(new Error('non-JSON'), { code: NON_JSON_PAGE });
+    return { [page]: { appid: page } };
+  };
+  const yielded = [];
+  for await (const p of walkAllPages(getPage, { startPage: 86 })) yielded.push(p.page);
+  assert.deepEqual(yielded, [86]);
+  assert.deepEqual(requested, [86, 87, 88, 89]);
+
+  // resumed on the broken tail itself (the stuck cursor): ends quietly so the pass can complete
+  const resumed = [];
+  for await (const p of walkAllPages(getPage, { startPage: 87 })) resumed.push(p.page);
+  assert.deepEqual(resumed, []);
+});
+
+test('walkAllPages: non-JSON from page 0 onwards is an outage, not an empty listing', async () => {
+  const getPage = async () => {
+    throw Object.assign(new Error('non-JSON everywhere'), { code: NON_JSON_PAGE });
+  };
+  const drain = async () => {
+    for await (const p of walkAllPages(getPage)) void p;
+  };
+  await assert.rejects(drain, /non-JSON everywhere/);
 });
 
 test('walkAllPages: honors a non-zero startPage', async () => {

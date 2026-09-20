@@ -89,30 +89,49 @@ export function buildAppDetailsUrl(appid) {
   return `${APPDETAILS_URL}&appid=${encodeURIComponent(String(appid))}`;
 }
 
+export const NON_JSON_PAGE = 'ESTEAMSPY_NON_JSON';
+const DEFAULT_MAX_BAD_PAGES = 3;
+
 // --- walkAllPages (paging) -------------------------------------------
 
 /**
  * Walk `request=all` starting at `startPage`, yielding `{ page, entries }`
  * (`entries` = `Object.values()` of the page's appid-keyed body) until a page
  * comes back empty or `getPage` throws an HTTP 500 (SteamSpy's documented
- * out-of-range-page signal - see the module header). Any other thrown error
+ * out-of-range-page signal - see the module header). A page that answers with
+ * non-JSON (`err.code === NON_JSON_PAGE`) is skipped; `maxBadPages` of them in a
+ * row end the walk (or throw, when not a single page worked). Any other thrown error
  * propagates so a real failure aborts the walk instead of being mistaken for
  * "done". Pure control flow (no db/log access) - `getPage` is injected so
  * this is unit-testable without touching the network, mirroring
  * src/sources/steam.js's `walkAppList`.
  */
-export async function* walkAllPages(getPage, { startPage = 0 } = {}) {
+export async function* walkAllPages(getPage, { startPage = 0, maxBadPages = DEFAULT_MAX_BAD_PAGES } = {}) {
   let page = startPage;
+  let badInARow = 0;
+  let yielded = 0;
   for (;;) {
     let body;
     try {
       body = await getPage(page);
     } catch (err) {
       if (err?.statusCode === 500) return;
-      throw err;
+      // SteamSpy's deepest pages answer 200 "Connection failed: Too many connections" for days on end
+      // (seen live 2026-09-20, pages 87-88 while 86 was fine). Aborting there left the cursor parked on
+      // that page, so every daily run died on its first request and nothing was refreshed any more.
+      if (err?.code !== NON_JSON_PAGE) throw err;
+      badInARow += 1;
+      if (badInARow >= maxBadPages) {
+        if (startPage === 0 && yielded === 0) throw err; // the whole API is down, not just its tail
+        return;
+      }
+      page += 1;
+      continue;
     }
+    badInARow = 0;
     const entries = Object.values(body ?? {});
     if (entries.length === 0) return;
+    yielded += 1;
     yield { page, entries };
     page += 1;
   }
@@ -166,7 +185,9 @@ function isInvalidJsonError(err) {
 }
 
 function wrapInvalidJsonError(err, url) {
-  return new Error(`steamspy: upstream returned non-JSON for ${url} (${err.message})`);
+  const wrapped = new Error(`steamspy: upstream returned non-JSON for ${url} (${err.message})`);
+  wrapped.code = NON_JSON_PAGE;
+  return wrapped;
 }
 
 // --- discover() ---------------------------------------------------------

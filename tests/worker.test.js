@@ -344,6 +344,35 @@ test('createRunSourceJob: EPROXY_UNAVAILABLE logs at most once per egressLogInte
   assert.equal(egressLogs.length, 2);
 });
 
+test('createRunSourceJob: a paused source logs at most once per egressLogIntervalMs per source, but requeues every job', async () => {
+  const { queueFor, added } = fakeQueue();
+  const logger = fakeLogger();
+  let clock = 1_000_000;
+  const runSourceJob = createRunSourceJob({
+    ctxForSource: new Map(),
+    defaultCtx: {},
+    isPaused: async () => true,
+    touchSourceState: async () => {},
+    queueFor,
+    log: logger,
+    egressLogIntervalMs: 60_000,
+    now: () => clock,
+  });
+  const gamefaqs = { name: 'gamefaqs', fetchOne: async () => ({}) };
+  const hltb = { name: 'hltb', fetchOne: async () => ({}) };
+
+  await runSourceJob(gamefaqs, job('fetch', { gameId: 1 }, 'j1')); // logs
+  clock += 3_000;
+  await runSourceJob(gamefaqs, job('fetch', { gameId: 2 }, 'j2')); // silent
+  await runSourceJob(hltb, job('fetch', { gameId: 3 }, 'j3')); // another source: logs
+  clock += 61_000;
+  await runSourceJob(gamefaqs, job('fetch', { gameId: 4 }, 'j4')); // past the interval: logs again
+
+  const pausedLogs = logger.info_calls.filter((c) => c.msg === 'worker: source paused, requeuing');
+  assert.equal(pausedLogs.length, 3);
+  assert.equal(added.length, 4);
+});
+
 test('createRunSourceJob: falls back to defaultCtx when a source has no entry in ctxForSource', async () => {
   const { queueFor } = fakeQueue();
   const defaultCtx = { marker: 'default' };
