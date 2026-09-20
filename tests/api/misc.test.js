@@ -139,3 +139,21 @@ test('GET /api/stats: rolls offset defaults to 0 when stats.rollsOffset is missi
   const res = await app.inject({ method: 'GET', url: '/api/stats' });
   assert.equal(JSON.parse(res.body).rolls, 123);
 });
+
+test('GET /api/dictionaries/developers: ordered by number of games, ties alphabetical', async () => {
+  const db = {
+    query: async () => [
+      { v: '|!CyberApps|' },
+      { v: '|Valve|' },
+      { v: '|Valve|Hidden Path|' },
+      { v: '|Valve|Valve|' }, // the same name twice on one game counts once
+      { v: '|Hidden Path|' },
+      { v: '|Aardvark|' },
+    ],
+    one: async () => null,
+  };
+  const app = buildTestApp({ db });
+  const res = await app.inject({ method: 'GET', url: '/api/dictionaries/developers' });
+  assert.equal(res.statusCode, 200);
+  assert.deepEqual(JSON.parse(res.body).map((x) => x.value), ['Valve', 'Hidden Path', '!CyberApps', 'Aardvark']);
+});

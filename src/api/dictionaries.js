@@ -18,18 +18,26 @@ const VALID_FIELDS = new Set([...PIPE_LIST_FIELDS, 'difficulty', 'presets']);
 const CACHE_TTL_MS = 10 * 60 * 1000;
 const cache = new Map(); // key `${field}:${lang}` -> { at, data }
 
+// Developers/publishers are tens of thousands of names, most with a single obscure game: alphabetical order put
+// junk like "!CyberApps" first. They are ordered by how many games they have (ties alphabetical) so the studios
+// people actually look for come first; the short lists (genres, tags, ...) stay alphabetical.
+const SORT_BY_GAME_COUNT = new Set(['developers', 'publishers']);
+
 async function loadPipeListValues(db, column) {
   const rows = await db.query(
     `SELECT ${column} AS v FROM games WHERE ${column} IS NOT NULL AND ${column} <> '' AND non_game IS NULL AND purchasable = 1`,
   );
-  const values = new Set();
+  const counts = new Map();
   for (const row of rows) {
-    for (const part of String(row.v).split('|')) {
-      const trimmed = part.trim();
-      if (trimmed) values.add(trimmed);
+    for (const part of new Set(String(row.v).split('|').map((x) => x.trim()).filter(Boolean))) {
+      counts.set(part, (counts.get(part) || 0) + 1);
     }
   }
-  return [...values].sort((a, b) => a.localeCompare(b));
+  const names = [...counts.keys()];
+  if (SORT_BY_GAME_COUNT.has(column)) {
+    return names.sort((a, b) => counts.get(b) - counts.get(a) || a.localeCompare(b));
+  }
+  return names.sort((a, b) => a.localeCompare(b));
 }
 
 async function loadDifficultyValues(db) {
