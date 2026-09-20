@@ -32,6 +32,33 @@ function t(key) {
 	return key;
 }
 
+// Pio (Neptune) is only ever mounted on the wheel page (.pio-container lives in public/pages/wheel.html,
+// there is no such element here), so there is never a GG.pio to call directly from this page. Every
+// settings:* reaction instead queues itself in sessionStorage ("only the LAST one survives"); pio.js's
+// init() reads and plays (and clears) that key the next time Pio mounts, dropping it if it's gone stale
+// (see public/pio/dialogues/README.md "Settings page: queued events" for the full contract). If a future
+// change ever mounts Pio here too, this same helper calls GG.pio.emit() directly instead.
+function firePioSettingsEvent(event, context) {
+	if (window.GG && GG.pio && typeof GG.pio.emit === 'function') {
+		GG.pio.emit(event, context || {});
+		return;
+	}
+	try {
+		sessionStorage.setItem('pio.pendingEvent', JSON.stringify({ event: event, context: context || {}, ts: Date.now() }));
+	} catch (e) { /* private mode / storage disabled: the reaction is just silently skipped */ }
+}
+
+// "Any filter changed" (settings:change), throttled to one reaction per 20s -- called from every
+// dropdown/slider/checkbox onChange below EXCEPT the ones with their own dedicated event (language, music,
+// reset).
+var lastPioSettingsChangeAt = 0;
+function notifyPioSettingsChange() {
+	var now = Date.now();
+	if (now - lastPioSettingsChangeAt < 20000) return;
+	lastPioSettingsChangeAt = now;
+	firePioSettingsEvent('settings:change', {});
+}
+
 // Language-conditional markup (legacy rendered this server-side based on the session language):
 // both variants are in the static HTML tagged data-lang="xx" / data-lang-not="xx"; drop whichever
 // one doesn't match the current language before anything else runs.
@@ -65,6 +92,7 @@ $('#rangestart').calendar({
 	onChange: function (date, text, mode) {
 		if (date)
 			sessionStorage.setItem('from', date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-01");
+		notifyPioSettingsChange();
 	}
 });
 
@@ -75,6 +103,7 @@ $('#rangeend').calendar({
 	onChange: function (date, text, mode) {
 		if (date)
 			sessionStorage.setItem('to', date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-31");
+		notifyPioSettingsChange();
 	}
 });
 
@@ -86,11 +115,13 @@ if (sessionStorage.getItem('to'))
 $('#rangestart button').click(function () {
 	$('#rangestart').calendar('clear');
 	sessionStorage.setItem('from', '');
+	notifyPioSettingsChange();
 });
 
 $('#rangeend button').click(function () {
 	$('#rangeend').calendar('clear');
 	sessionStorage.setItem('to', '');
+	notifyPioSettingsChange();
 });
 
 // Language switch: legacy POSTed an `actionType=changeLang` request to the settings page endpoint
@@ -121,6 +152,9 @@ $('#changeLang').dropdown({
 		// on switching to any other language, before the reload below re-renders the page -- don't wait
 		// for the reload to pick this up from the (still ru-scoped) checkbox state.
 		if (value !== 'ru') sessionStorage.setItem('backupRegion', false);
+		// Queued before the reload below -- sessionStorage survives same-tab navigation, so pio.js finds it
+		// (and plays it in the NEW language's pool) right after the page comes back up.
+		firePioSettingsEvent('settings:language', {});
 		// Keep the current hash route (#wheel/#settings) across the navigation.
 		window.location.href = '/' + value + '/' + window.location.hash;
 	}
@@ -199,9 +233,11 @@ $("select").each(function () {
 			// name/presets mutual exclusion is handled in their own dedicated blocks below (they
 			// are not part of this generic loop any more).
 			sessionStorage.setItem(vname, $(this).val());
+			notifyPioSettingsChange();
 		},
 		onRemove: function () {
 			sessionStorage.setItem(vname, $(this).val());
+			notifyPioSettingsChange();
 		},
 		message: {
 			addResult: __text_result,
@@ -266,10 +302,12 @@ $("select").each(function () {
 				sessionStorage.setItem('names', '');
 				sessionStorage.setItem('namesLabels', '');
 			}
+			notifyPioSettingsChange();
 		},
 		onRemove: function () {
 			sessionStorage.setItem('presets', '');
 			sessionStorage.setItem('presetsName', '');
+			notifyPioSettingsChange();
 		},
 		message: {
 			addResult: __text_result,
@@ -310,6 +348,7 @@ $("select").each(function () {
 		var ids = $('#name').val() || [];
 		sessionStorage.setItem('names', ids.join(','));
 		sessionStorage.setItem('namesLabels', JSON.stringify(currentLabels()));
+		notifyPioSettingsChange();
 		return ids;
 	}
 
@@ -385,6 +424,7 @@ $(".setprice").on('click', function () {
 		to: $(this).data("max")
 	});
 	sessionStorage.setItem('price', $(this).data("min") + ',' + $(this).data("max"));
+	notifyPioSettingsChange();
 });
 
 $(".setscore").on('click', function () {
@@ -393,9 +433,11 @@ $(".setscore").on('click', function () {
 		to: $(this).data("max")
 	});
 	sessionStorage.setItem('score', $(this).data("min") + ',' + $(this).data("max"));
+	notifyPioSettingsChange();
 });
 
 $("#resetSettings").on('click', function () {
+	firePioSettingsEvent('settings:reset', {});
 	$('#backupRegion').checkbox('uncheck'); // "Use CIS region": off by default (owner's rule, "Goal B")
 	$('#empty').checkbox('check');
 	$('#steam').checkbox('uncheck');
@@ -567,45 +609,55 @@ $('#tags_switch').checkbox({
 $('#steam').checkbox({
 	onChecked: function () {
 		sessionStorage.setItem('steam', true);
+		notifyPioSettingsChange();
 	},
 	onUnchecked: function () {
 		sessionStorage.setItem('steam', false);
+		notifyPioSettingsChange();
 	}
 });
 
 $('#backupRegion').checkbox({
 	onChecked: function () {
 		sessionStorage.setItem('backupRegion', true);
+		notifyPioSettingsChange();
 	},
 	onUnchecked: function () {
 		sessionStorage.setItem('backupRegion', false);
+		notifyPioSettingsChange();
 	}
 });
 
 $('#empty').checkbox({
 	onChecked: function () {
 		sessionStorage.setItem('empty', true);
+		notifyPioSettingsChange();
 	},
 	onUnchecked: function () {
 		sessionStorage.setItem('empty', false);
+		notifyPioSettingsChange();
 	}
 });
 
 $('#music').checkbox({
 	onChecked: function () {
 		sessionStorage.setItem('music', true);
+		firePioSettingsEvent('settings:music:on', {});
 	},
 	onUnchecked: function () {
 		sessionStorage.setItem('music', false);
+		firePioSettingsEvent('settings:music:off', {});
 	}
 });
 
 $('#dynamic').checkbox({
 	onChecked: function () {
 		sessionStorage.setItem('dynamic', false);
+		notifyPioSettingsChange();
 	},
 	onUnchecked: function () {
 		sessionStorage.setItem('dynamic', true);
+		notifyPioSettingsChange();
 	}
 });
 
@@ -721,6 +773,7 @@ $("#price").ionRangeSlider({
 	min_interval: 1,
 	onFinish: function (data) {
 		sessionStorage.setItem('price', data.from + ',' + data.to);
+		notifyPioSettingsChange();
 	}
 });
 
@@ -738,6 +791,7 @@ $("#score").ionRangeSlider({
 	min_interval: 1,
 	onFinish: function (data) {
 		sessionStorage.setItem('score', data.from + ',' + data.to);
+		notifyPioSettingsChange();
 	}
 });
 
@@ -755,6 +809,7 @@ $("#length").ionRangeSlider({
 	min_interval: 1,
 	onFinish: function (data) {
 		sessionStorage.setItem('length', data.from + ',' + data.to);
+		notifyPioSettingsChange();
 	}
 });
 
@@ -770,6 +825,7 @@ $("#spin").ionRangeSlider({
 	prefix: __settings_duration,
 	onFinish: function (data) {
 		sessionStorage.setItem('spin', data.from);
+		notifyPioSettingsChange();
 	}
 });
 
@@ -785,6 +841,7 @@ $("#segments").ionRangeSlider({
 	prefix: __settings_number,
 	onFinish: function (data) {
 		sessionStorage.setItem('segments', data.from);
+		notifyPioSettingsChange();
 	}
 });
 
@@ -800,5 +857,6 @@ $("#speed").ionRangeSlider({
 	prefix: __settings_rotation,
 	onFinish: function (data) {
 		sessionStorage.setItem('speed', data.from);
+		notifyPioSettingsChange();
 	}
 });

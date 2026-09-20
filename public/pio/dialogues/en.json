@@ -11,11 +11,27 @@
     { "text": "I'm Nap Nap and I'll be commenting everything that happens here!", "mood": "happy", "weight": 1 },
     { "text": "Welcome back! I kept the wheel warm for you ♡", "mood": "happy", "when": { "returning": true }, "weight": 2 }
   ],
+  "ambient": [
+    { "text": "Fun fact: I'm just a canvas element in the corner of this page (￣▽￣)", "mood": "normal" },
+    { "text": "Somewhere in a JSON file, one of my lines is still waiting for its turn ( ˘ω˘ )", "mood": "enjoy" }
+  ],
   "idle": [
     { "text": "Still there? Spin the wheel already, I'm getting bored (´∀｀)", "mood": "normal" },
     { "text": "Tick-tock~ a random game isn't going to pick itself ヽ(•∀•)ﾉ", "mood": "happy" },
     { "text": "Zzz... oh, you're still here ～(｀▽´)～", "mood": "normal", "when": { "hourFrom": 23, "hourTo": 7 } },
     { "text": "I could hum the loading music one more time, if you're not going to move.", "mood": "enjoy" }
+  ],
+  "idle:long": [
+    { "text": "Three minutes of silence. Did the page freeze, or did you? (・_・;)", "mood": "normal" },
+    { "text": "I'll just nap here on my canvas until you come back ( ˘ω˘ )", "mood": "enjoy" }
+  ],
+  "idle:veryLong": [
+    { "text": ["Ten minutes... okay, you definitely fell asleep on the backlog again.", "I'll keep the wheel warm, senpai ( ˘ω˘ )ᶻ z"], "mood": "enjoy" },
+    { "text": "Guess it's just me and this canvas now (눈_눈)", "mood": "unhappy" }
+  ],
+  "tab:return": [
+    { "text": "Oh, you're back! That was a quick peek elsewhere ヽ(・∀・)ﾉ", "mood": "happy", "when": { "awayMax": 120 } },
+    { "text": "{awayMinutes} minutes away and not even a postcard? (￣▽￣)", "mood": "normal", "when": { "awayMin": 120 } }
   ],
   "click:head": [
     "Aren't you ashamed?!",
@@ -31,6 +47,10 @@
     "Tie it up ༼ つ ͠° ͟ ͟ʖ ͡° ༽つ",
     "They're on their way to pick you up (╬ Ò﹏Ó)"
   ],
+  "click:spam": [
+    { "text": "OKAY. OKAY. I GET IT. STOP CLICKING (°ロ°) !", "mood": "unhappy" },
+    { "text": "My poor sprite is getting dizzy from all this clicking (╬ Ò﹏Ó)", "mood": "unhappy" }
+  ],
   "spin:start": [
     { "text": "You're definitely gonna get something good! Or just something... ＾◡＾'", "mood": "happy" },
     { "text": "Oh-ho-ho, I love surprises ˃ˑ̫ ˂", "mood": "enjoy" },
@@ -44,6 +64,10 @@
   "spin:retry": [
     { "text": "You trying to find something definitive? ;3", "mood": "normal", "when": { "respin": 3 } },
     { "text": "Careful, or you'll break the wheel ×﹏×", "mood": "unhappy", "when": { "respin": 3 } }
+  ],
+  "spin:streak": [
+    { "text": "{spins} spins already? The wheel is rigged (it is not) (¬‿¬)", "mood": "enjoy" },
+    { "text": "That's {spins} spins this session. My clicking finger hurts just watching ٩(ˊᗜˋ*)و", "mood": "happy" }
   ],
   "spin:middle": [
     { "text": "Wow! You're gonna have to play {game} for {hours}! >_<", "mood": "normal" },
@@ -63,6 +87,44 @@
     { "text": "A {year} game, huh. A little dusty, but charm doesn't expire ˙ᵕ˙", "mood": "normal", "when": { "yearMax": 2005 } },
     { "text": "Free? Even better, more Marbles money for snacks (◕‿◕)", "mood": "happy", "when": { "priceMax": 0 } }
   ],
+  "spin:repeatWinner": [
+    { "text": "{game} again?! The wheel really wants you to play it ٩(ˊᗜˋ*)و", "mood": "kira" },
+    { "text": "Wow, {game} for the second time. Fate, or a rigged wheel (it is not)? (¬‿¬)", "mood": "enjoy" }
+  ],
+  "spin:sameGenre": [
+    { "text": "Three {genre} games in a row... the wheel has decided your mood for you (눈_눈)", "mood": "normal" },
+    { "text": "Okay, we get it, you're in a {genre} phase ヽ(・∀・)ﾉ", "mood": "happy" }
+  ],
+  "list:select": [
+    { "text": "Ooh, {game} caught your eye instead? Good pick ٩(ˊᗜˋ*)و", "mood": "happy" },
+    { "text": "Peeking at {game} before the wheel even asked, hm? (¬‿¬)", "mood": "enjoy" }
+  ],
+  "random:game": [
+    { "text": "No patience for the wheel, huh? Here, {game} (¬‿¬)", "mood": "enjoy" },
+    { "text": "{game}, served fresh and filter-free ٩(ˊᗜˋ*)و", "mood": "happy" }
+  ],
+  "search:pick": [
+    { "text": "Looking up {game} yourself? I see how it is (￣▽￣)", "mood": "normal" },
+    { "text": "{game}! Good taste, or at least a decisive one ヽ(・∀・)ﾉ", "mood": "happy" }
+  ],
+  "click:store": [
+    { "text": "Off to buy {game}? My cut of the sale is zero, by the way (￣▽￣)", "mood": "normal" }
+  ],
+  "click:gog": [
+    { "text": "Uncle Gabe would be jealous, but {game} it is ヽ(〃･ω･)ﾉ", "mood": "happy" }
+  ],
+  "click:metacritic": [
+    { "text": "Checking the critics on {game}? Bold, considering they never agree with me ( ˘ω˘ )", "mood": "normal" }
+  ],
+  "click:hltb": [
+    { "text": "Curious how long {game} will eat into your backlog time? Smart ٩(ˊᗜˋ*)و", "mood": "happy" }
+  ],
+  "click:gamefaqs": [
+    { "text": "Off to GameFAQs for {game}? I respect the dedication (｡•̀ᴗ-)✧", "mood": "happy" }
+  ],
+  "click:igdb": [
+    { "text": "IGDB has more data on {game} than I'll ever have lines about it (・_・;)", "mood": "normal" }
+  ],
   "empty": [
     { "text": "Hmm, nothing matches those filters. Try loosening them up a bit? (｡•́︿•̀｡)", "mood": "unhappy" },
     { "text": "Empty-handed! Maybe fewer restrictions next time ヽ(-_-;)ノ", "mood": "unhappy" }
@@ -79,6 +141,36 @@
     { "text": "Ooh, tweaking the filters? Don't be too picky now~ （≡´∀`）", "mood": "happy" },
     { "text": "Let me know if you need help understanding an option (｡•ᴗ•｡)", "mood": "normal" }
   ],
+  "settings:change": [
+    { "text": "Adjusting the filters again? The wheel appreciates the attention to detail ( ˘ω˘ )", "mood": "normal" },
+    { "text": "Narrowing it down, or just fidgeting with the sliders? (・_・;)", "mood": "normal" }
+  ],
+  "settings:reset": [
+    { "text": "Back to square one! A clean slate for the wheel ヽ(・∀・)ﾉ", "mood": "happy" },
+    { "text": "All filters reset. Chaos mode engaged ٩(ˊᗜˋ*)و", "mood": "enjoy" }
+  ],
+  "settings:language": [
+    { "text": "Switching languages? I hope my new lines translate well (・_・;)", "mood": "normal" },
+    { "text": "A whole new JSON file, just for you ( ˘ω˘ )", "mood": "happy" }
+  ],
+  "settings:music:on": [
+    { "text": "Music's back on! Let's set a mood ヽ(・∀・)ﾉ", "mood": "happy" }
+  ],
+  "settings:music:off": [
+    { "text": "Music off. Suit yourself, I'll hum quietly instead ( ˘ω˘ )", "mood": "normal" }
+  ],
+  "auth:login": [
+    { "text": "Welcome, {user}! Now I know who to blame for the spin count ٩(ˊᗜˋ*)و", "mood": "happy" },
+    { "text": "Logged in as {user}. Your Steam backlog is judging you silently (¬‿¬)", "mood": "enjoy" }
+  ],
+  "konami": [
+    { "text": ["Ara ara, someone remembers the classics ~", "No extra lives here, though, just extra dialogue (｡•̀ᴗ-)✧"], "mood": "kira" },
+    { "text": "↑↑↓↓←→←→BA... you found my one Easter egg (≧▽≦)", "mood": "happy" }
+  ],
+  "copy": [
+    { "text": "Copying something from my corner of the internet? (・_・;)", "mood": "normal" },
+    { "text": "Ctrl+C noted. I hope it was a good line ( ˘ω˘ )", "mood": "enjoy" }
+  ],
   "hover:randomGame": [
     "If you don't want to wait, here's a random game for you (but it doesn't include filters!) ٩(◦`꒳´◦)۶"
   ],
@@ -94,7 +186,7 @@
   "hover:search": [
     "Here you can see your favorite game data (ง ˙ω˙)ว "
   ],
-  "hover:gabestore": [
+  "hover:gog": [
     "Uncle Gabe's shop has cheaper games, and buying games from him gives a plus in karma ヽ(〃･ω･)ﾉ"
   ],
   "hover:donations": [

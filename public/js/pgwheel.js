@@ -351,21 +351,39 @@ function sndFadeIn() {
 	return 7 <= e.volume ? (clearInterval("fadingin"), void(timeFVars.soundFadingIn && clearTimeout(timeFVars.soundFadingIn))) : void e.setVolume(e.volume + .25)
 }
 
-// Context for the Pio mascot's phrases ({game}, {hours}, {score}, {year}, {developers}, {genre}, {otherGame} and
-// the `when` conditions: tag, scoreMin/Max, priceMax, yearMax) — raw values come from game.pio (see gg-api.js).
+// Context for the Pio mascot's phrases ({game}, {hours}, {score}, {price}, {year}, {developers}/{developer},
+// {genre}, {tag}, {otherGame}, {longGame} and the `when` conditions: genre, tag, scoreMin/Max, priceMin/Max,
+// yearMax, noScore, free, difficulty, reviewsMin/Max) — raw values come from game.pio (see gg-api.js's
+// toLegacyGame()). `all` (every game on the current wheel, when there is one) is only used to pick `otherGame`
+// and `longGame` — pass `[]`/`undefined` for single-game contexts (random:game, search:pick).
 function pioContext(game, all) {
 	var p = game.pio || {}, others = (all || []).filter(function (g) { return g && g.name && g.name !== game.name; });
+	var longGame;
+	(all || []).forEach(function (g) {
+		var h = Number(g && g.final_time) || 0;
+		if (!longGame || h >= (Number(longGame.hours) || 0)) longGame = { name: g.name, hours: h };
+	});
 	return {
 		game: game.name,
 		genres: p.genres || [],
 		genre: (p.genres || [])[0],
 		tags: p.tags || [],
+		tag: (p.tags || [])[0],
 		platforms: p.platforms || [],
 		developers: p.developers || undefined,
+		developer: (p.developersList || [])[0],
 		score: game.final_score != null ? Number(game.final_score) : undefined,
+		noScore: game.final_score == null,
 		hours: game.final_time != null ? Number(game.final_time) : undefined,
-		price: p.price != null ? p.price : undefined,
+		// pio.price/pio.currency are still store-native cents/symbol (see gg-api.js) — divide down to a plain
+		// dollar (or ruble) amount here, same scale populateAbout() shows in the "Price" card row.
+		price: p.price != null ? Number(p.price) / 100 : undefined,
+		priceSymbol: p.currency || undefined,
+		free: p.price != null ? Number(p.price) === 0 : undefined,
+		difficulty: p.difficulty || undefined,
+		reviews: p.reviews != null ? Number(p.reviews) : undefined,
 		year: p.year || undefined,
+		longGame: longGame ? longGame.name : undefined,
 		otherGame: others.length ? others[Math.floor(Math.random() * others.length)].name : undefined
 	};
 }
@@ -513,7 +531,7 @@ function textShowAnimate(e, t, n, s) {
 }
 
 function showGame(e) {
-	0 == wheelSpinning && winner && 0 == document.getElementById("spin_button").disabled && !$("#all" + e).parent().parent().hasClass("highlight-list-item") && (highlightGame(theWheel.segments[e + 1]), "Mobile" == screenVersion && $("#content-wrapper").stop().animate({
+	0 == wheelSpinning && winner && 0 == document.getElementById("spin_button").disabled && !$("#all" + e).parent().parent().hasClass("highlight-list-item") && (highlightGame(theWheel.segments[e + 1]), GG.pio && GG.pio.emit("list:select", pioContext(theWheel.segments[e + 1], gamesData && gamesData.data)), "Mobile" == screenVersion && $("#content-wrapper").stop().animate({
 		scrollTop: $("#aboutg").parent()[0].offsetTop
 	}, 1e3))
 }
@@ -660,6 +678,7 @@ $("#rndgm").click(function () {
 	$("#rndgm").prop("disabled", !0);
 	GG.api.random(__language, cisPricesEnabled()).then(function (game) {
 		if (game != "empty" && game != "privacy") {
+			GG.pio && GG.pio.emit("random:game", pioContext(game, []));
 			$("#aboutg").parent().transition("stop all").transition({
 				animation: "horizontal fly left out",
 				duration: 400,
@@ -707,7 +726,7 @@ $("#canvas").mousemove(function (e) {
 	canvas.style.cursor = t && 0 == wheelSpinning && 0 == document.getElementById("spin_button").disabled && t != highlitedSegment && winner ? "pointer" : ""
 }), canvas.onclick = function (e) {
 	var t = theWheel.getSegmentAt(e.clientX, e.clientY);
-	t && 0 == wheelSpinning && 0 == document.getElementById("spin_button").disabled && t != highlitedSegment && winner && (highlightGame(t), scrollToHighlight())
+	t && 0 == wheelSpinning && 0 == document.getElementById("spin_button").disabled && t != highlitedSegment && winner && (highlightGame(t), GG.pio && GG.pio.emit("list:select", pioContext(t, gamesData && gamesData.data)), scrollToHighlight())
 }, $("#aboutg img").on("load", function () {
 	theWheel.createPatterns(), drawTriangle()
 }), $(".ui.tiny.image img").on("load", function () {
@@ -733,10 +752,25 @@ $("#canvas").mousemove(function (e) {
 			lang: __language,
 			dialogues: "pio/dialogues",
 		});
+		pioGreetLoginOnce();
 	}
 	if (window.GGPio) create();
 	else document.addEventListener("ggpio:ready", create, { once: true });
 })();
+
+// "Steam login completed (first page load as a logged-in user in this session)": fires once per browser
+// session (sessionStorage flag), the first time GG.pio mounts while GG.session.user is set -- this covers
+// both "just came back from the Steam OpenID redirect" and "reloaded the wheel page while already logged in
+// earlier this session" the same way, since neither pgwheel.js nor gg-boot.js otherwise knows which one it was.
+function pioGreetLoginOnce() {
+	var session = window.GG && GG.session, user = session && session.user;
+	if (!GG.pio || !user) return;
+	try {
+		if (sessionStorage.getItem("pio.authGreeted") === "1") return;
+		sessionStorage.setItem("pio.authGreeted", "1");
+	} catch (e) { /* private mode / storage disabled: greets every load instead of once, harmless */ }
+	GG.pio.emit("auth:login", { user: user.name });
+}
 
 var pioevents = function () {
 	var e = !1;
@@ -790,12 +824,26 @@ var pioevents = function () {
 	var o = !1;
 	$("#rgogbtn").mouseenter(function () {
 		timeFVars.gogtimer = setTimeout(function () {
-			o || (GG.pio && GG.pio.emit("hover:gabestore", {})), o = !0
+			o || (GG.pio && GG.pio.emit("hover:gog", {})), o = !0
 		}, 500)
 	}).mouseleave(function () {
 		clearTimeout(timeFVars.gogtimer)
 	});
 }; 1 == session ? pioevents() : setTimeout(pioevents, 6e3);
+
+// "Check on <store>" buttons: fire with the currently displayed game (highlitedSegment -- the one populateAbout()
+// last rendered -- falling back to the spin winner before anything has been clicked in the list/wheel). Both can
+// still be null before the first spin, hence the guard.
+function pioClickButton(event) {
+	var game = highlitedSegment || winner;
+	if (GG.pio && game) GG.pio.emit(event, pioContext(game, gamesData && gamesData.data));
+}
+$("#rbtn").on("click", function () { pioClickButton("click:store"); });
+$("#rgogbtn").on("click", function () { pioClickButton("click:gog"); });
+$("#rmetabtn").on("click", function () { pioClickButton("click:metacritic"); });
+$("#rhltbbtn").on("click", function () { pioClickButton("click:hltb"); });
+$("#rgfbtn").on("click", function () { pioClickButton("click:gamefaqs"); });
+$("#rigdbbtn").on("click", function () { pioClickButton("click:igdb"); });
 
 $("#allgames").dropdown({
 	placeholder: $("#allgames").attr("data-placeholder"),
@@ -828,6 +876,7 @@ $("#allgames").dropdown({
 	onChange: function (e) {
 		if (e) {
 			GG.api.game(e, __language).then(function (game) {
+				GG.pio && GG.pio.emit("search:pick", pioContext(game, []));
 				$("#aboutg").parent().transition("stop all").transition({
 					animation: "horizontal fly left out",
 					duration: 400,

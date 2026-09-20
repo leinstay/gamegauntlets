@@ -190,14 +190,24 @@
       meta_url: links.metacritic,
       store_platform: isGog ? "GOG" : "Steam",
       description: descriptionToHtml(card.description),
-      // Raw (untranslated) facts for the Pio mascot's phrase conditions and placeholders — see pioContext() in pgwheel.js.
+      // Raw (untranslated) facts for the Pio mascot's phrase conditions and placeholders — see pioContext() in
+      // pgwheel.js. `price`/`price.currency` are still store-native cents (pioContext() divides by 100 for the
+      // `{price}` placeholder/`priceMin`/`priceMax` — dollars, not cents, matches how a hand-written phrase like
+      // `when: { priceMax: 5 }` reads). `difficulty`/`reviews` are untranslated/raw so `when.difficulty` can match
+      // the exact English GameFAQs label and `when.reviewsMin/Max` a plain percent.
       pio: {
         genres: card.genres || [],
         tags: card.tags || [],
         platforms: card.platforms || [],
         developers: (card.developers || []).join(", "),
+        developersList: card.developers || [],
         year: card.release && card.release.date ? Number(String(card.release.date).slice(0, 4)) : null,
         price: price.final != null ? price.final : price.amount != null ? price.amount : null,
+        currency: currency,
+        difficulty: card.difficulty || null,
+        reviews: card.scores && card.scores.steamReviews && card.scores.steamReviews.all && card.scores.steamReviews.all.percent != null
+          ? Number(card.scores.steamReviews.all.percent)
+          : null,
       },
     };
   }
