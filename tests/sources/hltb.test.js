@@ -135,6 +135,21 @@ test('decideLink: no exact match, no steam id -> not_found (fuzzy alone never qu
   assert.deepEqual(decision, { status: 'not_found' });
 });
 
+test('decideLink: near-identical title (sim >= 90) confirmed by year -> weak (confidence 60)', () => {
+  const candidates = [
+    { id: '7', name: 'Yakuza 5', year: 2012, detail: undefined },
+    { id: '8', name: 'Frozen Free Fall: Snowball Fights', year: 2015, detail: undefined },
+  ];
+  const decision = decideLink(candidates, { name: 'Frozen Free Fall: Snowball Fight', steamAppid: null, releaseYear: 2015 });
+  assert.deepEqual(decision, { status: 'weak', id: '8', confidence: 60 });
+});
+
+test('decideLink: near-identical title but wrong year -> not_found', () => {
+  const candidates = [{ id: '8', name: 'Frozen Free Fall: Snowball Fights', year: 2015, detail: undefined }];
+  const decision = decideLink(candidates, { name: 'Frozen Free Fall: Snowball Fight', steamAppid: null, releaseYear: 2001 });
+  assert.deepEqual(decision, { status: 'not_found' });
+});
+
 test('decideLink: empty candidate list -> not_found', () => {
   assert.deepEqual(decideLink([], { name: 'Anything', steamAppid: 1, releaseYear: 2020 }), { status: 'not_found' });
 });
@@ -321,9 +336,10 @@ test('fetchOne: existing hltb link -> fetches by id directly, keeps method/confi
   assert.deepEqual(enqueueResolveCalls, [5]);
 });
 
-test('fetchOne: existing hltb link but HLTB no longer has it -> not_found, no link/resolve writes', async () => {
+test('fetchOne: existing hltb link but HLTB no longer has it, search finds nothing -> per-game not_found, no link', async () => {
   _resetCaches();
   const http = fakeHttpWithBuildIdAndDetail({});
+  http.postJson = async () => ({ data: [] });
   const upsertLinkCalls = [];
   const upsertRecordCalls = [];
   const enqueueResolveCalls = [];
@@ -337,9 +353,36 @@ test('fetchOne: existing hltb link but HLTB no longer has it -> not_found, no li
   const ctx = fakeCtx({ http, dbRouter, upsertLinkCalls, upsertRecordCalls, enqueueResolveCalls });
   const result = await fetchOne(ctx, { data: { gameId: 5 } });
   assert.equal(result.status, 'not_found');
+  assert.equal(upsertRecordCalls.length, 1);
+  assert.equal(upsertRecordCalls[0].externalId, 'game-5');
   assert.equal(upsertRecordCalls[0].opts.status, 'not_found');
   assert.equal(upsertLinkCalls.length, 0);
   assert.equal(enqueueResolveCalls.length, 0);
+});
+
+test('fetchOne: existing hltb link that 404s, search finds the game under a new id -> relinked by name', async () => {
+  _resetCaches();
+  const http = fakeHttpWithBuildIdAndDetail({ 7231: portal2 }); // the old id 999999 has no detail
+  http.postJson = async () => searchPortal2;
+  const upsertLinkCalls = [];
+  const upsertRecordCalls = [];
+  const enqueueResolveCalls = [];
+  const dbRouter = {
+    one: async (sql) => {
+      if (sql.includes('FROM games WHERE id')) return { id: 5, name: 'Portal 2', steam_appid: 620, release_date: '2011-04-18' };
+      if (sql.includes('FROM game_links')) return { external_id: '999999', match_method: 'wikidata', confidence: 95 };
+      return null;
+    },
+  };
+  const ctx = fakeCtx({ http, dbRouter, upsertLinkCalls, upsertRecordCalls, enqueueResolveCalls });
+  const result = await fetchOne(ctx, { data: { gameId: 5 } });
+  assert.equal(result.status, 'ok');
+  assert.equal(result.externalId, '7231');
+  assert.equal(upsertRecordCalls.length, 1);
+  assert.equal(upsertRecordCalls[0].opts.status, 'ok');
+  assert.equal(upsertLinkCalls[0].externalId, '7231');
+  assert.equal(upsertLinkCalls[0].opts.method, 'name');
+  assert.deepEqual(enqueueResolveCalls, [5]);
 });
 
 test('fetchOne: no existing link, search finds a profile_steam match -> strong attach', async () => {

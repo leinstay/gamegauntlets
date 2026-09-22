@@ -66,6 +66,7 @@ const gameUrl = (id) => `https://howlongtobeat.com/game/${id}`;
 const DEFAULT_REFRESH_DAYS = 60;
 const DEFAULT_DAILY_CAP = 3000;
 const YEAR_TOLERANCE = 1;
+const FUZZY_MIN_SIM = 90; // simpleSim percent a non-exact title needs before the release year may confirm it
 // How many name-ranked search candidates get a detail fetch (to check
 // profile_steam / a precise release date) per game - bounds the worst-case
 // number of HTTP calls a single fetchOne makes.
@@ -257,6 +258,8 @@ export function scoreCandidate(candidateName, targetName) {
  *     70 }`. The year comes from the candidate's own detail (`release_world`
  *     is a full date there) when fetched, else the search row's year
  *     (`release_world` is year-only in search results).
+ *   - else the most similar candidate with `sim >= FUZZY_MIN_SIM` (90) confirmed
+ *     by release year the same way -> `{ status: 'weak', confidence: 60 }`.
  *   - otherwise `{ status: 'not_found' }`.
  *
  * Exported for tests: fed fake candidates, no network involved.
@@ -279,6 +282,18 @@ export function decideLink(candidates, target, opts = {}) {
     return targetYear != null && candidateYear != null && Math.abs(candidateYear - targetYear) <= yearTolerance;
   });
   if (exactConfirmed) return { status: 'weak', id: exactConfirmed.id, confidence: 70 };
+
+  // Near-identical title (subtitle punctuation, a dropped article, "Remastered" spelled differently)
+  // confirmed by the release year: the sequel/DLC neighbours score far lower (Yakuza 3 vs 5: 59,
+  // "Dark Alley Elf" vs "Dark Elf": 73), so the bar stays high. Owner asked for this (2026-09-22).
+  const fuzzyConfirmed = [...scored]
+    .sort((a, b) => b.sim - a.sim)
+    .find((c) => {
+      if (c.sim < FUZZY_MIN_SIM) return false;
+      const candidateYear = c.detail?.release_world ? yearOf(c.detail.release_world) : c.year;
+      return targetYear != null && candidateYear != null && Math.abs(candidateYear - targetYear) <= yearTolerance;
+    });
+  if (fuzzyConfirmed) return { status: 'weak', id: fuzzyConfirmed.id, confidence: 60 };
 
   return { status: 'not_found' };
 }
@@ -399,10 +414,13 @@ export async function fetchOne(ctx, job) {
     // directly, no search, and keep the existing method/confidence.
     detail = await fetchDetail(http, hltbId);
     if (!detail) {
-      await ctx.upsertRecord(name, hltbId, { status: 'not_found', gameId, error: 'HLTB no longer has this id' });
-      return { status: 'not_found', externalId: hltbId, gameId };
+      // HLTB renumbers/merges pages: 68 of the first 18k games (Mortal Kombat X, Guilty Gear Strive, ...)
+      // carried a Wikidata/legacy id that 404s while the game is still there under a new id (2026-09-22).
+      // Fall through to the name search and relink instead of giving up.
+      hltbId = null;
     }
-  } else {
+  }
+  if (!hltbId) {
     const decision = await resolveHltbId(http, game);
     if (decision.status === 'not_found') {
       // Recorded under a per-game key (no HLTB id exists) so planRefresh() stops re-picking the same
