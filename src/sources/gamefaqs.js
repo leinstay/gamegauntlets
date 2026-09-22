@@ -64,7 +64,7 @@
 // GAMEFAQS_COOKIE (this workstation has no real cookie value to test with).
 
 import { load } from 'cheerio';
-import { normalizeName } from '../lib/names.js';
+import { normalizeName, simpleSim } from '../lib/names.js';
 import { parseDate } from '../lib/dates.js';
 
 export const name = 'gamefaqs';
@@ -82,6 +82,8 @@ const DEFAULT_REFRESH_DAYS = 90;
 const DEFAULT_DAILY_CAP = 1500;
 const BLOCK_PAUSE_HOURS = 24;
 const YEAR_TOLERANCE = 1;
+const FUZZY_MIN_SIM = 90; // simpleSim percent a non-exact title needs before the release year may confirm it — same bar as hltb.js decideLink
+const FUZZY_LINK_CONFIDENCE = 60; // confidence stored for a link resolved via the fuzzy fallback (same tier hltb.js's decideLink uses for its own fuzzy match)
 
 // Typographic punctuation game titles sometimes use in place of the ASCII
 // character normalizeName() expects (curly quotes, en/em dash, ellipsis).
@@ -258,29 +260,53 @@ function yearOfCandidate(candidate) {
  * Pick the search result whose normalized title matches `name` exactly
  * (toAscii + normalizeName, per the task), confirmed by release year (±
  * `yearTolerance`, default 1) when more than one exact match exists and a
- * year is known. Never does fuzzy/similarity matching — an inexact title is
- * always `'none'`, left for the caller's second (subtitle-stripped) query or
- * a `conflicts` row.
+ * year is known.
  *
- * Returns `{ status: 'none' }` | `{ status: 'ok', candidate }` |
+ * When no exact match exists, falls back to a similarity match — same rule
+ * `decideLink` in `src/sources/hltb.js` uses: `simpleSim(toAscii(queryName),
+ * toAscii(c.game_name)) >= FUZZY_MIN_SIM` (90) AND a candidate year
+ * (`yearOfCandidate`) within `yearTolerance` of a *known* `opts.year`. Absent
+ * a year on either side, a fuzzy candidate never qualifies — without that
+ * independent confirmation the bar (90% similarity) alone lets sequel/DLC
+ * neighbours through too easily (see hltb.js's comment on `decideLink`).
+ * Exactly one qualifying fuzzy candidate -> `ok` with `fuzzy: true`; several
+ * -> `ambiguous` (left for a `conflicts` row like an exact ambiguity);
+ * none -> `none`, left for the caller's second (subtitle-stripped) query.
+ *
+ * Returns `{ status: 'none' }` | `{ status: 'ok', candidate, fuzzy? }` |
  * `{ status: 'ambiguous', candidates }`.
  */
 export function matchGamefaqsCandidate(queryName, results, opts = {}) {
   const yearTolerance = opts.yearTolerance ?? YEAR_TOLERANCE;
   const year = opts.year ?? null;
   const wantNorm = normKey(queryName);
+  const candidates = realCandidates(results);
 
-  const exact = realCandidates(results).filter((c) => normKey(c.game_name) === wantNorm);
-  if (exact.length === 0) return { status: 'none' };
+  const exact = candidates.filter((c) => normKey(c.game_name) === wantNorm);
   if (exact.length === 1) return { status: 'ok', candidate: exact[0] };
+  if (exact.length > 1) {
+    if (year == null) return { status: 'ambiguous', candidates: exact };
+    const withinYear = exact.filter((c) => {
+      const cy = yearOfCandidate(c);
+      return cy != null && Math.abs(cy - year) <= yearTolerance;
+    });
+    if (withinYear.length === 1) return { status: 'ok', candidate: withinYear[0] };
+    return { status: 'ambiguous', candidates: exact };
+  }
 
-  if (year == null) return { status: 'ambiguous', candidates: exact };
-  const withinYear = exact.filter((c) => {
-    const cy = yearOfCandidate(c);
-    return cy != null && Math.abs(cy - year) <= yearTolerance;
-  });
-  if (withinYear.length === 1) return { status: 'ok', candidate: withinYear[0] };
-  return { status: 'ambiguous', candidates: exact };
+  // No exact match: a high-similarity title confirmed by release year.
+  if (year != null) {
+    const fuzzy = candidates.filter((c) => {
+      const sim = simpleSim(toAscii(queryName), toAscii(c.game_name));
+      if (sim < FUZZY_MIN_SIM) return false;
+      const cy = yearOfCandidate(c);
+      return cy != null && Math.abs(cy - year) <= yearTolerance;
+    });
+    if (fuzzy.length === 1) return { status: 'ok', candidate: fuzzy[0], fuzzy: true };
+    if (fuzzy.length > 1) return { status: 'ambiguous', candidates: fuzzy };
+  }
+
+  return { status: 'none' };
 }
 
 // ---------------------------------------------------------------------------
@@ -425,8 +451,11 @@ async function writeConflict(db, gameId, candidates, reason) {
  * with the subtitle/edition suffix stripped (`removeAdditions: true`) when
  * the first one found no exact match.
  *
- * Returns `{ status: 'ok', pid, url }` | `{ status: 'none', reason }` |
+ * Returns `{ status: 'ok', pid, url, fuzzy }` | `{ status: 'none', reason }` |
  * `{ status: 'ambiguous', candidates, reason }` | `{ status: 'blocked' }`.
+ * `fuzzy` is `true` when `matchGamefaqsCandidate` resolved this via its
+ * similarity fallback rather than an exact-title match; `fetchOne` uses it to
+ * store the link at a lower confidence.
  */
 export async function locateGamefaqsProduct(ctx, game) {
   const year = game?.release_date ? Number(String(game.release_date).slice(0, 4)) : null;
@@ -454,15 +483,16 @@ export async function locateGamefaqsProduct(ctx, game) {
     return {
       status: 'ambiguous',
       candidates: decision.candidates,
-      reason: `Ambiguous GameFAQs match for "${game?.name ?? ''}": ${decision.candidates.length} exact-name candidates, none confirmed by release year`,
+      reason: `Ambiguous GameFAQs match for "${game?.name ?? ''}": ${decision.candidates.length} exact- or fuzzy-name candidates, none confirmed by release year`,
     };
   }
 
   const candidate = decision.candidate;
+  const fuzzy = decision.fuzzy === true;
   if (!platsIncludePc(candidate)) return { status: 'none', reason: 'matched GameFAQs entry has no PC release' };
 
   if (String(candidate.platform_url).toLowerCase() === 'pc') {
-    return { status: 'ok', pid: String(candidate.pid), url: `${BASE}${candidate.url}` };
+    return { status: 'ok', pid: String(candidate.pid), url: `${BASE}${candidate.url}`, fuzzy };
   }
 
   // The default platform GameFAQs picked for this game isn't PC even though
@@ -476,7 +506,7 @@ export async function locateGamefaqsProduct(ctx, game) {
   const pid = pidFromUrl(pcHref);
   if (!pcHref || !pid) return { status: 'none', reason: 'no PC cross-link found on the default-platform GameFAQs page' };
 
-  return { status: 'ok', pid, url: `${BASE}${pcHref}` };
+  return { status: 'ok', pid, url: `${BASE}${pcHref}`, fuzzy };
 }
 
 // ---------------------------------------------------------------------------
@@ -548,7 +578,11 @@ export async function discover(ctx) {
  * existing `game_links('gamefaqs')` row (legacy `gfq_url` or a Wikidata
  * P4769 id, migrated into that table — either already carries a full `url`,
  * or just the pid, redirect scheme above) if one exists, else search (see
- * `locateGamefaqsProduct`).
+ * `locateGamefaqsProduct`). A freshly-located link keeps `method: 'name'`
+ * either way, but its `confidence` drops to `FUZZY_LINK_CONFIDENCE` (60) when
+ * `locateGamefaqsProduct` resolved it via the similarity fallback
+ * (`located.fuzzy`) rather than an exact-title match (which keeps the
+ * existing default, 90).
  */
 export async function fetchOne(ctx, job) {
   const { db, log } = ctx;
@@ -588,6 +622,7 @@ export async function fetchOne(ctx, job) {
     }
     pid = located.pid;
     url = located.url;
+    if (located.fuzzy) confidence = FUZZY_LINK_CONFIDENCE;
   }
 
   const page = await fetchGamefaqsPage(ctx, url);

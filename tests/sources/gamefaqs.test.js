@@ -129,8 +129,52 @@ test('matchGamefaqsCandidate: exact match once the subtitle is stripped (the leg
   assert.equal(decision.candidate.pid, '991073');
 });
 
-test('matchGamefaqsCandidate: never falls back to fuzzy similarity — an inexact title alone is "none"', () => {
+test('matchGamefaqsCandidate: an inexact title with no year to confirm it stays "none" — fuzzy alone is not enough', () => {
   const decision = matchGamefaqsCandidate('The Witcher 3', witcher3Search);
+  assert.equal(decision.status, 'none');
+});
+
+// --- matchGamefaqsCandidate: fuzzy fallback (confirmed by release year) ---
+
+test('matchGamefaqsCandidate: no exact match, but a high-similarity title confirmed by year -> ok, fuzzy:true', () => {
+  const results = [{ pid: '1', game_name: 'Baldurs Gate 3', plats: 'PC', date_released: '2023-08-03' }];
+  const decision = matchGamefaqsCandidate("Baldur's Gate 3", results, { year: 2023 });
+  assert.equal(decision.status, 'ok');
+  assert.equal(decision.candidate.pid, '1');
+  assert.equal(decision.fuzzy, true);
+});
+
+test('matchGamefaqsCandidate: fuzzy title but release year off by more than the tolerance -> none', () => {
+  const results = [{ pid: '1', game_name: 'Baldurs Gate 3', plats: 'PC', date_released: '2023-08-03' }];
+  const decision = matchGamefaqsCandidate("Baldur's Gate 3", results, { year: 2020 });
+  assert.equal(decision.status, 'none');
+});
+
+test('matchGamefaqsCandidate: fuzzy title with no year known on either side -> none (year confirmation is mandatory)', () => {
+  const results = [{ pid: '1', game_name: 'Baldurs Gate 3', plats: 'PC', date_released: '2023-08-03' }];
+  const decision = matchGamefaqsCandidate("Baldur's Gate 3", results);
+  assert.equal(decision.status, 'none');
+});
+
+test('matchGamefaqsCandidate: two fuzzy candidates confirmed by the same year -> ambiguous', () => {
+  const results = [
+    { pid: '1', game_name: 'Baldurs Gate 3', plats: 'PC', date_released: '2023-08-03' },
+    { pid: '2', game_name: 'Baldurs Gate3', plats: 'PC', date_released: '2023-08-03' },
+  ];
+  const decision = matchGamefaqsCandidate("Baldur's Gate 3", results, { year: 2023 });
+  assert.equal(decision.status, 'ambiguous');
+  assert.equal(decision.candidates.length, 2);
+});
+
+test('matchGamefaqsCandidate: similarity below FUZZY_MIN_SIM never qualifies, even with a matching year (Yakuza 3 vs Yakuza 5)', () => {
+  const results = [{ pid: '1', game_name: 'Yakuza 5', plats: 'PC', date_released: '2012-12-06' }];
+  const decision = matchGamefaqsCandidate('Yakuza 3', results, { year: 2012 });
+  assert.equal(decision.status, 'none');
+});
+
+test('matchGamefaqsCandidate: similarity below FUZZY_MIN_SIM never qualifies, even with a matching year (Doom vs Doom 3)', () => {
+  const results = [{ pid: '1', game_name: 'Doom 3', plats: 'PC', date_released: '2004-08-13' }];
+  const decision = matchGamefaqsCandidate('Doom', results, { year: 2004 });
   assert.equal(decision.status, 'none');
 });
 
@@ -325,6 +369,15 @@ test('locateGamefaqsProduct: first query (full name) misses, retries with the su
   const located = await locateGamefaqsProduct(fakeCtx({ http }), { name: 'Portal 2: Perpetual Testing Initiative', release_date: null });
   assert.equal(located.status, 'ok');
   assert.equal(located.pid, '991073');
+});
+
+test('locateGamefaqsProduct: no exact match, but a fuzzy title confirmed by year -> ok, fuzzy:true', async () => {
+  const fuzzyResults = [{ pid: '1', game_name: 'Baldurs Gate 3', plats: 'PC', platform_url: 'pc', url: '/pc/1-baldurs-gate-3', date_released: '2023-08-03' }];
+  const http = fakeHttp({ search: { "Baldur s Gate 3": fuzzyResults } });
+  const located = await locateGamefaqsProduct(fakeCtx({ http }), { name: "Baldur's Gate 3", release_date: '2023-08-03' });
+  assert.equal(located.status, 'ok');
+  assert.equal(located.pid, '1');
+  assert.equal(located.fuzzy, true);
 });
 
 test('locateGamefaqsProduct: no match at all -> "none"', async () => {
@@ -552,6 +605,26 @@ test('fetchOne: no existing link -> searches, matches, fetches the PC page, upse
   assert.equal(result.externalId, '699808');
   assert.equal(upsertLinkCalls[0].opts.method, 'name');
   assert.deepEqual(enqueueResolveCalls, [42]);
+});
+
+test('fetchOne: no existing link, only a fuzzy match found -> stores the link at confidence 60', async () => {
+  const fuzzyResults = [{ pid: '1', game_name: 'Baldurs Gate 3', plats: 'PC', platform_url: 'pc', url: '/pc/1-baldurs-gate-3', date_released: '2023-08-03' }];
+  const http = fakeHttp({
+    search: { "Baldur s Gate 3": fuzzyResults },
+    pages: { '/pc/1-baldurs-gate-3': portalPcHtml.replace('Portal', "Baldur's Gate 3") },
+  });
+  const upsertLinkCalls = [];
+  const ctx = fakeFetchCtx({
+    http,
+    game: { id: 43, name: "Baldur's Gate 3", release_date: '2023-08-03' },
+    existingLink: null,
+    upsertLinkCalls,
+  });
+  const result = await fetchOne(ctx, { data: { gameId: 43 } });
+  assert.equal(result.status, 'ok');
+  assert.equal(result.externalId, '1');
+  assert.equal(upsertLinkCalls[0].opts.method, 'name');
+  assert.equal(upsertLinkCalls[0].opts.confidence, 60);
 });
 
 test('fetchOne: no match found -> not_found, records the miss, does not throw', async () => {
