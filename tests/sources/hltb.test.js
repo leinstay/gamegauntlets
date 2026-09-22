@@ -398,7 +398,7 @@ test('fetchOne: no existing link, no steam id, exact name + year -> weak attach 
   assert.deepEqual(enqueueResolveCalls, [9]);
 });
 
-test('fetchOne: no existing link, nothing matches -> not_found, no writes at all', async () => {
+test('fetchOne: no existing link, nothing matches -> not_found record only, no link/resolve', async () => {
   _resetCaches();
   const http = fakeHttpWithBuildIdAndDetail({});
   http.postJson = async () => ({ count: 0, data: [] });
@@ -415,7 +415,8 @@ test('fetchOne: no existing link, nothing matches -> not_found, no writes at all
   const ctx = fakeCtx({ http, dbRouter, upsertLinkCalls, upsertRecordCalls, enqueueResolveCalls });
   const result = await fetchOne(ctx, { data: { gameId: 42 } });
   assert.equal(result.status, 'not_found');
-  assert.equal(upsertRecordCalls.length, 0);
+  assert.equal(upsertRecordCalls.length, 1);
+  assert.equal(upsertRecordCalls[0].opts.status, 'not_found');
   assert.equal(upsertLinkCalls.length, 0);
   assert.equal(enqueueResolveCalls.length, 0);
 });

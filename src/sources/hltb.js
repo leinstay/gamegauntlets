@@ -405,6 +405,10 @@ export async function fetchOne(ctx, job) {
   } else {
     const decision = await resolveHltbId(http, game);
     if (decision.status === 'not_found') {
+      // Recorded under a per-game key (no HLTB id exists) so planRefresh() stops re-picking the same
+      // unmatched games every day - they pushed the real backlog out of the daily cap (seen 2026-09-22:
+      // half of the 8000 slots went to games already searched the day before).
+      await ctx.upsertRecord(name, `game-${gameId}`, { status: 'not_found', gameId, error: 'hltb: no match by name' });
       return { status: 'not_found', gameId };
     }
     hltbId = decision.id;
