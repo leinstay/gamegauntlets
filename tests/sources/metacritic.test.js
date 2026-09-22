@@ -8,6 +8,7 @@ import {
   name,
   rateLimit,
   metacriticSlug,
+  metacriticSlugGuesses,
   normalizeMetacriticExternalId,
   parseMetacriticPage,
   matchesMetacriticPage,
@@ -171,6 +172,37 @@ describe('parseMetacriticPage', () => {
     assert.equal(parsed.name, null);
     assert.equal(parsed.metascore, null);
   });
+
+  test('JSON-LD name missing -> falls back to og:title (confirmed live, e.g. eternal-return)', () => {
+    const html =
+      '<!doctype html><html><head><title>Eternal Return Reviews - Metacritic</title>' +
+      '<meta property="og:title" content="Eternal Return">' +
+      '<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame",' +
+      '"datePublished":"2022-03-16","url":"https://www.metacritic.com/game/eternal-return/"}</script>' +
+      '</head><body></body></html>';
+    const parsed = parseMetacriticPage(html);
+    assert.equal(parsed.name, 'Eternal Return');
+    assert.equal(parsed.datePublished, '2022-03-16');
+  });
+
+  test('JSON-LD name empty and no og:title -> falls back to <title>, strips " - Metacritic", decodes entities', () => {
+    const html =
+      '<!doctype html><html><head><title>Sam &amp; Max - Metacritic</title>' +
+      '<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":""}</script>' +
+      '</head><body></body></html>';
+    const parsed = parseMetacriticPage(html);
+    assert.equal(parsed.name, 'Sam & Max');
+  });
+
+  test('JSON-LD has a name -> og:title/<title> are not consulted', () => {
+    const html =
+      '<!doctype html><html><head><title>Something Else - Metacritic</title>' +
+      '<meta property="og:title" content="Something Else Too">' +
+      '<script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Portal 2"}</script>' +
+      '</head><body></body></html>';
+    const parsed = parseMetacriticPage(html);
+    assert.equal(parsed.name, 'Portal 2');
+  });
 });
 
 // --- matchesMetacriticPage (pure) -----------------------------------------
@@ -190,6 +222,27 @@ describe('matchesMetacriticPage', () => {
       { name: 'Divinity: Original Sin II', release_date: '2017-09-14' },
     );
     assert.equal(decision.status, 'ok');
+  });
+
+  test('store year matches while release_date does not -> ok (Satisfactory: Early Access 2019, 1.0 in 2024)', () => {
+    const decision = matchesMetacriticPage(
+      { name: 'Satisfactory', datePublished: '2024-09-10' },
+      {
+        name: 'Satisfactory',
+        release_date: '2019-03-19',
+        store_release_date: '2024-09-10',
+        early_access_date: '2019-03-19',
+      },
+    );
+    assert.equal(decision.status, 'ok');
+  });
+
+  test('all three known years too far from the page year -> year_mismatch', () => {
+    const decision = matchesMetacriticPage(
+      { name: 'Old Game', datePublished: '2026-01-01' },
+      { name: 'Old Game', release_date: '2015-01-01', store_release_date: '2015-06-01', early_access_date: '2014-01-01' },
+    );
+    assert.equal(decision.status, 'year_mismatch');
   });
 
   test('name matches, year differs by more than tolerance -> year_mismatch', () => {
@@ -649,17 +702,166 @@ test('fetchOne: missing gameId throws synchronously', async () => {
   await assert.rejects(() => fetchOne(ctx, { data: {} }), /gameId is required/);
 });
 
+// --- metacriticSlugGuesses (pure) ------------------------------------------
+
+describe('metacriticSlugGuesses', () => {
+  test('plain title -> a single guess (nothing to strip)', () => {
+    assert.deepEqual(metacriticSlugGuesses('Portal 2'), ['portal-2']);
+  });
+
+  test('edition suffix -> two guesses, as-is then stripped', () => {
+    assert.deepEqual(metacriticSlugGuesses('Great Game Gold Edition'), ['great-game-gold-edition', 'great-game']);
+  });
+
+  test('edition suffix + colon subtitle -> three distinct guesses', () => {
+    assert.deepEqual(metacriticSlugGuesses('Great Game: Extended Cut Gold Edition'), [
+      'great-game-extended-cut-gold-edition',
+      'great-game-extended-cut',
+      'great-game',
+    ]);
+  });
+
+  test('subtitle-dropped guess skipped when it would be too short/generic ("Doom: Eternal" never guesses bare "doom")', () => {
+    assert.deepEqual(metacriticSlugGuesses('Doom: Eternal'), ['doom-eternal']);
+  });
+
+  test('capped at 3 total guesses', () => {
+    assert.ok(metacriticSlugGuesses('Great Game: Extended Cut Gold Edition').length <= 3);
+  });
+});
+
+// --- fetchOne(): multiple slug guesses on 404 ------------------------------
+
+describe('fetchOne: multiple slug guesses', () => {
+  test('404 on first guess, 200 on second -> linked as "name"', async () => {
+    const page =
+      '<!doctype html><html><head><script type="application/ld+json">' +
+      '{"@context":"https://schema.org","@type":"VideoGame","name":"Great Game","datePublished":"2015-05-05"}' +
+      '</script></head><body></body></html>';
+    const http = fakeHttp({ pages: { '/game/great-game-gold-edition/': null, '/game/great-game/': page } });
+    const upsertRecordCalls = [];
+    const upsertLinkCalls = [];
+    const ctx = fakeFetchCtx({
+      http,
+      game: { id: 11, name: 'Great Game Gold Edition', release_date: '2015-05-05' },
+      existingLink: null,
+      upsertRecordCalls,
+      upsertLinkCalls,
+    });
+    const result = await fetchOne(ctx, { data: { gameId: 11 } });
+    assert.equal(result.status, 'ok');
+    assert.equal(result.externalId, 'great-game');
+    assert.equal(upsertLinkCalls[0].opts.method, 'name');
+    assert.equal(upsertRecordCalls[0].opts.status, 'ok');
+  });
+
+  test('three 404s -> not_found, error lists every guess tried plus the count', async () => {
+    const http = fakeHttp({
+      pages: {
+        '/game/great-game-extended-cut-gold-edition/': null,
+        '/game/great-game-extended-cut/': null,
+        '/game/great-game/': null,
+      },
+    });
+    const upsertRecordCalls = [];
+    const upsertLinkCalls = [];
+    const ctx = fakeFetchCtx({
+      http,
+      game: { id: 12, name: 'Great Game: Extended Cut Gold Edition', release_date: '2015-05-05' },
+      existingLink: null,
+      upsertRecordCalls,
+      upsertLinkCalls,
+    });
+    const result = await fetchOne(ctx, { data: { gameId: 12 } });
+    assert.equal(result.status, 'not_found');
+    assert.equal(upsertLinkCalls.length, 0);
+    assert.equal(
+      upsertRecordCalls[0].opts.error,
+      'Metacritic page not found: great-game-extended-cut-gold-edition, great-game-extended-cut, great-game (3 guesses)',
+    );
+  });
+
+  test('second guess returns a different game -> not_found, no link', async () => {
+    const otherGamePage =
+      '<!doctype html><html><head><script type="application/ld+json">' +
+      '{"@context":"https://schema.org","@type":"VideoGame","name":"Totally Different Title","datePublished":"2015-05-05"}' +
+      '</script></head><body></body></html>';
+    const http = fakeHttp({ pages: { '/game/great-game-gold-edition/': null, '/game/great-game/': otherGamePage } });
+    const upsertRecordCalls = [];
+    const upsertLinkCalls = [];
+    const ctx = fakeFetchCtx({
+      http,
+      game: { id: 13, name: 'Great Game Gold Edition', release_date: '2015-05-05' },
+      existingLink: null,
+      upsertRecordCalls,
+      upsertLinkCalls,
+    });
+    const result = await fetchOne(ctx, { data: { gameId: 13 } });
+    assert.equal(result.status, 'not_found');
+    assert.equal(upsertLinkCalls.length, 0);
+    assert.equal(upsertRecordCalls[0].opts.status, 'not_found');
+  });
+
+  test('legacy link 404s -> falls through to multiple slug guesses, first guess also 404s, second matches', async () => {
+    const page =
+      '<!doctype html><html><head><script type="application/ld+json">' +
+      '{"@context":"https://schema.org","@type":"VideoGame","name":"Great Game","datePublished":"2015-05-05"}' +
+      '</script></head><body></body></html>';
+    const http = fakeHttp({
+      pages: {
+        '/game/old-rotted-slug/': null,
+        '/game/great-game-gold-edition/': null,
+        '/game/great-game/': page,
+      },
+    });
+    const upsertLinkCalls = [];
+    const ctx = fakeFetchCtx({
+      http,
+      game: { id: 14, name: 'Great Game Gold Edition', release_date: '2015-05-05' },
+      existingLink: { external_id: 'old-rotted-slug', url: null, match_method: 'legacy', confidence: 100 },
+      upsertLinkCalls,
+    });
+    const result = await fetchOne(ctx, { data: { gameId: 14 } });
+    assert.equal(result.status, 'ok');
+    assert.equal(result.externalId, 'great-game');
+    assert.equal(upsertLinkCalls[0].opts.method, 'name');
+  });
+
+  test('legacy link 404s and its slug equals the only slug guess -> not re-fetched, reported not_found directly', async () => {
+    // fakeHttp only stubs this one path - if the fallback re-requested the already-404'd legacy slug as a
+    // "fresh" guess (instead of recognising it's the same slug and skipping it), the mock's single `null`
+    // entry would still make that assertion pass by accident, so the real proof here is `upsertRecordCalls`
+    // ending up with exactly one not_found record and no year-mismatch/no_match noise from a phantom retry.
+    const http = fakeHttp({ pages: { '/game/great-game/': null } });
+    const upsertLinkCalls = [];
+    const upsertRecordCalls = [];
+    const ctx = fakeFetchCtx({
+      http,
+      game: { id: 15, name: 'Great Game', release_date: '2015-05-05' },
+      existingLink: { external_id: 'great-game', url: null, match_method: 'legacy', confidence: 100 },
+      upsertLinkCalls,
+      upsertRecordCalls,
+    });
+    const result = await fetchOne(ctx, { data: { gameId: 15 } });
+    assert.equal(result.status, 'not_found');
+    assert.equal(upsertLinkCalls.length, 0);
+    assert.equal(upsertRecordCalls.length, 1);
+    assert.equal(upsertRecordCalls[0].opts.error, 'Metacritic page not found: great-game');
+  });
+});
+
 test('isGamePage: a real page that embeds the Cloudflare challenge-platform script is not a block', () => {
   const html = loadText('portal2.html') + '<script src="/cdn-cgi/challenge-platform/scripts/jsd/main.js"></script>';
   assert.equal(isGamePage(html), true);
   assert.equal(isGamePage(blockedHtml), false);
 });
 
-test('matchesMetacriticPage: page dated up to 3 years after the catalog year is accepted (Early Access), earlier or later is not', () => {
+test('matchesMetacriticPage: page dated up to 5 years after the catalog year is accepted (Early Access), earlier or later is not', () => {
   const page = (y) => ({ name: 'Hades', datePublished: y + '-09-17' });
   assert.equal(matchesMetacriticPage(page(2020), { name: 'Hades', release_date: '2018-12-06' }).status, 'ok');
   assert.equal(matchesMetacriticPage(page(2021), { name: 'Hades', release_date: '2018-12-06' }).status, 'ok');
-  assert.equal(matchesMetacriticPage(page(2023), { name: 'Hades', release_date: '2018-12-06' }).status, 'year_mismatch');
+  assert.equal(matchesMetacriticPage(page(2023), { name: 'Hades', release_date: '2018-12-06' }).status, 'ok');
+  assert.equal(matchesMetacriticPage(page(2024), { name: 'Hades', release_date: '2018-12-06' }).status, 'year_mismatch');
   assert.equal(matchesMetacriticPage(page(2016), { name: 'Hades', release_date: '2018-12-06' }).status, 'year_mismatch');
 });
 

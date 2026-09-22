@@ -118,7 +118,7 @@ const DEFAULT_RETRY_DAYS = 90;
 const DEFAULT_DAILY_CAP = 20000;
 const BLOCK_PAUSE_HOURS = 24;
 const YEAR_TOLERANCE = 1;
-const EARLY_ACCESS_YEARS = 3;
+const EARLY_ACCESS_YEARS = 5;
 
 // ---------------------------------------------------------------------------
 // metacriticSlug() — pure title -> slug (see the module header for the rules)
@@ -144,6 +144,35 @@ export function metacriticSlug(input) {
   s = s.replace(/[^a-z0-9]+/g, '-');
   s = s.replace(/^-+|-+$/g, '');
   return s;
+}
+
+/**
+ * Pure: a game title -> up to 3 deduplicated Metacritic slug guesses, in the
+ * order `fetchOne` tries them (a single-slug guess 404s for 5.4k games as of
+ * 2026-09-22): (a) `metacriticSlug(name)` as-is, (b) the same off
+ * `normalizeName(name)` (drops "Gold Edition"/"Deluxe"/"GOTY"/trailing
+ * "(...)"/"™" etc), (c) the same off `normalizeName(name, {
+ * removeAdditions: true })` (also drops a ":" subtitle) - only kept when
+ * that trimmed name still has at least 2 words or 6+ characters, so a title
+ * like "Doom: Eternal" doesn't degrade to guessing the bare, hopeless "doom".
+ */
+export function metacriticSlugGuesses(gameName) {
+  const guesses = [];
+  const add = (s) => {
+    if (s && !guesses.includes(s)) guesses.push(s);
+  };
+
+  add(metacriticSlug(gameName));
+  add(metacriticSlug(normalizeName(gameName)));
+
+  const trimmedName = normalizeName(gameName, { removeAdditions: true });
+  const wordCount = trimmedName.trim().split(/\s+/).filter(Boolean).length;
+  const charCount = trimmedName.replace(/\s+/g, '').length;
+  if (wordCount >= 2 || charCount >= 6) {
+    add(metacriticSlug(trimmedName));
+  }
+
+  return guesses.slice(0, 3);
 }
 
 // ---------------------------------------------------------------------------
@@ -262,6 +291,24 @@ function firstInt(text) {
 }
 
 /**
+ * Fallback page name when the JSON-LD block has no (or an empty) `name`
+ * (confirmed live, e.g. eternal-return): `<meta property="og:title">`, else
+ * the `<title>` tag, with a trailing " Reviews - Metacritic" / " - Metacritic"
+ * stripped and HTML entities decoded.
+ */
+function fallbackPageName($) {
+  let raw = $('meta[property="og:title"]').attr('content');
+  if (!raw || !String(raw).trim()) raw = $('title').first().text();
+  if (!raw || !String(raw).trim()) return null;
+
+  let s = String(raw).trim();
+  s = s.replace(/\s+Reviews\s*-\s*Metacritic\s*$/i, '');
+  s = s.replace(/\s*-\s*Metacritic\s*$/i, '');
+  s = decodeHtmlEntities(s).trim();
+  return s || null;
+}
+
+/**
  * Parse one Metacritic game page into the raw fields `fetchOne` stores as
  * `source_records.payload` (see the module header for the selectors this
  * uses). Pure: takes an HTML string, returns plain data, touches neither the
@@ -286,7 +333,7 @@ export function parseMetacriticPage(html) {
     }
   });
 
-  const pageName = jsonLd?.name ?? null;
+  const pageName = jsonLd?.name || fallbackPageName($);
   const datePublished = jsonLd?.datePublished ?? null;
 
   let metascore = jsonLd?.aggregateRating ? Number(jsonLd.aggregateRating.ratingValue) : null;
@@ -354,11 +401,15 @@ function normKey(raw, opts) {
   return normalizeName(raw ?? '', { convertRom: true, ...opts }).toLowerCase();
 }
 
+function yearOf(value) {
+  return value ? Number(String(value).slice(0, 4)) : null;
+}
+
 /**
  * Whether a slug-guessed page's JSON-LD `name`/`datePublished` confirm it is
- * actually `game` (`{ name, release_date }`). Never called for an existing
- * `game_links` row (those are trusted as-is, same convention as
- * gamefaqs.js/hltb.js/opencritic.js).
+ * actually `game` (`{ name, release_date, store_release_date,
+ * early_access_date }`). Never called for an existing `game_links` row
+ * (those are trusted as-is, same convention as gamefaqs.js/hltb.js/opencritic.js).
  *
  * Returns `{ status: 'ok' }` | `{ status: 'year_mismatch', gameYear,
  * pageYear }` | `{ status: 'no_match' }`.
@@ -373,15 +424,27 @@ export function matchesMetacriticPage(payload, game) {
     normKey(wantName, { removeAdditions: true }) === normKey(pageName, { removeAdditions: true });
   if (!nameMatches) return { status: 'no_match' };
 
-  const gameYear = game?.release_date ? Number(String(game.release_date).slice(0, 4)) : null;
-  const pageYear = payload?.datePublished ? Number(String(payload.datePublished).slice(0, 4)) : null;
-  // Metacritic dates a game by its 1.0 release, the catalog often by its Early Access launch (Hades: 2018 vs
-  // 2020), so the page may be up to EARLY_ACCESS_YEARS later; remakes sharing a name are further apart.
-  const diff = gameYear != null && pageYear != null ? pageYear - gameYear : 0;
-  if (diff < -YEAR_TOLERANCE || diff > EARLY_ACCESS_YEARS) {
-    return { status: 'year_mismatch', gameYear, pageYear };
-  }
-  return { status: 'ok' };
+  const pageYear = yearOf(payload?.datePublished);
+  if (pageYear == null) return { status: 'ok' };
+
+  // The catalog's `release_date` is often the Early Access launch, not Metacritic's 1.0 review date
+  // (Satisfactory: 2019 vs 2024, Valheim: 2021 vs 2026) - so the year check passes if ANY of the
+  // catalog's known years (release_date, store_release_date, early_access_date) puts the page within
+  // window: up to EARLY_ACCESS_YEARS later, or up to YEAR_TOLERANCE earlier (remakes sharing a name are
+  // further apart than that and should still be rejected).
+  const gameYears = [yearOf(game?.release_date), yearOf(game?.store_release_date), yearOf(game?.early_access_date)].filter(
+    (y) => y != null,
+  );
+  if (gameYears.length === 0) return { status: 'ok' };
+
+  const matchesAnyYear = gameYears.some((gameYear) => {
+    const diff = pageYear - gameYear;
+    return diff >= -YEAR_TOLERANCE && diff <= EARLY_ACCESS_YEARS;
+  });
+  if (matchesAnyYear) return { status: 'ok' };
+
+  const gameYear = yearOf(game?.release_date) ?? gameYears[0];
+  return { status: 'year_mismatch', gameYear, pageYear };
 }
 
 // ---------------------------------------------------------------------------
@@ -497,117 +560,8 @@ async function writeConflict(db, gameId, candidates, reason) {
   );
 }
 
-/**
- * `job.data = { gameId, externalId? }`. `externalId`, when given, is a known
- * slug (e.g. an admin-triggered refetch). Otherwise: reuse an existing
- * `game_links('metacritic')` row (legacy `meta_url`, a Wikidata P1712 id, or
- * this module's own earlier write — all normalised to a bare slug by
- * `normalizeMetacriticExternalId`), else guess `metacriticSlug(game.name)`.
- *
- * A slug guess is only ever linked once the fetched page's own JSON-LD name
- * (+ year, when both sides know one) confirms it (`matchesMetacriticPage`) —
- * an existing link is never re-validated this way, same convention as
- * gamefaqs.js/hltb.js/opencritic.js. A `legacy`-method link that 404s falls
- * through to a fresh slug guess (per the task — legacy slugs were partly
- * guessed by the old PHP parser and some have rotted); any other link method
- * that 404s is reported `not_found` directly, no fallback.
- */
-export async function fetchOne(ctx, job) {
-  const { db, log } = ctx;
-  const gameId = job?.data?.gameId;
-  if (!gameId) throw new Error('metacritic.fetchOne: job.data.gameId is required');
-
-  const game = await db.one('SELECT id, name, release_date FROM games WHERE id = ?', [gameId]);
-  if (!game) {
-    log.warn('metacritic: fetchOne called for an unknown gameId', { gameId });
-    return { status: 'not_found', externalId: null };
-  }
-
-  const existingLink = await db.one(
-    'SELECT external_id, url, match_method, confidence FROM game_links WHERE game_id = ? AND source = ?',
-    [gameId, name],
-  );
-
-  let slug;
-  let fetchedVia;
-  let linkMethod;
-  let confidence;
-  let requireMatch;
-
-  if (existingLink || job?.data?.externalId) {
-    const raw = existingLink ? existingLink.external_id ?? existingLink.url : job.data.externalId;
-    slug = normalizeMetacriticExternalId(raw);
-    fetchedVia = 'link';
-    linkMethod = existingLink?.match_method ?? 'manual';
-    confidence = existingLink?.confidence ?? 100;
-    requireMatch = false;
-  } else {
-    slug = metacriticSlug(game.name);
-    fetchedVia = 'slug-guess';
-    linkMethod = 'name';
-    confidence = 90;
-    requireMatch = true;
-  }
-
-  if (!slug) {
-    await ctx.upsertRecord(name, `game-${gameId}`, { status: 'not_found', error: 'could not derive a Metacritic slug', gameId });
-    return { status: 'not_found', externalId: null };
-  }
-
-  let page = await fetchMetacriticPage(ctx, slug);
-  if (page.blocked) {
-    await pauseSource(ctx, `Blocked by Metacritic while fetching ${slug}`);
-    throw new Error('metacritic: blocked by anti-bot protection, source paused for 24h');
-  }
-
-  if (!page.html && existingLink?.match_method === 'legacy') {
-    const guessedSlug = metacriticSlug(game.name);
-    if (guessedSlug && guessedSlug !== slug) {
-      const guessedPage = await fetchMetacriticPage(ctx, guessedSlug);
-      if (guessedPage.blocked) {
-        await pauseSource(ctx, `Blocked by Metacritic while fetching ${guessedSlug}`);
-        throw new Error('metacritic: blocked by anti-bot protection, source paused for 24h');
-      }
-      if (guessedPage.html) {
-        slug = guessedSlug;
-        page = guessedPage;
-        fetchedVia = 'slug-guess';
-        linkMethod = 'name';
-        confidence = 90;
-        requireMatch = true;
-      }
-    }
-  }
-
-  if (!page.html) {
-    await ctx.upsertRecord(name, `game-${gameId}`, { status: 'not_found', error: `Metacritic page not found: ${slug}`, gameId });
-    return { status: 'not_found', externalId: null };
-  }
-
-  const parsed = parseMetacriticPage(page.html);
-
-  if (requireMatch) {
-    const decision = matchesMetacriticPage(parsed, game);
-    if (decision.status === 'year_mismatch') {
-      await writeConflict(
-        db,
-        gameId,
-        [{ slug, name: parsed.name, year: decision.pageYear }],
-        `Metacritic slug guess "${slug}" name-matches "${game.name}" but year differs (game ${decision.gameYear} vs page ${decision.pageYear})`,
-      );
-      await ctx.upsertRecord(name, `game-${gameId}`, { status: 'not_found', error: 'year mismatch on name-matched slug guess', gameId });
-      return { status: 'year_mismatch', externalId: null };
-    }
-    if (decision.status === 'no_match') {
-      await ctx.upsertRecord(name, `game-${gameId}`, {
-        status: 'not_found',
-        error: `slug-guessed Metacritic page name does not match: "${parsed.name}"`,
-        gameId,
-      });
-      return { status: 'not_found', externalId: null };
-    }
-  }
-
+/** Store a matched/trusted page as `ok`, link it, and enqueue a resolve - shared by every success path. */
+async function storeOkResult(ctx, gameId, slug, parsed, { fetchedVia, linkMethod, confidence }) {
   const url = pageUrl(slug);
   const payload = {
     slug,
@@ -632,4 +586,136 @@ export async function fetchOne(ctx, job) {
   await ctx.enqueueResolve(gameId);
 
   return { status: 'ok', externalId: slug, payload };
+}
+
+/**
+ * Try `metacriticSlugGuesses(game.name)` in order (skipping any already
+ * fetched, e.g. a rotted legacy slug listed in `alreadyTried`), stopping at
+ * the first page whose name/year confirm the game (`matchesMetacriticPage`).
+ * Performs every resulting DB write itself (record + link + resolve on
+ * success; a conflict + `not_found` record on failure) and returns the final
+ * `fetchOne` result. A blocked response pauses the source and throws exactly
+ * like the direct-link path, cutting the attempt short.
+ */
+async function guessAndFetch(ctx, db, gameId, game, { alreadyTried = [] } = {}) {
+  const attempts = alreadyTried.map((slug) => ({ slug, found: false }));
+  const guesses = metacriticSlugGuesses(game.name).filter((slug) => !alreadyTried.includes(slug));
+  let yearMismatch = null;
+
+  for (const slug of guesses) {
+    const page = await fetchMetacriticPage(ctx, slug);
+    if (page.blocked) {
+      await pauseSource(ctx, `Blocked by Metacritic while fetching ${slug}`);
+      throw new Error('metacritic: blocked by anti-bot protection, source paused for 24h');
+    }
+    if (!page.html) {
+      attempts.push({ slug, found: false });
+      continue;
+    }
+
+    const parsed = parseMetacriticPage(page.html);
+    const decision = matchesMetacriticPage(parsed, game);
+    if (decision.status === 'ok') {
+      return storeOkResult(ctx, gameId, slug, parsed, { fetchedVia: 'slug-guess', linkMethod: 'name', confidence: 90 });
+    }
+    attempts.push({ slug, found: true, parsed, decision });
+    if (decision.status === 'year_mismatch' && !yearMismatch) {
+      yearMismatch = { slug, parsed, decision };
+    }
+  }
+
+  if (yearMismatch) {
+    const { slug, parsed, decision } = yearMismatch;
+    await writeConflict(
+      db,
+      gameId,
+      [{ slug, name: parsed.name, year: decision.pageYear }],
+      `Metacritic slug guess "${slug}" name-matches "${game.name}" but year differs (game ${decision.gameYear} vs page ${decision.pageYear})`,
+    );
+    await ctx.upsertRecord(name, `game-${gameId}`, { status: 'not_found', error: 'year mismatch on name-matched slug guess', gameId });
+    return { status: 'year_mismatch', externalId: null };
+  }
+
+  if (attempts.length === 0) {
+    await ctx.upsertRecord(name, `game-${gameId}`, { status: 'not_found', error: 'could not derive a Metacritic slug', gameId });
+    return { status: 'not_found', externalId: null };
+  }
+
+  const last = attempts[attempts.length - 1];
+  const triedSlugs = attempts.map((a) => a.slug);
+  const guessLabel = triedSlugs.length > 1 ? `${triedSlugs.join(', ')} (${triedSlugs.length} guesses)` : triedSlugs[0];
+  const error = last.found
+    ? `slug-guessed Metacritic page name does not match: "${last.parsed.name}"`
+    : `Metacritic page not found: ${guessLabel}`;
+
+  await ctx.upsertRecord(name, `game-${gameId}`, { status: 'not_found', error, gameId });
+  return { status: 'not_found', externalId: null };
+}
+
+/**
+ * `job.data = { gameId, externalId? }`. `externalId`, when given, is a known
+ * slug (e.g. an admin-triggered refetch). Otherwise: reuse an existing
+ * `game_links('metacritic')` row (legacy `meta_url`, a Wikidata P1712 id, or
+ * this module's own earlier write — all normalised to a bare slug by
+ * `normalizeMetacriticExternalId`), else guess against
+ * `metacriticSlugGuesses(game.name)`.
+ *
+ * A slug guess is only ever linked once the fetched page's own JSON-LD name
+ * (+ year, when both sides know one) confirms it (`matchesMetacriticPage`) —
+ * an existing link is never re-validated this way, same convention as
+ * gamefaqs.js/hltb.js/opencritic.js. A `legacy`-method link that 404s falls
+ * through to fresh slug guesses (per the task — legacy slugs were partly
+ * guessed by the old PHP parser and some have rotted); any other link method
+ * that 404s is reported `not_found` directly, no fallback.
+ */
+export async function fetchOne(ctx, job) {
+  const { db, log } = ctx;
+  const gameId = job?.data?.gameId;
+  if (!gameId) throw new Error('metacritic.fetchOne: job.data.gameId is required');
+
+  const game = await db.one(
+    'SELECT id, name, release_date, store_release_date, early_access_date FROM games WHERE id = ?',
+    [gameId],
+  );
+  if (!game) {
+    log.warn('metacritic: fetchOne called for an unknown gameId', { gameId });
+    return { status: 'not_found', externalId: null };
+  }
+
+  const existingLink = await db.one(
+    'SELECT external_id, url, match_method, confidence FROM game_links WHERE game_id = ? AND source = ?',
+    [gameId, name],
+  );
+
+  if (existingLink || job?.data?.externalId) {
+    const raw = existingLink ? existingLink.external_id ?? existingLink.url : job.data.externalId;
+    const slug = normalizeMetacriticExternalId(raw);
+    const linkMethod = existingLink?.match_method ?? 'manual';
+    const confidence = existingLink?.confidence ?? 100;
+
+    if (!slug) {
+      await ctx.upsertRecord(name, `game-${gameId}`, { status: 'not_found', error: 'could not derive a Metacritic slug', gameId });
+      return { status: 'not_found', externalId: null };
+    }
+
+    const page = await fetchMetacriticPage(ctx, slug);
+    if (page.blocked) {
+      await pauseSource(ctx, `Blocked by Metacritic while fetching ${slug}`);
+      throw new Error('metacritic: blocked by anti-bot protection, source paused for 24h');
+    }
+
+    if (page.html) {
+      const parsed = parseMetacriticPage(page.html);
+      return storeOkResult(ctx, gameId, slug, parsed, { fetchedVia: 'link', linkMethod, confidence });
+    }
+
+    if (linkMethod !== 'legacy') {
+      await ctx.upsertRecord(name, `game-${gameId}`, { status: 'not_found', error: `Metacritic page not found: ${slug}`, gameId });
+      return { status: 'not_found', externalId: null };
+    }
+
+    return guessAndFetch(ctx, db, gameId, game, { alreadyTried: [slug] });
+  }
+
+  return guessAndFetch(ctx, db, gameId, game);
 }
