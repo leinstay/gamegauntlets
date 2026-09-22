@@ -141,8 +141,9 @@ export function normalizeName(input, opts = {}) {
       s = s.split(' A D').join('');
     }
     if (wordsArr.length > 2) s = s.replace(/\s*?\(?\S*?\s*?edition\)?$/i, '');
-    if (wordsArr.length > 2) s = s.split('The ').join('');
-    if (wordsArr.length > 2) s = s.split(', The ').join('');
+    // case-insensitive: "Sons Of The Forest" (Steam) vs "Sons of the Forest" (Metacritic) must normalise alike
+    if (wordsArr.length > 2) s = s.replace(/\bThe /gi, '');
+    if (wordsArr.length > 2) s = s.replace(/, The /gi, '');
 
     s = s.replace(/\s+/g, ' ');
     s = s.trim();

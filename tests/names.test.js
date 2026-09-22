@@ -30,6 +30,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // (main_functions.php / metacritic_gamefaq_functions.php) read-only on
 // PHP 8.2, via `php8.2` fed the probe script over SSH stdin (no file was
 // ever written to the server). See tests/fixtures/names/legacy-oracle.json.
+// One deliberate deviation from the PHP oracle (2026-09-22): the article "the" is stripped
+// case-insensitively ("Sonic the Hedgehog 2 Collection" -> "Sonic Hedgehog 2"), because store and
+// review sites capitalise titles differently ("Sons Of The Forest" vs "Sons of the Forest") and the
+// normalised keys are only ever compared with each other.
 const oracle = JSON.parse(
   readFileSync(path.join(__dirname, 'fixtures/names/legacy-oracle.json'), 'utf8')
 );
