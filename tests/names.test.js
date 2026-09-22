@@ -22,6 +22,7 @@ import {
   isDemo,
   toPipeList,
   fromPipeList,
+  searchNameVariants,
 } from '../src/lib/names.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -197,6 +198,47 @@ describe('simpleSim (plan contract: pairwise 0..100 percentage)', () => {
   });
   test('roman numerals and arabic digits are treated as equivalent', () => {
     assert.ok(simpleSim('Dark Souls III', 'Dark Souls 3') > 95);
+  });
+});
+
+describe('searchNameVariants (review-site title fallbacks for gamefaqs.js/hltb.js)', () => {
+  // Real cases from the 2026-09-22 GameFAQs/HLTB name-search misses report
+  // (see the task); expected strings verified by actually running
+  // normalizeName(), not guessed.
+  const cases = [
+    ['Nioh 2 – The Complete Edition', ['Nioh 2 The', 'Nioh 2']],
+    ['Gauntlet™ Slayer Edition', ['Gauntlet Slayer Edition', 'Gauntlet']],
+    ['TERA - Action MMORPG', ['TERA Action MMORPG', 'TERA']],
+    ['Grand Theft Auto V Enhanced', ['Grand Theft Auto V Enhanced', 'Grand Theft Auto V']],
+    [
+      'The Elder Scrolls IV: Oblivion Remastered',
+      ['Elder Scrolls IV Oblivion Remastered', 'Elder Scrolls IV Oblivion', 'Elder Scrolls IV'],
+    ],
+  ];
+
+  for (const [input, expected] of cases) {
+    test(`searchNameVariants(${JSON.stringify(input)}) === ${JSON.stringify(expected)}`, () => {
+      assert.deepEqual(searchNameVariants(input), expected);
+    });
+  }
+
+  test('Yakuza 3 Remastered -> falls back to the base title once "Remastered" is stripped', () => {
+    assert.deepEqual(searchNameVariants('Yakuza 3 Remastered'), ['Yakuza 3 Remastered', 'Yakuza 3']);
+  });
+
+  test('de-duplicates case-insensitively and caps at 4 entries', () => {
+    const variants = searchNameVariants('Half-Life 2');
+    assert.equal(new Set(variants.map((v) => v.toLowerCase())).size, variants.length);
+    assert.ok(variants.length <= 4);
+  });
+
+  test('a plain title with nothing to strip returns just the normalized name', () => {
+    assert.deepEqual(searchNameVariants('Half-Life 2'), ['Half Life 2']);
+  });
+
+  test('empty/missing input -> empty list', () => {
+    assert.deepEqual(searchNameVariants(''), []);
+    assert.deepEqual(searchNameVariants(null), []);
   });
 });
 

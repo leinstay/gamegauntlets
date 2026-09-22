@@ -49,7 +49,7 @@
 //     route keeps working even with a stale/unknown buildId).
 
 import { toAscii } from './gog.js';
-import { normalizeName, simpleSim } from '../lib/names.js';
+import { normalizeName, simpleSim, searchNameVariants } from '../lib/names.js';
 import { parseDate } from '../lib/dates.js';
 
 export const name = 'hltb';
@@ -71,6 +71,11 @@ const FUZZY_MIN_SIM = 90; // simpleSim percent a non-exact title needs before th
 // profile_steam / a precise release date) per game - bounds the worst-case
 // number of HTTP calls a single fetchOne makes.
 const CANDIDATE_DETAIL_LOOKUPS = 5;
+// Once the literal-words search and the normalized-name fallback both miss
+// (or decideLink can't confirm either), try up to this many of the
+// remaining searchNameVariants() entries (e.g. "Nioh 2" once "The Complete
+// Edition" is stripped) as further /api/search/site searches.
+const MAX_VARIANT_SEARCHES = 3;
 
 // ---------------------------------------------------------------------------
 // Dynamic-value caches (module state, deliberately tiny). `_resetCaches` is a
@@ -299,11 +304,46 @@ export function decideLink(candidates, target, opts = {}) {
 }
 
 /**
+ * Rank `rows` by name closeness to `target.name` (best chance of an early
+ * strong/weak match), fetch detail for up to `CANDIDATE_DETAIL_LOOKUPS` of
+ * them - stopping as soon as a Steam-id match is confirmed - and return
+ * `decideLink`'s decision plus the looked-up candidates (so the caller can
+ * resolve `decision.id` back to its fetched `detail`).
+ */
+async function rankAndDecide(http, rows, target) {
+  const ordered = [...rows].sort((a, b) => {
+    const sa = scoreCandidate(a.name, target.name);
+    const sb = scoreCandidate(b.name, target.name);
+    return Number(sb.exact) - Number(sa.exact) || sb.sim - sa.sim;
+  });
+
+  const lookups = ordered.slice(0, CANDIDATE_DETAIL_LOOKUPS);
+  for (const candidate of lookups) {
+    candidate.detail = await fetchDetail(http, candidate.id);
+    if (target.steamAppid && Number(candidate.detail?.profile_steam) === Number(target.steamAppid)) break;
+  }
+
+  return { decision: decideLink(lookups, target), lookups };
+}
+
+/**
  * Search by name and resolve to one HLTB id (or `not_found`). Orchestrates
- * `searchSite`/`fetchDetail`/`decideLink`: search candidates are ordered by
- * name closeness first (best chance of an early strong/weak match, bounding
- * the number of detail requests to `CANDIDATE_DETAIL_LOOKUPS`), and the
- * detail-fetch loop stops as soon as a Steam-id match is confirmed.
+ * `searchSite`/`fetchDetail`/`decideLink` across up to three tiers of
+ * queries, each tier only tried once the previous one comes back with no
+ * rows or a `decideLink` `not_found`:
+ *   1. the literal title, split on whitespace;
+ *   2. `normalizeName(name, { convertRom: true })` (drops editions/
+ *      punctuation the literal title carries - mirrors the legacy scraper's
+ *      multi-attempt strategy for titles HLTB's own search doesn't tokenize
+ *      well);
+ *   3. up to `MAX_VARIANT_SEARCHES` of the remaining `searchNameVariants(name)`
+ *      entries (a dangling article stripped, a marketing suffix like
+ *      "Complete Edition"/"Remastered" stripped, the part before a
+ *      subtitle/edition separator) - each of these is matched against the
+ *      VARIANT string itself, not the original name, since a HLTB entry
+ *      found under "Nioh 2" was, by construction, never going to carry the
+ *      "The Complete Edition" suffix that query no longer has.
+ * Every tier keeps the same Steam id / release year for `decideLink`.
  */
 async function resolveHltbId(http, game) {
   const targetName = game.name;
@@ -316,32 +356,53 @@ async function resolveHltbId(http, game) {
   const primaryTerms = toAscii(targetName).trim().split(/\s+/).filter(Boolean);
   if (primaryTerms.length === 0) return { status: 'not_found' };
 
+  const triedQueries = new Set([primaryTerms.join(' ').toLowerCase()]);
+
   let rows = mapSearchCandidates((await searchSite(http, primaryTerms))?.data);
-  if (rows.length === 0) {
-    // Fall back to the fully-normalized name (drops editions/punctuation the
-    // literal title carries) - mirrors the legacy scraper's multi-attempt
-    // strategy for titles HLTB's own search doesn't tokenize well.
+  let result = rows.length > 0 ? await rankAndDecide(http, rows, target) : null;
+
+  if (!result || result.decision.status === 'not_found') {
     const altTerms = normalizeName(targetName, { convertRom: true }).split(' ').filter(Boolean);
-    if (altTerms.length > 0 && altTerms.join(' ').toLowerCase() !== primaryTerms.join(' ').toLowerCase()) {
-      rows = mapSearchCandidates((await searchSite(http, altTerms))?.data);
+    const altKey = altTerms.join(' ').toLowerCase();
+    if (altTerms.length > 0 && !triedQueries.has(altKey)) {
+      triedQueries.add(altKey);
+      const altRows = mapSearchCandidates((await searchSite(http, altTerms))?.data);
+      if (altRows.length > 0) {
+        const altResult = await rankAndDecide(http, altRows, target);
+        if (!result || altResult.decision.status !== 'not_found') result = altResult;
+      }
     }
   }
-  if (rows.length === 0) return { status: 'not_found' };
 
-  const ordered = [...rows].sort((a, b) => {
-    const sa = scoreCandidate(a.name, targetName);
-    const sb = scoreCandidate(b.name, targetName);
-    return Number(sb.exact) - Number(sa.exact) || sb.sim - sa.sim;
-  });
+  if (!result || result.decision.status === 'not_found') {
+    let variantSearches = 0;
+    for (const variant of searchNameVariants(targetName)) {
+      if (variantSearches >= MAX_VARIANT_SEARCHES) break;
+      const key = variant.toLowerCase();
+      if (triedQueries.has(key)) continue;
+      triedQueries.add(key);
+      variantSearches += 1;
 
-  const lookups = ordered.slice(0, CANDIDATE_DETAIL_LOOKUPS);
-  for (const candidate of lookups) {
-    candidate.detail = await fetchDetail(http, candidate.id);
-    if (target.steamAppid && Number(candidate.detail?.profile_steam) === Number(target.steamAppid)) break;
+      const variantTerms = variant.split(/\s+/).filter(Boolean);
+      if (variantTerms.length === 0) continue;
+      const variantRows = mapSearchCandidates((await searchSite(http, variantTerms))?.data);
+      if (variantRows.length === 0) continue;
+
+      // Compare candidates against the VARIANT string, not the original
+      // name - a candidate found under "Nioh 2" is an exact match for the
+      // "Nioh 2" query, not for "Nioh 2 - The Complete Edition".
+      const variantTarget = { ...target, name: variant };
+      const variantResult = await rankAndDecide(http, variantRows, variantTarget);
+      if (variantResult.decision.status !== 'not_found') {
+        result = variantResult;
+        break;
+      }
+      result = result ?? variantResult;
+    }
   }
 
-  const decision = decideLink(lookups, target);
-  if (decision.status === 'not_found') return { status: 'not_found' };
+  if (!result || result.decision.status === 'not_found') return { status: 'not_found' };
+  const { decision, lookups } = result;
   const chosen = lookups.find((c) => c.id === decision.id);
   return { status: decision.status, id: decision.id, confidence: decision.confidence, detail: chosen?.detail ?? null };
 }

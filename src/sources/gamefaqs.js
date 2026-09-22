@@ -64,7 +64,7 @@
 // GAMEFAQS_COOKIE (this workstation has no real cookie value to test with).
 
 import { load } from 'cheerio';
-import { normalizeName, simpleSim } from '../lib/names.js';
+import { normalizeName, simpleSim, searchNameVariants } from '../lib/names.js';
 import { parseDate } from '../lib/dates.js';
 
 export const name = 'gamefaqs';
@@ -84,6 +84,7 @@ const BLOCK_PAUSE_HOURS = 24;
 const YEAR_TOLERANCE = 1;
 const FUZZY_MIN_SIM = 90; // simpleSim percent a non-exact title needs before the release year may confirm it — same bar as hltb.js decideLink
 const FUZZY_LINK_CONFIDENCE = 60; // confidence stored for a link resolved via the fuzzy fallback (same tier hltb.js's decideLink uses for its own fuzzy match)
+const MAX_SEARCH_QUERIES = 3; // GameFAQs rate budget — cap on searchNameVariants() attempts per game
 
 // Typographic punctuation game titles sometimes use in place of the ASCII
 // character normalizeName() expects (curly quotes, en/em dash, ellipsis).
@@ -444,12 +445,15 @@ async function writeConflict(db, gameId, candidates, reason) {
 
 /**
  * Resolve `game` (`{ name, release_date }`) to a GameFAQs *PC* product via
- * search. Tries `normalizeName(name)` first (legacy `simplename()`'s
- * default), then — fixing the legacy bug where this fallback was built but
- * never actually used (the old code re-queried with the *original* `$name`
- * at every retry tier instead of the fixed-up variable) — a second query
- * with the subtitle/edition suffix stripped (`removeAdditions: true`) when
- * the first one found no exact match.
+ * search. Iterates `searchNameVariants(game.name)` — most specific first:
+ * `normalizeName(name)`, then a dangling article stripped, then a trailing
+ * marketing suffix ("Complete Edition", "Remastered", ...) stripped, then the
+ * part before the title's first subtitle/edition separator — stopping at the
+ * first query whose results resolve to `ok` or `ambiguous`. Capped at
+ * `MAX_SEARCH_QUERIES` (3) requests per game (GameFAQs rate budget). Each
+ * query is matched against its OWN string (`matchGamefaqsCandidate`), not the
+ * original name — a GameFAQs entry that matches a stripped-down query was, by
+ * construction, never going to carry the suffix/subtitle we just removed.
  *
  * Returns `{ status: 'ok', pid, url, fuzzy }` | `{ status: 'none', reason }` |
  * `{ status: 'ambiguous', candidates, reason }` | `{ status: 'blocked' }`.
@@ -459,23 +463,14 @@ async function writeConflict(db, gameId, candidates, reason) {
  */
 export async function locateGamefaqsProduct(ctx, game) {
   const year = game?.release_date ? Number(String(game.release_date).slice(0, 4)) : null;
+  const queries = searchNameVariants(game?.name ?? '').slice(0, MAX_SEARCH_QUERIES);
 
-  const primaryQuery = normalizeName(game?.name ?? '');
-  const primary = await searchGamefaqs(ctx, primaryQuery);
-  if (primary.blocked) return { status: 'blocked' };
-
-  let decision = matchGamefaqsCandidate(game?.name ?? '', primary.results, { year });
-
-  if (decision.status === 'none') {
-    const fallbackQuery = normalizeName(game?.name ?? '', { removeAdditions: true });
-    if (fallbackQuery && fallbackQuery.toLowerCase() !== primaryQuery.toLowerCase()) {
-      const fallback = await searchGamefaqs(ctx, fallbackQuery);
-      if (fallback.blocked) return { status: 'blocked' };
-      // Compare against the stripped title, not the original full name — a
-      // GameFAQs entry that matches this query was, by construction, never
-      // going to carry the subtitle we just removed.
-      decision = matchGamefaqsCandidate(fallbackQuery, fallback.results, { year });
-    }
+  let decision = { status: 'none' };
+  for (const query of queries) {
+    const result = await searchGamefaqs(ctx, query);
+    if (result.blocked) return { status: 'blocked' };
+    decision = matchGamefaqsCandidate(query, result.results, { year });
+    if (decision.status === 'ok' || decision.status === 'ambiguous') break;
   }
 
   if (decision.status === 'none') return { status: 'none', reason: 'no matching GameFAQs entry' };

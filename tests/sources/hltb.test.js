@@ -441,6 +441,47 @@ test('fetchOne: no existing link, no steam id, exact name + year -> weak attach 
   assert.deepEqual(enqueueResolveCalls, [9]);
 });
 
+test('fetchOne: literal + normalized searches miss, a searchNameVariants fallback ("Nioh 2") finds the game', async () => {
+  // Real case from the 2026-09-22 report: "Nioh 2 – The Complete Edition"
+  // literal words and its normalized form ("Nioh 2 The") both miss on HLTB;
+  // searchNameVariants' 2nd entry ("Nioh 2", the marketing suffix stripped)
+  // is the title HLTB actually carries.
+  _resetCaches();
+  const http = fakeHttpWithBuildIdAndDetail({ 999: { game_id: 999, game_name: 'Nioh 2', profile_steam: 0, release_world: '2020-03-12' } });
+  const searchedTerms = [];
+  http.postJson = async (url, body) => {
+    searchedTerms.push(body.searchTerms.join(' '));
+    if (body.searchTerms.join(' ').toLowerCase() === 'nioh 2') {
+      return { count: 1, data: [{ game_id: 999, game_name: 'Nioh 2', game_type: 'game', release_world: 2020 }] };
+    }
+    return { count: 0, data: [] };
+  };
+  const upsertLinkCalls = [];
+  const upsertRecordCalls = [];
+  const enqueueResolveCalls = [];
+  const dbRouter = {
+    one: async (sql) => {
+      if (sql.includes('FROM games WHERE id')) {
+        return { id: 77, name: 'Nioh 2 – The Complete Edition', steam_appid: null, release_date: '2020-03-12' };
+      }
+      if (sql.includes('FROM game_links')) return null;
+      return null;
+    },
+  };
+  const ctx = fakeCtx({ http, dbRouter, upsertLinkCalls, upsertRecordCalls, enqueueResolveCalls });
+  const result = await fetchOne(ctx, { data: { gameId: 77 } });
+  assert.equal(result.status, 'ok');
+  assert.equal(result.externalId, '999');
+  assert.equal(result.confidence, 70); // weak: exact match against the "Nioh 2" variant + year confirmed
+  assert.equal(upsertLinkCalls[0].opts.confidence, 70);
+  assert.deepEqual(enqueueResolveCalls, [77]);
+  // literal words, the normalized fallback, and the "Nioh 2" variant were all tried, in that order
+  assert.deepEqual(
+    searchedTerms.map((t) => t.toLowerCase()),
+    ['nioh 2 - the complete edition', 'nioh 2 the', 'nioh 2'],
+  );
+});
+
 test('fetchOne: no existing link, nothing matches -> not_found record only, no link/resolve', async () => {
   _resetCaches();
   const http = fakeHttpWithBuildIdAndDetail({});

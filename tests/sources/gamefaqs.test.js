@@ -371,6 +371,29 @@ test('locateGamefaqsProduct: first query (full name) misses, retries with the su
   assert.equal(located.pid, '991073');
 });
 
+test('locateGamefaqsProduct: first query (full name + marketing suffix) misses, second variant ("Gauntlet") matches by year among several same-named rows', async () => {
+  // Real case from the 2026-09-22 report: "Gauntlet™ Slayer Edition" ->
+  // normalizeName gives "Gauntlet Slayer Edition" (GameFAQs has no such
+  // title); searchNameVariants' 2nd entry strips the "Slayer Edition"
+  // marketing suffix down to "Gauntlet", which matches GameFAQs' "Gauntlet
+  // (2014)" once the release year (2014) picks it out from older Gauntlet
+  // entries GameFAQs also carries.
+  const gauntletResults = [
+    { pid: '1', game_name: 'Gauntlet', plats: 'PC', platform_url: 'pc', url: '/pc/1-gauntlet', date_released: '1985-01-01' },
+    { pid: '2', game_name: 'Gauntlet', plats: 'PC', platform_url: 'pc', url: '/pc/2-gauntlet-2014', date_released: '2014-09-23' },
+  ];
+  const http = fakeHttp({
+    search: {
+      'Gauntlet Slayer Edition': [{ footer: true }],
+      Gauntlet: gauntletResults,
+    },
+  });
+  const located = await locateGamefaqsProduct(fakeCtx({ http }), { name: 'Gauntlet™ Slayer Edition', release_date: '2014-09-23' });
+  assert.equal(located.status, 'ok');
+  assert.equal(located.pid, '2');
+  assert.equal(located.url, `${BASE}/pc/2-gauntlet-2014`);
+});
+
 test('locateGamefaqsProduct: no exact match, but a fuzzy title confirmed by year -> ok, fuzzy:true', async () => {
   const fuzzyResults = [{ pid: '1', game_name: 'Baldurs Gate 3', plats: 'PC', platform_url: 'pc', url: '/pc/1-baldurs-gate-3', date_released: '2023-08-03' }];
   const http = fakeHttp({ search: { "Baldur s Gate 3": fuzzyResults } });

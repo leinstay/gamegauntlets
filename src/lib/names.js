@@ -159,6 +159,130 @@ export function normalizeName(input, opts = {}) {
   return s;
 }
 
+// A dangling article/conjunction left over once a marketing suffix has been
+// stripped off the end of a title (e.g. "Nioh 2 The" once "Complete Edition"
+// is gone — see searchNameVariants below).
+const TRAILING_ARTICLE_RE = /\s+(the|a|an|and|of|for)$/i;
+
+/** Repeatedly strip a trailing article/conjunction (see TRAILING_ARTICLE_RE). */
+function stripTrailingArticle(input) {
+  let s = input;
+  let prev;
+  do {
+    prev = s;
+    s = s.replace(TRAILING_ARTICLE_RE, '');
+  } while (s !== prev && s !== '');
+  return s.trim();
+}
+
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Marketing suffixes review sites (GameFAQs, HLTB, ...) routinely omit from
+// their own title even though the Steam listing carries them. Longest first
+// so e.g. "Complete Edition" is matched (and removed) as a whole instead of
+// leaving a dangling "Complete" once a shorter "Edition" match ate the rest.
+const MARKETING_SUFFIXES = [
+  'Complete Edition',
+  'Ultimate Edition',
+  'Premium Edition',
+  'Legendary Edition',
+  'Anniversary Edition',
+  'Slayer Edition',
+  "Director's Cut",
+  'Directors Cut',
+  'Enhanced Edition',
+  'Remastered',
+  'Remaster',
+  'Enhanced',
+  'Definitive',
+  'HD',
+  'Edition',
+  'Complete',
+  'Collection',
+]
+  .sort((a, b) => b.length - a.length)
+  .map((suffix) => ({ suffix, re: new RegExp(`\\b${escapeRegExp(suffix)}$`, 'i') }));
+
+/**
+ * Strip at most 3 trailing marketing suffixes (see MARKETING_SUFFIXES), one
+ * per pass, re-trying the (possibly longer) list against what's left after
+ * each removal; a trailing article/conjunction exposed by the removal (e.g.
+ * "Nioh 2 The" once "Complete Edition" is gone) is stripped again at the end.
+ */
+function stripTrailingMarketingSuffix(input) {
+  let s = input;
+  for (let i = 0; i < 3; i++) {
+    const hit = MARKETING_SUFFIXES.find(({ re }) => re.test(s));
+    if (!hit) break;
+    s = s.replace(hit.re, '').trim();
+  }
+  return stripTrailingArticle(s);
+}
+
+// ' - ', ' – ', ' — ' (need surrounding spaces so a bare hyphenated word like
+// "Half-Life" is never split) or a bare ':' (GameFAQs/HLTB titles routinely
+// carry "Title: Subtitle" with no spaces required around the colon).
+const VARIANT_SEPARATOR_RE = /\s+-\s+|\s+–\s+|\s+—\s+|:/;
+
+/**
+ * Ordered, de-duplicated (case-insensitive) list of plausible "how a review
+ * site titles this" search queries for `name`, most specific first, capped
+ * at 4 entries. Built for src/sources/gamefaqs.js and src/sources/hltb.js:
+ * both sites frequently drop a Steam listing's marketing suffix
+ * ("Complete Edition", "Remastered", ...) or subtitle ("TERA - Action
+ * MMORPG" -> "TERA") entirely, so a single normalizeName() query often
+ * misses an entry that exists under a shorter title.
+ *
+ * Pure — does not call normalizeName's `removeAdditions`/`softRestrict`
+ * variants and never mutates `normalizeName` itself (its outputs are pinned
+ * by tests/fixtures/names/legacy-oracle.json).
+ *
+ *   a) normalizeName(name) as-is;
+ *   b) (a) with a dangling trailing article/conjunction removed;
+ *   c) (b) with up to 3 trailing marketing suffixes removed, then the
+ *      trailing-article strip applied once more;
+ *   d) the part before the first ' - '/' – '/' — '/':' separator of the
+ *      ORIGINAL name (only when that part is >=2 words or >=4 characters),
+ *      normalizeName()-d, then b)+c) applied to it.
+ */
+export function searchNameVariants(name) {
+  const original = name == null ? '' : String(name);
+  const seen = new Set();
+  const results = [];
+
+  const add = (value) => {
+    const v = (value ?? '').trim();
+    if (v === '') return;
+    const key = v.toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    results.push(v);
+  };
+
+  const a = normalizeName(original);
+  add(a);
+
+  const b = stripTrailingArticle(a);
+  add(b);
+
+  const c = stripTrailingMarketingSuffix(b);
+  add(c);
+
+  const sepMatch = original.match(VARIANT_SEPARATOR_RE);
+  if (sepMatch) {
+    const before = original.slice(0, sepMatch.index).trim();
+    const words = before.split(/\s+/).filter(Boolean);
+    if (before.length >= 4 || words.length >= 2) {
+      const dNorm = normalizeName(before);
+      add(stripTrailingMarketingSuffix(stripTrailingArticle(dNorm)));
+    }
+  }
+
+  return results.slice(0, 4);
+}
+
 const ROMAN_MAP = [
   ['M', 1000],
   ['CM', 900],
