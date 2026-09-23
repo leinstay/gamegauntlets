@@ -222,10 +222,15 @@ function normKey(raw) {
   return normalizeName(toAscii(raw ?? ''), { convertRom: true }).toLowerCase();
 }
 
-/** `search.data` rows -> `{ id, name, year }`, base games only ('game' type; dlc/mod/pack are never what we want to link). Exported for tests. */
+// HLTB types a title as 'game', 'endless' (online/no-ending: R.E.P.O., Cuisine Royale, SteamVR...) or 'multi'
+// besides the add-on kinds below; only the add-ons are never what we want to link. Accepting 'game' alone
+// silently lost every online game (found 2026-09-23: R.E.P.O. came back as the single search row, typed 'endless').
+const HLTB_ADDON_TYPES = new Set(['dlc', 'mod', 'pack', 'compilation']);
+
+/** `search.data` rows -> `{ id, name, year }`, standalone titles only (see HLTB_ADDON_TYPES). Exported for tests. */
 export function mapSearchCandidates(rows) {
   return (rows ?? [])
-    .filter((r) => r?.game_type === 'game' && r?.game_id != null)
+    .filter((r) => r?.game_id != null && !HLTB_ADDON_TYPES.has(String(r?.game_type ?? '').toLowerCase()))
     .map((r) => ({
       id: String(r.game_id),
       name: r.game_name,

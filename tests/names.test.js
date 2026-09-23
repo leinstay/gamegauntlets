@@ -208,6 +208,8 @@ describe('searchNameVariants (review-site title fallbacks for gamefaqs.js/hltb.j
   const cases = [
     ['Nioh 2 – The Complete Edition', ['Nioh 2 The', 'Nioh 2']],
     ['Gauntlet™ Slayer Edition', ['Gauntlet Slayer Edition', 'Gauntlet']],
+    ['Gotham City Impostors Free to Play', ['Gotham City Impostors Free to Play', 'Gotham City Impostors']],
+    ['PRO EVOLUTION SOCCER 2019 LITE', ['PRO EVOLUTION SOCCER 2019 LITE', 'PRO EVOLUTION SOCCER 2019']],
     ['TERA - Action MMORPG', ['TERA Action MMORPG', 'TERA']],
     ['Grand Theft Auto V Enhanced', ['Grand Theft Auto V Enhanced', 'Grand Theft Auto V']],
     [

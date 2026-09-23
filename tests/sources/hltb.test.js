@@ -96,6 +96,17 @@ test('mapSearchCandidates: tolerates missing/empty rows', () => {
   assert.deepEqual(mapSearchCandidates([{ game_type: 'dlc', game_id: 1, game_name: 'x' }]), []);
 });
 
+test('mapSearchCandidates: keeps "endless" and "multi" titles (online games), drops every add-on kind', () => {
+  const rows = mapSearchCandidates([
+    { game_type: 'endless', game_id: 174520, game_name: 'R.E.P.O.', release_world: 2025 },
+    { game_type: 'multi', game_id: 2, game_name: 'Cuisine Royale', release_world: 2018 },
+    { game_type: 'mod', game_id: 3, game_name: 'x' },
+    { game_type: 'pack', game_id: 4, game_name: 'y' },
+    { game_type: 'compilation', game_id: 5, game_name: 'z' },
+  ]);
+  assert.deepEqual(rows.map((r) => r.id), ['174520', '2']);
+});
+
 test('scoreCandidate: exact normalized match vs a fuzzy one', () => {
   const exact = scoreCandidate('Portal 2', 'Portal 2');
   assert.equal(exact.exact, true);

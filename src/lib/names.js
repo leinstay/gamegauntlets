@@ -201,6 +201,12 @@ const MARKETING_SUFFIXES = [
   'Edition',
   'Complete',
   'Collection',
+  'Free to Play',
+  'Free-to-Play',
+  'F2P',
+  'Lite',
+  'Test Server',
+  'Playtest',
 ]
   .sort((a, b) => b.length - a.length)
   .map((suffix) => ({ suffix, re: new RegExp(`\\b${escapeRegExp(suffix)}$`, 'i') }));
