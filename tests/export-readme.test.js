@@ -99,13 +99,10 @@ test('renderReadme: title is "Steam Game Database"', () => {
   assert.match(md, /^# Steam Game Database/);
 });
 
-test('renderReadme: includes the totals table with every metric, no excluded-rows breakdown', () => {
+test('renderReadme: no "Catalog totals" section (the totals live in the release notes since 2026-09-28)', () => {
   const md = renderReadme(sampleStats(), { generatedAt: new Date('2026-09-19T23:48:00Z') });
-  assert.match(md, /112,800/); // gamesInCatalog, thousands-separated
-  assert.match(md, /108,000/); // steamGames
-  assert.match(md, /4,800/); // gogGames
-  assert.match(md, /1,200/); // bothStores
-  assert.doesNotMatch(md, /Excluded/); // excluded-row breakdown was dropped (2026-09-19 README review)
+  assert.doesNotMatch(md, /Catalog totals/);
+  assert.doesNotMatch(md, /Excluded/);
 });
 
 test('renderReadme: coverage table has a row with a percentage for every key, in FIELD_DEFS order', () => {

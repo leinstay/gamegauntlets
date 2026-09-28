@@ -351,7 +351,7 @@ function renderExample(example) {
  * they describe *this* dump specifically rather than the dataset in general.
  */
 export function renderReadme(stats, { generatedAt = new Date(), repo = 'leinstay/steamdb' } = {}) {
-  const { totals, coverage, files, example } = stats;
+  const { coverage, files, example } = stats;
   const asOf = generatedAt instanceof Date ? generatedAt.toISOString() : String(generatedAt);
 
   return `# Steam Game Database
@@ -366,10 +366,6 @@ _Generated ${asOf}._
 ## Download
 
 ${renderDownload(files, repo)}
-
-## Catalog totals
-
-${renderTotals(totals)}
 
 ## Schema
 
