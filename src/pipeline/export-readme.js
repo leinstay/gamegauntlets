@@ -312,16 +312,21 @@ function renderSources(sources) {
   return lines.join('\n');
 }
 
-function renderLinks(links) {
-  const lines = ['| Site | Linked games |', '|---|---|'];
-  for (const l of links) lines.push(`| ${l.source} | ${fmt(l.games)} |`);
-  return lines.join('\n');
-}
-
-function renderFiles(files) {
+/**
+ * `## Download` section: one row per dump file, its name linking to
+ * `https://github.com/<repo>/releases/latest/download/<file>` — GitHub resolves that URL to the asset
+ * on whichever release is currently "latest" (i.e. newest, since releases are never marked prerelease),
+ * so the link keeps working across nightly releases without the README needing to know the current tag.
+ */
+function renderDownload(files, repo) {
   if (!files?.length) return '_(dump files not available for this render)_';
   const lines = ['| File | Rows | Size |', '|---|---|---|'];
-  for (const f of files) lines.push(`| \`${f.name}\` | ${fmt(f.rows)} | ${f.size} |`);
+  for (const f of files) {
+    const url = `https://github.com/${repo}/releases/latest/download/${f.name}`;
+    lines.push(`| [\`${f.name}\`](${url}) | ${fmt(f.rows)} | ${f.size} |`);
+  }
+  lines.push('');
+  lines.push(`Previous dump: see the [releases page](https://github.com/${repo}/releases).`);
   return lines.join('\n');
 }
 
@@ -335,12 +340,18 @@ function renderExample(example) {
 
 /**
  * `stats` (from collectStats(), plus `stats.files`/`stats.example` added by the caller — see file
- * header) + `{ generatedAt }` (a Date or ISO string; defaults to "now") -> the full README.md text.
- * Pure, no I/O — deterministic for a given `stats`/`generatedAt` (stable key/row ordering throughout,
- * see FIELD_DEFS/SOURCE_ORDER above), so a nightly diff only ever reflects a real change in the data.
+ * header) + `{ generatedAt, repo }` (`generatedAt`: a Date or ISO string, defaults to "now"; `repo`: the
+ * `owner/name` the Download section's links point at, defaults to the public leinstay/steamdb) -> the
+ * full README.md text. Pure, no I/O — deterministic for given inputs (stable key/row ordering
+ * throughout, see FIELD_DEFS above), so a nightly diff only ever reflects a real change in the data.
+ *
+ * 2026-09-28: the dump files are no longer committed to this repo (GitHub Release instead, see
+ * src/pipeline/github-release.js) — "Files" became "Download" (links to the latest release's assets),
+ * and "Source status"/"External links" moved to the release notes (renderReleaseNotes() below), since
+ * they describe *this* dump specifically rather than the dataset in general.
  */
-export function renderReadme(stats, { generatedAt = new Date() } = {}) {
-  const { totals, coverage, sources, links, files, example } = stats;
+export function renderReadme(stats, { generatedAt = new Date(), repo = 'leinstay/steamdb' } = {}) {
+  const { totals, coverage, files, example } = stats;
   const asOf = generatedAt instanceof Date ? generatedAt.toISOString() : String(generatedAt);
 
   return `# Steam Game Database
@@ -352,9 +363,9 @@ Updated nightly at 23:48 UTC.
 
 _Generated ${asOf}._
 
-## Files
+## Download
 
-${renderFiles(files)}
+${renderDownload(files, repo)}
 
 ## Catalog totals
 
@@ -367,20 +378,33 @@ ${renderTotals(totals)}
 
 ${renderCoverage(coverage)}
 ${renderExample(example)}
-## Source status
-
-"Remaining" is games with no data from that source yet, or whose last fetch is older than the source's own refresh interval.
-
-${renderSources(sources)}
-
-## External links
-
-${renderLinks(links)}
-
 ## Licence
 
 The dataset is released under the GNU General Public License v3.0 (see \`LICENSE\` in this repo). Game
 names, images, descriptions and prices belong to their respective publishers, platforms and third-party
 sources.
+`;
+}
+
+/**
+ * Markdown for the GitHub Release body that accompanies one night's dump (src/pipeline/github-release.js's
+ * publishDumpRelease(), called `notes`) — the release's own name is `Data update <date>` (set by the
+ * caller, not here). Pure, same inputs -> same output. Carries exactly the per-run facts that don't
+ * belong in the dataset README: the catalog totals for this run, and each live source's fetch status —
+ * `renderSources()`'s own output, reused as-is from the pre-2026-09-28 README's "Source status" section.
+ */
+export function renderReleaseNotes(stats, { date } = {}) {
+  const { totals, sources } = stats;
+  return `# Data update ${date}
+
+## Catalog totals
+
+${renderTotals(totals)}
+
+## Source status
+
+"Remaining" is games with no data from that source yet, or whose last fetch is older than the source's own refresh interval.
+
+${renderSources(sources)}
 `;
 }

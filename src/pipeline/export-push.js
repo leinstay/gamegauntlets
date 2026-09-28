@@ -35,10 +35,17 @@ import { pathToFileURL } from 'node:url';
 import { config } from '../config.js';
 import { log } from '../log.js';
 import { runFullExport } from './export.js';
-import { collectStats, renderReadme } from './export-readme.js';
+import { collectStats, renderReadme, renderReleaseNotes } from './export-readme.js';
+import { publishDumpRelease } from './github-release.js';
 
 const execFileAsync = promisify(execFile);
 const GIT_TIMEOUT_MS = 30_000;
+// Matches config.json's export.githubRepo/github-release.js's own default — used only when neither is set.
+const DEFAULT_GITHUB_REPO = 'leinstay/steamdb';
+
+// The three dump files this repo tracked before 2026-09-28 — now published as a GitHub Release instead
+// (see github-release.js), never committed here again (see untrackDumpFiles() below).
+const DUMP_FILE_NAMES = ['steamdb.json', 'steamdb.min.json', 'steamdb.min.json.gz'];
 
 function todayUtc() {
   return new Date().toISOString().slice(0, 10);
@@ -95,6 +102,47 @@ async function removeLeftoverGogdbFiles(dir) {
 }
 
 /**
+ * Make sure the three dump files are `.gitignore`d and untracked (2026-09-28: they're published as a
+ * GitHub Release instead of committed — see github-release.js — every git-lfs object ever pushed stays
+ * in the repo forever, and the dump is ~1.15 GB/night). Idempotent:
+ *   - appends any of the three names missing from `.gitignore` (writes the file if it doesn't exist yet;
+ *     a no-op, no write at all, once every name is already there);
+ *   - `git rm -r --cached --ignore-unmatch` them (a no-op if they're already untracked);
+ *   - strips any git-lfs `*.json`/`*.gz` rule from `.gitattributes` — the only reason those rules existed
+ *     — deleting the file entirely once nothing else is left in it.
+ * Staged, not committed — the caller commits everything together in one commit, same as always.
+ */
+async function untrackDumpFiles(dir) {
+  const gitignorePath = path.join(dir, '.gitignore');
+  const existingLines = fs.existsSync(gitignorePath)
+    ? fs.readFileSync(gitignorePath, 'utf8').split(/\r?\n/).filter((l) => l.trim() !== '')
+    : [];
+  const missing = DUMP_FILE_NAMES.filter((name) => !existingLines.includes(name));
+  if (missing.length) {
+    fs.writeFileSync(gitignorePath, [...existingLines, ...missing].join('\n') + '\n');
+  }
+
+  await git(dir, ['rm', '-r', '--cached', '--ignore-unmatch', '--quiet', ...DUMP_FILE_NAMES]);
+
+  const gitattributesPath = path.join(dir, '.gitattributes');
+  if (fs.existsSync(gitattributesPath)) {
+    const lines = fs.readFileSync(gitattributesPath, 'utf8').split(/\r?\n/);
+    const kept = lines
+      .filter((line) => {
+        const pattern = line.trim().split(/\s+/)[0];
+        return pattern !== '*.json' && pattern !== '*.gz';
+      })
+      .filter((l) => l.trim() !== '');
+    if (kept.length === 0) {
+      fs.rmSync(gitattributesPath);
+      await git(dir, ['rm', '-f', '--ignore-unmatch', '--quiet', '.gitattributes']);
+    } else {
+      fs.writeFileSync(gitattributesPath, kept.join('\n') + '\n');
+    }
+  }
+}
+
+/**
  * `git add -A && git commit -m "Data update <date>" && git push origin
  * main` in `dir`, skipping the commit (and push) entirely when there is
  * nothing to commit. Never logs git's stdout/stderr — `dir` is a checkout
@@ -109,6 +157,7 @@ async function removeLeftoverGogdbFiles(dir) {
  */
 export async function commitAndPush(dir) {
   await removeLeftoverGogdbFiles(dir);
+  await untrackDumpFiles(dir);
   const status = await git(dir, ['status', '--porcelain']);
   if (!status.stdout.trim()) {
     log.info('export: no changes, skipping commit', { dir });
@@ -139,10 +188,14 @@ async function pruneLfsCache(dir) {
 /**
  * Core export used by both the CLI and the worker: run the data pipeline
  * (src/pipeline/export.js's runFullExport — steamdb.json/.min.json/.min.json.gz, both kinds in one
- * dump), regenerate README.md (src/pipeline/export-readme.js) from fresh stats so it always describes
- * exactly the dump files sitting next to it, then commit+push in `dir` unless `push` is false — the
- * dry-run path (`--no-push`, typically paired with `--out <dir>` pointing somewhere that usually isn't
- * even a git checkout) writes files only and never invokes git.
+ * dump), regenerate README.md (src/pipeline/export-readme.js) from fresh stats, commit+push it in `dir`
+ * unless `push` is false, then publish the three dump files as a GitHub Release (github-release.js) —
+ * the dry-run path (`--no-push`, typically paired with `--out <dir>` pointing somewhere that usually
+ * isn't even a git checkout) writes files only and touches neither git nor GitHub.
+ *
+ * The release publish only starts after the README commit/push has been attempted, but a release
+ * failure still throws (and so still fails the CLI run / worker job) — a dump that got pushed to the
+ * repo but never made it into a release would otherwise fail silently.
  */
 export async function exportAndPush({ outDir, push = true, chunkSize } = {}) {
   const dir = outDir ?? config.export?.steamdbRepoDir;
@@ -161,15 +214,28 @@ export async function exportAndPush({ outDir, push = true, chunkSize } = {}) {
   // The README's "Example" section is the first row runFullExport() actually wrote (already mapped and
   // in memory — nothing extra read from disk); omitted by renderReadme() when the export was empty.
   stats.example = result.firstRow ?? null;
-  const readme = renderReadme(stats, { generatedAt: new Date() });
+  const repo = config.export?.githubRepo || DEFAULT_GITHUB_REPO;
+  const readme = renderReadme(stats, { generatedAt: new Date(), repo });
   fs.writeFileSync(path.join(dir, 'README.md'), readme);
 
   if (!push) {
-    log.info('export: push skipped (--no-push), git untouched', { dir });
-    return { ...result, statsMs, committed: false, pushed: false };
+    log.info('export: push skipped (--no-push), git and GitHub untouched', { dir });
+    return { ...result, statsMs, committed: false, pushed: false, released: false };
   }
+
   const gitResult = await commitAndPush(dir);
-  return { ...result, statsMs, ...gitResult };
+
+  const date = todayUtc();
+  const notes = renderReleaseNotes(stats, { date });
+  const release = await publishDumpRelease({
+    date,
+    notes,
+    files: [result.prettyPath, result.minPath, result.gzPath],
+    target: 'main',
+  });
+  log.info('export: published GitHub release', { tag: release.tag });
+
+  return { ...result, statsMs, ...gitResult, released: true, releaseTag: release.tag };
 }
 
 /**

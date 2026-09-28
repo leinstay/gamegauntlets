@@ -21,7 +21,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { renderReadme, collectStats, FIELD_DEFS, SOURCE_ORDER } from '../src/pipeline/export-readme.js';
+import { renderReadme, renderReleaseNotes, collectStats, FIELD_DEFS, SOURCE_ORDER } from '../src/pipeline/export-readme.js';
 
 // Mirrors tests/export.test.js's own EXPECTED_KEY_ORDER for src/pipeline/export.js's mapRow() —
 // FIELD_DEFS documents that exact same key set, in that exact same order (see this file's own
@@ -133,30 +133,33 @@ test('renderReadme: coverage table header includes a Type column', () => {
   assert.match(md, /\| Key \| Type \| Source \| Coverage \| Description \|/);
 });
 
-test('renderReadme: source status table only lists live sources', () => {
+test('renderReadme: no "Source status" or "External links" sections (moved to the release notes)', () => {
   const md = renderReadme(sampleStats(), { generatedAt: new Date() });
-  const steamLine = md.split('\n').find((l) => l.startsWith('| steam |'));
-  assert.ok(steamLine);
-  assert.match(steamLine, /1,234/);
-  assert.match(steamLine, /1d/); // refreshDays
-
-  assert.ok(!md.split('\n').some((l) => l.startsWith('| legacy_steamdb |')));
-  assert.ok(!md.split('\n').some((l) => l.startsWith('| gamerankings |')));
+  assert.doesNotMatch(md, /## Source status/);
+  assert.doesNotMatch(md, /## External links/);
+  assert.ok(!md.split('\n').some((l) => l.startsWith('| steam |')));
+  assert.ok(!md.split('\n').some((l) => l.startsWith('| gamefaqs |')));
 });
 
-test('renderReadme: links table lists every site with its linked-game count only (no link-row column)', () => {
-  const md = renderReadme(sampleStats(), { generatedAt: new Date() });
-  assert.match(md, /\| gamefaqs \| 40,000 \|/);
-  assert.match(md, /\| steam \| 110,000 \|/);
-  assert.doesNotMatch(md, /Total link rows/);
-});
-
-test('renderReadme: files table lists the dump files with row counts and sizes', () => {
-  const md = renderReadme(sampleStats(), { generatedAt: new Date() });
-  assert.match(md, /`steamdb\.json`/);
+test('renderReadme: "Download" section lists the dump files with row counts, sizes and a link to the latest release asset', () => {
+  const md = renderReadme(sampleStats(), { generatedAt: new Date(), repo: 'leinstay/steamdb' });
+  assert.match(md, /## Download/);
+  assert.match(md, /\[`steamdb\.json`\]\(https:\/\/github\.com\/leinstay\/steamdb\/releases\/latest\/download\/steamdb\.json\)/);
   assert.match(md, /210\.5 MB/);
-  assert.match(md, /`steamdb\.min\.json\.gz`/);
+  assert.match(md, /\[`steamdb\.min\.json\.gz`\]\(https:\/\/github\.com\/leinstay\/steamdb\/releases\/latest\/download\/steamdb\.min\.json\.gz\)/);
   assert.match(md, /38\.2 MB/);
+  assert.match(md, /Previous dump: see the \[releases page\]\(https:\/\/github\.com\/leinstay\/steamdb\/releases\)\./);
+});
+
+test('renderReadme: Download section respects a custom repo option', () => {
+  const md = renderReadme(sampleStats(), { generatedAt: new Date(), repo: 'someone/fork' });
+  assert.match(md, /https:\/\/github\.com\/someone\/fork\/releases\/latest\/download\/steamdb\.json/);
+  assert.match(md, /https:\/\/github\.com\/someone\/fork\/releases\)\./);
+});
+
+test('renderReadme: Download section defaults repo to leinstay/steamdb when not given', () => {
+  const md = renderReadme(sampleStats(), { generatedAt: new Date() });
+  assert.match(md, /https:\/\/github\.com\/leinstay\/steamdb\/releases\/latest\/download\/steamdb\.json/);
 });
 
 test('renderReadme: no internal table/column names or OpenCritic leak into the text', () => {
@@ -208,6 +211,43 @@ test('renderReadme: no legacy/CIS/RUB/schema-v2 wording anywhere in the generate
   for (const word of bannedWords) {
     const re = new RegExp(`\\b${word}\\b`, 'i');
     assert.doesNotMatch(md, re, `README must not contain the word "${word}"`);
+  }
+});
+
+// --- renderReleaseNotes ----------------------------------------------------------------------------
+
+test('renderReleaseNotes: first line is "Data update <date>"', () => {
+  const notes = renderReleaseNotes(sampleStats(), { date: '2026-09-28' });
+  assert.match(notes, /^# Data update 2026-09-28/);
+});
+
+test('renderReleaseNotes: includes the catalog totals table', () => {
+  const notes = renderReleaseNotes(sampleStats(), { date: '2026-09-28' });
+  assert.match(notes, /112,800/); // gamesInCatalog
+  assert.match(notes, /108,000/); // steamGames
+  assert.match(notes, /4,800/); // gogGames
+});
+
+test('renderReleaseNotes: one row per live source, with its "Remaining" explanation', () => {
+  const notes = renderReleaseNotes(sampleStats(), { date: '2026-09-28' });
+  const steamLine = notes.split('\n').find((l) => l.startsWith('| steam |'));
+  assert.ok(steamLine);
+  assert.match(steamLine, /1,234/);
+  const gogLine = notes.split('\n').find((l) => l.startsWith('| gog |'));
+  assert.ok(gogLine);
+  assert.match(gogLine, /40/);
+  assert.match(notes, /"Remaining" is games with no data from that source yet/);
+});
+
+test('renderReleaseNotes: no legacy/CIS/RUB/schema-v2 wording anywhere in the generated text', () => {
+  const notes = renderReleaseNotes(sampleStats(), { date: '2026-09-28' });
+  const bannedWords = [
+    'legacy', 'archived', 'archive', 'snapshot', 'frozen', 'rewrite',
+    'original dump', 'schema v2', 'CIS', 'RUB',
+  ];
+  for (const word of bannedWords) {
+    const re = new RegExp(`\\b${word}\\b`, 'i');
+    assert.doesNotMatch(notes, re, `release notes must not contain the word "${word}"`);
   }
 });
 

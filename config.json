@@ -192,6 +192,8 @@
   },
   "export": {
     "enabled": false,
-    "steamdbRepoDir": "var/steamdb"
+    "steamdbRepoDir": "var/steamdb",
+    "githubRepo": "leinstay/steamdb",
+    "keepReleases": 2
   }
 }
