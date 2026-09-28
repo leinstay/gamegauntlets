@@ -118,7 +118,22 @@ export async function commitAndPush(dir) {
   await git(dir, ['commit', '-m', `Data update ${todayUtc()}`]);
   await git(dir, ['push', 'origin', 'main']);
   log.info('export: committed and pushed', { dir });
+  await pruneLfsCache(dir);
   return { committed: true, pushed: true };
+}
+
+/**
+ * `git lfs prune` after a successful push: every dump commit leaves ~1.15 GB of LFS objects in
+ * `.git/lfs` and nothing else ever removes them (15 GB / 79 % of the root disk by 2026-09-28). The
+ * objects are on GitHub, only the local cache is cleared. A failure here must not fail the export.
+ */
+async function pruneLfsCache(dir) {
+  try {
+    await git(dir, ['lfs', 'prune']);
+    log.info('export: pruned the local LFS cache', { dir });
+  } catch (err) {
+    log.warn('export: git lfs prune failed', { dir, error: String(err?.message ?? err).slice(0, 200) });
+  }
 }
 
 /**
