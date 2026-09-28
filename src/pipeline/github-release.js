@@ -201,12 +201,14 @@ export async function uploadAsset(release, filePath, { execFileImpl = execFile, 
 
 // --- orchestration -----------------------------------------------------------------------------------
 
+// The date IS the version: tag and release name are both `YYYY-MM-DD` (owner's wish, 2026-09-28); GitHub marks
+// the newest one "Latest" by itself.
 export function tagForDate(date) {
-  return `dump-${date}`;
+  return String(date);
 }
 
 /**
- * Publish one night's dump as a GitHub Release: create `dump-<date>` (deleting a same-tag release first
+ * Publish one night's dump as a GitHub Release: create `<date>` (deleting a same-tag release first
  * — a same-day re-run), upload `files` to it, then prune down to the configured number of kept releases.
  * Throws on any step's failure; the caller (src/pipeline/export-push.js) treats that as the export job
  * failing, same as a git push failure always has.
@@ -217,7 +219,7 @@ export async function publishDumpRelease({ date, notes, files, target }, opts = 
   requireToken(env); // fail before doing anything, not partway through
 
   const tag = tagForDate(date);
-  const name = `Data update ${date}`;
+  const name = String(date);
 
   const existing = await listReleases(callOpts);
   const same = existing.find((r) => r.tag_name === tag);

@@ -388,16 +388,15 @@ sources.
 
 /**
  * Markdown for the GitHub Release body that accompanies one night's dump (src/pipeline/github-release.js's
- * publishDumpRelease(), called `notes`) — the release's own name is `Data update <date>` (set by the
+ * publishDumpRelease(), called `notes`) — the release's own name is the date (set by the
  * caller, not here). Pure, same inputs -> same output. Carries exactly the per-run facts that don't
  * belong in the dataset README: the catalog totals for this run, and each live source's fetch status —
  * `renderSources()`'s own output, reused as-is from the pre-2026-09-28 README's "Source status" section.
  */
 export function renderReleaseNotes(stats, { date } = {}) {
   const { totals, sources } = stats;
-  return `# Data update ${date}
-
-## Catalog totals
+  // no heading: the release name (the date) already sits right above the notes on GitHub
+  return `## Catalog totals
 
 ${renderTotals(totals)}
 

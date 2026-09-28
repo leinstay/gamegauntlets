@@ -216,9 +216,10 @@ test('renderReadme: no legacy/CIS/RUB/schema-v2 wording anywhere in the generate
 
 // --- renderReleaseNotes ----------------------------------------------------------------------------
 
-test('renderReleaseNotes: first line is "Data update <date>"', () => {
+test('renderReleaseNotes: starts with the totals, no heading (the release name is the date)', () => {
   const notes = renderReleaseNotes(sampleStats(), { date: '2026-09-28' });
-  assert.match(notes, /^# Data update 2026-09-28/);
+  assert.match(notes, /^## Catalog totals/);
+  assert.doesNotMatch(notes, /Data update/);
 });
 
 test('renderReleaseNotes: includes the catalog totals table', () => {

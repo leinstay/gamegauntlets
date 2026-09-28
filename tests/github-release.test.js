@@ -52,8 +52,8 @@ function makeFakeExecFile({ stdout = JSON.stringify({ state: 'uploaded' }), err 
 
 // --- tagForDate / stripUploadUrlTemplate (pure helpers) -----------------------------------------------
 
-test('tagForDate: "dump-<date>"', () => {
-  assert.equal(tagForDate('2026-09-28'), 'dump-2026-09-28');
+test('tagForDate: the date itself is the tag', () => {
+  assert.equal(tagForDate('2026-09-28'), '2026-09-28');
 });
 
 test('stripUploadUrlTemplate: removes the trailing {?name,label} URI template', () => {
@@ -75,7 +75,7 @@ test('listReleases: throws a clear error when STEAMDB_GITHUB_TOKEN is missing', 
 test('createRelease: throws a clear error when STEAMDB_GITHUB_TOKEN is missing', async () => {
   await assert.rejects(
     () => createRelease(
-      { tag: 'dump-2026-09-28', name: 'Data update 2026-09-28', body: '', target: 'main' },
+      { tag: '2026-09-28', name: '2026-09-28', body: '', target: 'main' },
       { fetchImpl: async () => { throw new Error('fetch must not be called'); }, env: {} },
     ),
     /STEAMDB_GITHUB_TOKEN/,
@@ -106,13 +106,13 @@ test('createRelease: POSTs tag_name/target_commitish/name/body with draft and pr
     captured = { url, opts };
     return jsonResponse(201, {
       id: 10,
-      tag_name: 'dump-2026-09-28',
+      tag_name: '2026-09-28',
       upload_url: 'https://uploads.github.com/repos/leinstay/steamdb/releases/10/assets{?name,label}',
     });
   };
 
   const release = await createRelease(
-    { tag: 'dump-2026-09-28', name: 'Data update 2026-09-28', body: 'notes here', target: 'main' },
+    { tag: '2026-09-28', name: '2026-09-28', body: 'notes here', target: 'main' },
     { fetchImpl, env: TOKEN_ENV },
   );
 
@@ -121,9 +121,9 @@ test('createRelease: POSTs tag_name/target_commitish/name/body with draft and pr
   assert.equal(captured.opts.headers.Authorization, 'token super-secret-token');
 
   const sentBody = JSON.parse(captured.opts.body);
-  assert.equal(sentBody.tag_name, 'dump-2026-09-28');
+  assert.equal(sentBody.tag_name, '2026-09-28');
   assert.equal(sentBody.target_commitish, 'main');
-  assert.equal(sentBody.name, 'Data update 2026-09-28');
+  assert.equal(sentBody.name, '2026-09-28');
   assert.equal(sentBody.body, 'notes here');
   assert.equal(sentBody.draft, false);
   assert.equal(sentBody.prerelease, false);
@@ -188,9 +188,9 @@ test('uploadAsset: propagates a curl process failure (e.g. --fail on a non-2xx r
 
 test('pruneReleases: keeps the `keep` newest releases by created_at, deletes the rest', async () => {
   const releases = [
-    { id: 1, tag_name: 'dump-2026-09-26', created_at: '2026-09-26T23:48:00Z' },
-    { id: 2, tag_name: 'dump-2026-09-27', created_at: '2026-09-27T23:48:00Z' },
-    { id: 3, tag_name: 'dump-2026-09-28', created_at: '2026-09-28T23:48:00Z' },
+    { id: 1, tag_name: '2026-09-26', created_at: '2026-09-26T23:48:00Z' },
+    { id: 2, tag_name: '2026-09-27', created_at: '2026-09-27T23:48:00Z' },
+    { id: 3, tag_name: '2026-09-28', created_at: '2026-09-28T23:48:00Z' },
   ];
   const deletedReleaseIds = [];
   const deletedTagRefs = [];
@@ -211,15 +211,15 @@ test('pruneReleases: keeps the `keep` newest releases by created_at, deletes the
 
   const { deleted } = await pruneReleases(2, { fetchImpl, env: TOKEN_ENV });
 
-  assert.deepEqual(deleted, ['dump-2026-09-26']);
+  assert.deepEqual(deleted, ['2026-09-26']);
   assert.deepEqual(deletedReleaseIds, [1]);
-  assert.deepEqual(deletedTagRefs, ['dump-2026-09-26']);
+  assert.deepEqual(deletedTagRefs, ['2026-09-26']);
 });
 
 test('pruneReleases: a 404 deleting the tag ref is ignored (release is already gone)', async () => {
   const releases = [
-    { id: 1, tag_name: 'dump-2026-09-26', created_at: '2026-09-26T23:48:00Z' },
-    { id: 2, tag_name: 'dump-2026-09-27', created_at: '2026-09-27T23:48:00Z' },
+    { id: 1, tag_name: '2026-09-26', created_at: '2026-09-26T23:48:00Z' },
+    { id: 2, tag_name: '2026-09-27', created_at: '2026-09-27T23:48:00Z' },
   ];
   const fetchImpl = async (url, opts) => {
     const method = opts.method || 'GET';
@@ -229,7 +229,7 @@ test('pruneReleases: a 404 deleting the tag ref is ignored (release is already g
     throw new Error(`unexpected fetch ${method} ${url}`);
   };
   const { deleted } = await pruneReleases(1, { fetchImpl, env: TOKEN_ENV });
-  assert.deepEqual(deleted, ['dump-2026-09-26']);
+  assert.deepEqual(deleted, ['2026-09-26']);
 });
 
 // --- deleteRelease -------------------------------------------------------------------------------
@@ -241,7 +241,7 @@ test('deleteRelease: a 404 deleting the release itself is tolerated', async () =
     if (method === 'DELETE' && url.includes('/git/refs/tags/')) return jsonResponse(204, {});
     throw new Error(`unexpected fetch ${method} ${url}`);
   };
-  await assert.doesNotReject(() => deleteRelease({ id: 5, tag_name: 'dump-2026-09-20' }, { fetchImpl, env: TOKEN_ENV }));
+  await assert.doesNotReject(() => deleteRelease({ id: 5, tag_name: '2026-09-20' }, { fetchImpl, env: TOKEN_ENV }));
 });
 
 test('deleteRelease: a non-404 error deleting the release throws', async () => {
@@ -250,7 +250,7 @@ test('deleteRelease: a non-404 error deleting the release throws', async () => {
     throw new Error('git/refs/tags must not be reached when the release delete itself fails');
   };
   await assert.rejects(
-    () => deleteRelease({ id: 5, tag_name: 'dump-2026-09-20' }, { fetchImpl, env: TOKEN_ENV }),
+    () => deleteRelease({ id: 5, tag_name: '2026-09-20' }, { fetchImpl, env: TOKEN_ENV }),
     /HTTP 500/,
   );
 });
@@ -263,14 +263,14 @@ test('publishDumpRelease: deletes an existing same-day release before creating t
     const method = opts.method || 'GET';
     calls.push({ method, url });
     if (method === 'GET' && url.includes('/releases?per_page=100')) {
-      return jsonResponse(200, [{ id: 9, tag_name: 'dump-2026-09-28', created_at: '2026-09-27T00:00:00Z' }]);
+      return jsonResponse(200, [{ id: 9, tag_name: '2026-09-28', created_at: '2026-09-27T00:00:00Z' }]);
     }
     if (method === 'DELETE' && url.endsWith('/releases/9')) return jsonResponse(204, {});
     if (method === 'DELETE' && url.includes('/git/refs/tags/')) return jsonResponse(204, {});
     if (method === 'POST' && url.endsWith('/releases')) {
       return jsonResponse(201, {
         id: 10,
-        tag_name: 'dump-2026-09-28',
+        tag_name: '2026-09-28',
         upload_url: 'https://uploads.github.com/repos/leinstay/steamdb/releases/10/assets{?name,label}',
       });
     }
@@ -283,7 +283,7 @@ test('publishDumpRelease: deletes an existing same-day release before creating t
     { fetchImpl, execFileImpl, env: TOKEN_ENV },
   );
 
-  assert.equal(result.tag, 'dump-2026-09-28');
+  assert.equal(result.tag, '2026-09-28');
   const deleteIndex = calls.findIndex((c) => c.method === 'DELETE' && c.url.endsWith('/releases/9'));
   const createIndex = calls.findIndex((c) => c.method === 'POST' && c.url.endsWith('/releases'));
   assert.ok(deleteIndex !== -1 && createIndex !== -1, 'both the delete and the create must happen');
@@ -298,7 +298,7 @@ test('publishDumpRelease: uploads every file in `files`, in order', async () => 
     if (method === 'POST' && url.endsWith('/releases')) {
       createdRelease = {
         id: 11,
-        tag_name: 'dump-2026-09-28',
+        tag_name: '2026-09-28',
         upload_url: 'https://uploads.github.com/repos/leinstay/steamdb/releases/11/assets{?name,label}',
       };
       return jsonResponse(201, createdRelease);
