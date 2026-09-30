@@ -505,7 +505,7 @@ export async function locateGamefaqsProduct(ctx, game) {
 }
 
 // ---------------------------------------------------------------------------
-// discover() — enqueue games missing difficulty or with a stale record
+// discover() — enqueue games with no record yet or with a stale one
 // ---------------------------------------------------------------------------
 
 async function ensureStateRow(db) {
@@ -514,7 +514,9 @@ async function ensureStateRow(db) {
 
 /**
  * Daily schedule: games with no `gamefaqs` `source_records` row, or one
- * older than `refreshDays` (default 90), or still missing `games.difficulty`
+ * older than `refreshDays` (default 90). NOT "still missing `games.difficulty`": most GameFAQs pages carry no
+ * difficulty vote, so that condition re-picked the same popular games every day and the whole daily cap went to
+ * them - coverage stood still at 18,425 games for two days (found 2026-09-30)
  * — popular first (`owners_estimate DESC`), capped at `dailyCap` (default
  * 1500). Auto-resumes a 24h block pause once its time has passed (see
  * `checkAndMaybeResume`).
@@ -540,8 +542,7 @@ export async function discover(ctx) {
   const rows = await db.query(
     `SELECT g.id FROM games g
      LEFT JOIN source_records sr ON sr.source = ? AND sr.game_id = g.id
-     WHERE g.difficulty IS NULL
-        OR sr.id IS NULL
+     WHERE sr.id IS NULL
         OR sr.fetched_at < DATE_SUB(NOW(), INTERVAL ? DAY)
      ORDER BY g.owners_estimate DESC
      LIMIT ?`,

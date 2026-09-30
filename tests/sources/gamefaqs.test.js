@@ -527,6 +527,21 @@ test('discover: enqueues a job per candidate game, popular-first via the query o
   assert.equal(enqueued[0].source, 'gamefaqs');
 });
 
+test('discover: picks games by missing/stale record only, never by a missing difficulty', async () => {
+  // Most GameFAQs pages have no difficulty vote; selecting on it re-picked the same popular games daily.
+  const { ctx } = fakeDiscoverCtx({ candidateRows: [] });
+  let candidateSql = '';
+  const originalQuery = ctx.db.query;
+  ctx.db.query = async (sql, params) => {
+    if (sql.includes('LEFT JOIN source_records')) candidateSql = sql;
+    return originalQuery(sql, params);
+  };
+  await discover(ctx);
+  assert.match(candidateSql, /sr\.id IS NULL/);
+  assert.match(candidateSql, /sr\.fetched_at < DATE_SUB/);
+  assert.doesNotMatch(candidateSql, /difficulty/);
+});
+
 test('discover: skips (and does not query candidates) while paused', async () => {
   const { ctx, enqueued } = fakeDiscoverCtx({ paused: true, candidateRows: [{ id: 1 }] });
   const result = await discover(ctx);
