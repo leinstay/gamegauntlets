@@ -425,7 +425,7 @@ test('locateGamefaqsProduct: blocked while following the PC cross-link page -> "
   assert.equal(located.status, 'blocked');
 });
 
-// --- pauseSource / checkAndMaybeResume (24h block cooldown) ---------------
+// --- pauseSource / checkAndMaybeResume (3h block cooldown) ---------------
 
 function fakeStateDb(initial = null) {
   let row = initial;
@@ -451,14 +451,14 @@ function fakeStateDb(initial = null) {
   };
 }
 
-test('pauseSource: sets paused=1 and a resume time 24h out', async () => {
+test('pauseSource: sets paused=1 and a resume time 3h out', async () => {
   const state = fakeStateDb(null);
   const now = () => Date.UTC(2026, 0, 1, 0, 0, 0);
   await pauseSource({ db: state.db }, 'blocked while testing', { now });
   const row = state.row();
   assert.equal(row.paused, 1);
   const cursorState = JSON.parse(row.cursor_state);
-  assert.equal(cursorState.pausedUntil, new Date(now() + 24 * 60 * 60 * 1000).toISOString());
+  assert.equal(cursorState.pausedUntil, new Date(now() + 3 * 60 * 60 * 1000).toISOString());
   assert.equal(row.last_error, 'blocked while testing');
 });
 

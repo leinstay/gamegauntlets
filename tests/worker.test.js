@@ -275,6 +275,54 @@ function proxyUnavailableError(message = 'proxy down') {
   return err;
 }
 
+test('createRunSourceJob: paused source whose own checkAndMaybeResume says the pause expired -> runs the job', async () => {
+  const { queueFor, added } = fakeQueue();
+  const logger = fakeLogger();
+  let ran = false;
+  const mod = {
+    name: 'gamefaqs',
+    checkAndMaybeResume: async () => ({ paused: false }),
+    fetchOne: async () => { ran = true; return { status: 'ok' }; },
+  };
+  const touched = [];
+  const runSourceJob = createRunSourceJob({
+    ctxForSource: new Map(),
+    defaultCtx: {},
+    isPaused: async () => true,
+    touchSourceState: async (source, patch) => touched.push({ source, patch }),
+    queueFor,
+    log: logger,
+  });
+  const result = await runSourceJob(mod, job('fetch', { gameId: 1 }));
+  assert.equal(ran, true);
+  assert.deepEqual(result, { status: 'ok' });
+  assert.equal(added.length, 0);
+  assert.equal(touched.length, 1);
+});
+
+test('createRunSourceJob: paused source whose checkAndMaybeResume says still paused -> requeued as before', async () => {
+  const { queueFor, added } = fakeQueue();
+  const logger = fakeLogger();
+  let ran = false;
+  const mod = {
+    name: 'gamefaqs',
+    checkAndMaybeResume: async () => ({ paused: true, pausedUntil: '2099-01-01T00:00:00Z' }),
+    fetchOne: async () => { ran = true; },
+  };
+  const runSourceJob = createRunSourceJob({
+    ctxForSource: new Map(),
+    defaultCtx: {},
+    isPaused: async () => true,
+    touchSourceState: async () => { throw new Error('must not be called'); },
+    queueFor,
+    log: logger,
+  });
+  const result = await runSourceJob(mod, job('discover', {}));
+  assert.deepEqual(result, { skipped: true, reason: 'paused' });
+  assert.equal(ran, false);
+  assert.equal(added.length, 1);
+});
+
 test('createRunSourceJob: EPROXY_UNAVAILABLE -> requeues delayed (same mechanism as paused), does not throw, does not touch last_error', async () => {
   const { queueFor, added } = fakeQueue();
   const touched = [];

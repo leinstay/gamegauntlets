@@ -54,7 +54,7 @@
 // wording ("Your IP address has been ... blocked/restricted", "Blocked IP
 // Address", "503 Service Temporarily Unavailable"). On a detected block,
 // `pauseSource()` sets `source_state.paused = 1` and stashes a resume
-// timestamp 24h out in `cursor_state.pausedUntil`; `discover()` clears the
+// timestamp BLOCK_PAUSE_HOURS out in `cursor_state.pausedUntil`; `discover()` clears the
 // pause once that time has passed. `src/worker.js` already requeues (10 min
 // later) any job for a paused source before calling `fetchOne`, so a single
 // blocked request stops that source hammering the site rather than retrying
@@ -80,7 +80,9 @@ const SEARCH_URL = (term) => `${BASE}/ajax/home_game_search?term=${encodeURIComp
 
 const DEFAULT_REFRESH_DAYS = 90;
 const DEFAULT_DAILY_CAP = 1500;
-const BLOCK_PAUSE_HOURS = 24;
+// 3 h, not 24: a single Cloudflare "Just a moment" page (seen intermittently even from the home IP, 2026-10-12)
+// must not cost a whole day; a real GameFAQs abuse block lifted within hours both times it happened.
+const BLOCK_PAUSE_HOURS = 3;
 const YEAR_TOLERANCE = 1;
 const FUZZY_MIN_SIM = 90; // simpleSim percent a non-exact title needs before the release year may confirm it — same bar as hltb.js decideLink
 const FUZZY_LINK_CONFIDENCE = 60; // confidence stored for a link resolved via the fuzzy fallback (same tier hltb.js's decideLink uses for its own fuzzy match)
@@ -183,7 +185,7 @@ async function searchGamefaqs(ctx, term) {
 }
 
 // ---------------------------------------------------------------------------
-// source_state pause/resume (24h block cooldown)
+// source_state pause/resume (block cooldown, BLOCK_PAUSE_HOURS)
 // ---------------------------------------------------------------------------
 
 function parseJsonColumn(value) {
@@ -518,7 +520,7 @@ async function ensureStateRow(db) {
  * difficulty vote, so that condition re-picked the same popular games every day and the whole daily cap went to
  * them - coverage stood still at 18,425 games for two days (found 2026-09-30)
  * — popular first (`owners_estimate DESC`), capped at `dailyCap` (default
- * 1500). Auto-resumes a 24h block pause once its time has passed (see
+ * 1500). Auto-resumes a block pause once its time has passed (see
  * `checkAndMaybeResume`).
  */
 export async function discover(ctx) {
@@ -605,7 +607,7 @@ export async function fetchOne(ctx, job) {
     const located = await locateGamefaqsProduct(ctx, game);
     if (located.status === 'blocked') {
       await pauseSource(ctx, `Blocked by GameFAQs while searching for "${game.name}"`);
-      throw new Error('gamefaqs: blocked by anti-bot protection while searching, source paused for 24h');
+      throw new Error('gamefaqs: blocked by anti-bot protection while searching, source paused for 3h');
     }
     if (located.status === 'ambiguous') {
       await writeConflict(db, gameId, located.candidates, located.reason);
@@ -625,7 +627,7 @@ export async function fetchOne(ctx, job) {
   if (page.blocked) {
     await ctx.upsertRecord(name, pid, { status: 'error', error: 'blocked by anti-bot protection', gameId });
     await pauseSource(ctx, `Blocked by GameFAQs while fetching ${url}`);
-    throw new Error('gamefaqs: blocked by anti-bot protection while fetching the page, source paused for 24h');
+    throw new Error('gamefaqs: blocked by anti-bot protection while fetching the page, source paused for 3h');
   }
   if (!page.html) {
     await ctx.upsertRecord(name, pid, { status: 'not_found', error: `GameFAQs page not found: ${url}`, gameId });

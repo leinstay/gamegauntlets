@@ -143,10 +143,27 @@ export function createRunSourceJob({
   let lastEgressOfflineLogAt = -Infinity;
   const lastPausedLogAt = new Map(); // source -> ms; a paused source requeues a job every few seconds
 
+  // A source that paused itself (gamefaqs/metacritic after a block) lifts the pause in its own
+  // `checkAndMaybeResume`, which used to run only inside discover() - and discover jobs were gated by the
+  // very same paused check, so a "24 h" pause never ended (gamefaqs: 3 days, 2026-10-09..12).
+  async function resumeIfDue(mod, sourceCtx) {
+    if (typeof mod.checkAndMaybeResume !== 'function') return false;
+    try {
+      const status = await mod.checkAndMaybeResume(sourceCtx);
+      if (status && status.paused === false) {
+        logger.info('worker: source pause expired, resuming', { source: mod.name });
+        return true;
+      }
+    } catch (err) {
+      logger.warn('worker: checkAndMaybeResume failed', { source: mod.name, error: String(err?.message ?? err).slice(0, 200) });
+    }
+    return false;
+  }
+
   return async function runSourceJob(mod, job) {
     const sourceCtx = ctxForSource?.get(mod.name) ?? defaultCtx;
 
-    if (await isPaused(mod.name)) {
+    if (await isPaused(mod.name) && !(await resumeIfDue(mod, sourceCtx))) {
       const nowMs = now();
       if (nowMs - (lastPausedLogAt.get(mod.name) ?? -Infinity) >= egressLogIntervalMs) {
         lastPausedLogAt.set(mod.name, nowMs);
