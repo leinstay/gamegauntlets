@@ -374,11 +374,11 @@ ${renderDownload(files, repo)}
 
 ${renderCoverage(coverage)}
 ${renderExample(example)}
-## Licence
+## License and credits
 
-The dataset is released under the GNU General Public License v3.0 (see \`LICENSE\` in this repo). Game
-names, images, descriptions and prices belong to their respective publishers, platforms and third-party
-sources.
+GNU General Public License v3.0, see [LICENSE](LICENSE).
+
+* Game names, images, descriptions and prices belong to their respective publishers, platforms and third-party sources
 `;
 }
 
