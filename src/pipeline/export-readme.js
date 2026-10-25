@@ -376,9 +376,7 @@ ${renderCoverage(coverage)}
 ${renderExample(example)}
 ## License and credits
 
-GNU General Public License v3.0, see [LICENSE](LICENSE).
-
-* Game names, images, descriptions and prices belong to their respective publishers, platforms and third-party sources
+GNU General Public License v3.0, see [LICENSE](LICENSE). Game names, images, descriptions and prices belong to their respective publishers, platforms and third-party sources.
 `;
 }
 
