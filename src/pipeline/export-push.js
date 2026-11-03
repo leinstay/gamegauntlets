@@ -86,6 +86,14 @@ async function git(dir, args) {
   return execFileAsync('git', args, { cwd: dir, timeout: GIT_TIMEOUT_MS });
 }
 
+/** `git fetch origin main && git reset --hard origin/main` - see exportAndPush(). Ten nights of releases were
+ * lost (10-25..11-03) because the checkout was 3 commits behind and every push was rejected. */
+async function syncWithOrigin(dir) {
+  await git(dir, ['fetch', '--quiet', 'origin', 'main']);
+  await git(dir, ['reset', '--quiet', '--hard', 'origin/main']);
+  log.info('export: checkout synced with origin/main', { dir });
+}
+
 // steamdb.json/.min.json/.min.json.gz replaced a short-lived second gogdb.* file pair (dropped
 // 2026-09-19, see src/pipeline/export.js's header) — a repo checkout from before that change may still
 // have gogdb.* tracked. Removed unconditionally, every run, so they disappear from the public repo on
@@ -200,6 +208,11 @@ async function pruneLfsCache(dir) {
 export async function exportAndPush({ outDir, push = true, chunkSize } = {}) {
   const dir = outDir ?? config.export?.steamdbRepoDir;
   if (!dir) throw new Error('export: no output directory (pass --out or set config.export.steamdbRepoDir)');
+
+  // Before anything is written: match origin/main, so a commit made elsewhere (the owner edited the README on
+  // GitHub, 2026-10-25) cannot make tonight's push non-fast-forward. Every tracked file is regenerated below
+  // anyway; the dump files are git-ignored and untouched by the reset.
+  if (push) await syncWithOrigin(dir);
 
   const { query } = await import('../db.js');
   const db = { query };
